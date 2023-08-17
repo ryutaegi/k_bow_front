@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import {Alert, View, Text, TextInput, Button, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import {Alert, View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 //import firebase from '@react-native-firebase/app';
@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import {signup} from '../utils/firebase';
 import { ProgressContext, UserContext } from '../contexts';
 import { firebase } from '@react-native-firebase/auth';
+import styled from 'styled-components/native';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -101,7 +102,8 @@ const pickImage = async () => {
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
-      <Button title="회원가입" onPress={handleSignup} />
+      <SignupButton style={styles.button} title="회원가입" onPress={handleSignup}>
+        <SignupText>회원가입</SignupText></SignupButton>
     </View>
   );
 };
@@ -134,11 +136,28 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderColor: 'black',
+    borderWidth: 0.5,
     marginBottom: 10,
     paddingHorizontal: 10,
   },
+
 });
+
+const SignupButton = styled.TouchableOpacity`
+  width: 100%;
+  height: 40px;
+  background-color: rgb(100,100,255); /* 배경 색상을 원하는 대로 변경하세요 */
+  justify-content: center;
+  border-radius : 10px;
+  align-items: center;
+  margin-top : 20px;
+  margin-bottom: 10px;
+`;
+const SignupText = styled.Text`
+color: white; /* 텍스트 색상을 원하는 대로 변경하세요 */
+font-size: 16px;
+`;
+
 
 export default Signup;

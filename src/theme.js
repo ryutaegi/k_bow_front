@@ -18,4 +18,9 @@ export const theme = {
 
     SpinnerBackground: colors.black,
     SpinnerIndicator: colors.white,
+
+    buttonBackground : colors.blue,
+    buttonTitle : colors.white,
+    buttonUnfilledTitle : colors.blue,
+    buttonLogout: colors.red,
 };

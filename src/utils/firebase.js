@@ -5,6 +5,10 @@ import config from '../../firebase.json';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { useEffect } from 'react';
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
 
 const app = initializeApp(config);
 const auth = getAuth(app);
@@ -12,6 +16,30 @@ const db = getFirestore();
 const storage = getStorage(app);
 
 
+export const signInGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    return user;
+  } catch (error) {
+    console.error("Google 로그인 에러: ", error);
+    throw error;
+  }
+};
+
+export const getCurrentUser = () => {
+  const { uid, displayName, email, photoURL } = auth.currentUser;
+  return { uid, name : displayName, email, photoUrl : photoURL};
+};
+
+export const updateUserPhoto = async photoUrl => {
+  const user = auth.currentUser;
+  const storageUrl = photoUrl.startsWith('https')
+  ? photoUrl : await uploadImage(photoUrl);
+  return { name : user.displayName, email : user.email, photoUrl: user.photoURL};
+}
 
 
 export const login = async ({email, password}) => {

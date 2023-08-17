@@ -5,10 +5,10 @@ import { Dimensions } from 'react-native';
 const Target_select = ({ navigation, route }) => {
   const { boxidx } = route.params;
   const targetImages = [
-    require('../images/target/img17.png'),
-    require('../images/target/img16.png'),
-    require('../images/target/img15.png'),
-    require('../images/target/img10.png'),
+    require('../images/hit/leftup.png'),
+    require('../images/hit/up.png'),
+    require('../images/hit/rightup.png'),
+    require('../images/hit/left.png'),
     require('../images/target/img1.png'),
     require('../images/target/img2.png'),
     require('../images/target/img3.png'),
@@ -18,12 +18,12 @@ const Target_select = ({ navigation, route }) => {
     require('../images/target/img7.png'),
     require('../images/target/img8.png'),
     require('../images/target/img9.png'),
-    require('../images/target/img14.png'),
-    require('../images/target/img11.png'),
-    require('../images/target/img12.png'),
-    require('../images/target/img13.png'),
-    require('../images/target/img18.png'),
-    require('../images/target/img19.png'),
+    require('../images/hit/right.png'),
+    require('../images/hit/leftdown.png'),
+    require('../images/hit/down.png'),
+    require('../images/hit/rightdown.png'),
+    require('../images/hit/redhit.png'),
+    require('../images/hit/miss.png'),
     // ... 7개 부분 이미지 파일 경로 추가
   ];
 
@@ -31,19 +31,20 @@ const Target_select = ({ navigation, route }) => {
   const windowHeight = Dimensions.get('window').height;
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 20, marginTop: 80 }}>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
+    <ScrollView contentContainerStyle={{ padding: 20, marginTop: 50 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
         {[...Array(3)].map((_, index) => (
           <TouchableOpacity
             key={index}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.47,
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.45,
               height: windowWidth * 0.15 ,
               margin: 6.5,
               marginBottom:13,
-              borderWidth: 1,
+              borderWidth: 0.5,
               borderRadius: 1,
-              borderColor: '#ccc',
+              //borderColor: '#ccc',
               overflow: 'hidden',
               justifyContent: 'center',
               alignItems: 'center',
@@ -53,7 +54,7 @@ const Target_select = ({ navigation, route }) => {
             <Image
               key={index}
               source={targetImages[index]}
-              style={{ width:  index==1 ? '20%' : '100%', height: index==1 ? '50%' : '100%' }}
+              style={{ width:  index==1 ? '40%' : '110%', height: index==1 ? '50%' : '110%' }}
             />
           </TouchableOpacity>
         ))}
@@ -68,9 +69,9 @@ const Target_select = ({ navigation, route }) => {
       width: windowWidth * 0.15,
       height: windowWidth * 0.61,
       margin: 1,
-      borderWidth: 1,
+      borderWidth: 0.5,
       borderRadius: 1,
-      borderColor: '#ccc',
+      //borderColor: '#ccc',
       overflow: 'hidden',
       justifyContent: 'center',
       alignItems: 'center',
@@ -80,7 +81,7 @@ const Target_select = ({ navigation, route }) => {
     <Image
       key={3}
       source={targetImages[3]}
-      style={{ width:'50%', height: '20%' }}
+      style={{ width:'60%', height: '35%' }}
     />
   </TouchableOpacity>
 </View>
@@ -92,9 +93,9 @@ const Target_select = ({ navigation, route }) => {
           width: windowWidth * 0.15,
           height: windowWidth * 0.2,
           margin: 1,
-          borderWidth: 1,
+          //borderWidth: 1,
           borderRadius: 1,
-          borderColor: '#ccc',
+          //borderColor: '#ccc',
           overflow: 'hidden',
           justifyContent: 'center',
           alignItems: 'center',
@@ -117,9 +118,9 @@ const Target_select = ({ navigation, route }) => {
           width: windowWidth * 0.15,
           height: windowWidth * 0.2,
           margin: 1,
-          borderWidth: 1,
+          //borderWidth: 1,
           borderRadius: 1,
-          borderColor: '#ccc',
+          //borderColor: '#ccc',
           overflow: 'hidden',
           justifyContent: 'center',
           alignItems: 'center',
@@ -142,9 +143,9 @@ const Target_select = ({ navigation, route }) => {
           width: windowWidth * 0.15,
           height: windowWidth * 0.2,
           margin: 1,
-          borderWidth: 1,
+          //borderWidth: 1,
           borderRadius: 1,
-          borderColor: '#ccc',
+          //borderColor: '#ccc',
           overflow: 'hidden',
           justifyContent: 'center',
           alignItems: 'center',
@@ -166,9 +167,9 @@ const Target_select = ({ navigation, route }) => {
       width: windowWidth * 0.15,
       height: windowWidth * 0.61,
       margin: 1,
-      borderWidth: 1,
+      borderWidth: 0.5,
       borderRadius: 1,
-      borderColor: '#ccc',
+      //borderColor: '#ccc',
       overflow: 'hidden',
       justifyContent: 'center',
       alignItems: 'center',
@@ -178,7 +179,7 @@ const Target_select = ({ navigation, route }) => {
     <Image
       key={13}
       source={targetImages[13]}
-      style={{ width: '50%', height: '20%' }}
+      style={{ width: '60%', height: '35%' }}
     />
   </TouchableOpacity>
 </View>
@@ -189,13 +190,13 @@ const Target_select = ({ navigation, route }) => {
           <TouchableOpacity
             key={index}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.47,
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.45,
               height: windowWidth * 0.15 ,
               margin: 6.5,
               marginTop:13,
-              borderWidth: 1,
+              borderWidth: 0.5,
               borderRadius: 1,
-              borderColor: '#ccc',
+              //borderColor: '#ccc',
               overflow: 'hidden',
               justifyContent: 'center',
               alignItems: 'center',
@@ -205,7 +206,7 @@ const Target_select = ({ navigation, route }) => {
             <Image
               key={index+14}
               source={targetImages[index+14]}
-              style={{ width:  index==1 ? '20%' : '100%', height: index==1 ? '50%' : '100%'}}
+              style={{ width:  index==1 ? '40%' : '110%', height: index==1 ? '50%' : '110%'}}
             />
           </TouchableOpacity>
         ))}
@@ -220,9 +221,9 @@ const Target_select = ({ navigation, route }) => {
               height: windowWidth * 0.15 ,
               margin: 6.5,
               marginTop:50,
-              borderWidth: 1,
+              borderWidth: 0,
               borderRadius: 1,
-              borderColor: '#ccc',
+              //borderColor: '#ccc',
               overflow: 'hidden',
               justifyContent: 'center',
 
@@ -241,7 +242,7 @@ const Target_select = ({ navigation, route }) => {
 
   
     </ScrollView>
-
+    </View>
     
     
   );

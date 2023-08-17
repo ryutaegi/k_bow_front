@@ -12,6 +12,11 @@ const RecordMain = ({ navigation, route }) => {
   const [selectedImage, setSelectedImage] = useState(null); // 전달된 이미지를 저장하는 상태
   const [soon, setSoon] = useState([-1]);
   const [jeong, setJeong] = useState([]);
+  const today = new Date();
+  
+  const year = today.getFullYear(); // 년도
+  const month = today.getMonth() + 1;  // 월
+  const day = today.getDate();  // 날짜
 
  
 
@@ -21,30 +26,97 @@ const RecordMain = ({ navigation, route }) => {
 const updateShots = (image, boxindex) => {
   setSelectedImage(image);
 
-  if(boxindex%5 == 4){
-    const updatedShots = [...soon, boxindex];
-    setSoon(updatedShots);
-    console.log(soon);
-    
-    const updatejeong = [...jeong, 0];
-    setJeong(updatejeong);
-  }
-
+  const updatejeong = [...jeong];
+  let jeongdata = 0;
   
-  if (boxindex < shots.length) { //boxindex써서 몇중했는지 계산하기
+  if(boxindex%5 == 4) //5시 수정 시
+  {
+    if((image>=4 && image<=12) || image == 17)
+    jeongdata++;
+    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+    jeongdata++;
+    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+    jeongdata++;
+    if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
+    jeongdata++;
+    if((shots[boxindex-4] >= 4 && shots[boxindex-4]<=12) || shots[boxindex-4] == 17)
+    jeongdata++;
+    updatejeong[Math.floor(boxindex/5)] = jeongdata;
+  }
+  else if(boxindex%5 == 3) // 4시 수정 시
+  {
+    if((image>=4 && image<=12) || image == 17)
+    jeongdata++;
+    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+    jeongdata++;
+    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+    jeongdata++;
+    if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
+    jeongdata++;
+    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+    jeongdata++;
+    updatejeong[Math.floor(boxindex/5)] = jeongdata;
+  }
+  else if(boxindex%5 == 2) // 3시 수정 시
+  {
+    if((image>=4 && image<=12) || image == 17)
+    jeongdata++;
+    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+    jeongdata++;
+    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+    jeongdata++;
+    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+    jeongdata++;
+    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+    jeongdata++;
+    updatejeong[Math.floor(boxindex/5)] = jeongdata;
+  }
+  else if(boxindex%5 == 1) // 2시 수정 시
+  {
+    if((image>=4 && image<=12) || image == 17)
+    jeongdata++;
+    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+    jeongdata++;
+    if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
+    jeongdata++;
+    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+    jeongdata++;
+    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+    jeongdata++;
+    updatejeong[Math.floor(boxindex/5)] = jeongdata;
+  }
+  else if(boxindex%5 == 0) // 1시 수정 시
+  {
+    if((image>=4 && image<=12) || image == 17)
+    jeongdata++;
+    if((shots[boxindex+4] >= 4 && shots[boxindex+4]<=12) || shots[boxindex+4] == 17)
+    jeongdata++;
+    if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
+    jeongdata++;
+    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+    jeongdata++;
+    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+    jeongdata++;
+    updatejeong[Math.floor(boxindex/5)] = jeongdata;
+  }
+  setJeong(updatejeong);
+  
+  if (boxindex < shots.length) { //이전 데이터 수정 시
     setTest(prevTest => prevTest + 1);
+   
 
-
-    
     const updatedShots = [...shots];
     updatedShots[boxindex] = parseInt(image); // shots 배열의 해당 인덱스 값을 변경
     setShots(updatedShots);
   }else {
-    
-   
 
     const updatedShots = [...shots, parseInt(image)]; // shots 배열에 추가
     setShots(updatedShots);
+    if(boxindex%5 == 4){ //순 추가
+      const updatedShots = [...soon, boxindex];
+      setSoon(updatedShots);
+      console.log(soon);
+    }
   } 
 };
 
@@ -53,7 +125,7 @@ useEffect(() => {
   if (route.params?.image){//&& route.params?.boxindex) {
     
     const { image, boxindex } = route.params;
-    console.log(image, boxindex); //boxindex는 클릭한 박스의 순서 0부터 시작. image는 선택한 이미지 index 0부터 시작.
+    console.log(shots); //boxindex는 클릭한 박스의 순서 0부터 시작. image는 선택한 이미지 index 0부터 시작.
     updateShots(image, boxindex); // updateShots 함수를 호출하여 shots 배열 업데이트
   }
   
@@ -67,27 +139,29 @@ useEffect(() => {
  // const missImage = require('./images/hit_image11.png'); // 미스 이미지
   //const hitImage = require('./images/hit_image10.png'); // 히트 이미지
   const partImages = [
-    require('../images/hit_image1.png'),
-    require('../images/hit_image1.png'),
-    require('../images/hit_image1.png'),
-    require('../images/hit_image1.png'),
+    require('../images/hit/leftup.png'),
+    require('../images/hit/up.png'),
+    require('../images/hit/rightup.png'),
+    require('../images/hit/left.png'),
 
-    require('../images/hit_image1.png'),
-    require('../images/hit_image4.png'),
-    require('../images/hit_image7.png'),
-    require('../images/hit_image2.png'),
-    require('../images/hit_image5.png'),
-    require('../images/hit_image8.png'),
-    require('../images/hit_image3.png'),
-    require('../images/hit_image6.png'),
-    require('../images/hit_image9.png'),
+    require('../images/hit/hit1.png'),
+    require('../images/hit/hit2.png'),
+    require('../images/hit/hit3.png'),
+    require('../images/hit/hit4.png'),
+    require('../images/hit/hit5.png'),
+    require('../images/hit/hit6.png'),
+    require('../images/hit/hit7.png'),
+    require('../images/hit/hit8.png'),
+    require('../images/hit/hit9.png'),
+    
 
-    require('../images/hit_image1.png'),
-    require('../images/hit_image1.png'),
-    require('../images/hit_image1.png'),
+    require('../images/hit/right.png'),
+    require('../images/hit/leftdown.png'),
+    require('../images/hit/down.png'),
+    require('../images/hit/rightdown.png'),
 
-    require('../images/hit_image11.png'), //중
-    require('../images/hit_image11.png'), //불
+    require('../images/hit/hit.png'), //중
+    require('../images/hit/miss.png'), //불
     // ... 7개 부분 이미지 파일 경로 추가
   ]; // 부분 이미지 경로 배열
 
@@ -114,33 +188,34 @@ useEffect(() => {
 
   return (
     
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         
       <View style={{ 
           flexDirection: 'row', 
           flexWrap: 'wrap',
-          margin : 5,
-          borderWidth : 1,}}>
+          margin : 20,
+          marginBottom : 0,
+          borderWidth : 0,}}>
             <View style={style.top}>
             </View>
             <View style={style.top}>
-            <Text>1</Text>
+            <Text>1시</Text>
             </View>
             <View style={style.top}>
-            <Text>2</Text>
+            <Text>2시</Text>
             </View>
             <View style={style.top}>
-            <Text>3</Text>
+            <Text>3시</Text>
             </View>
             <View style={style.top}>
-            <Text>4</Text>
+            <Text>4시</Text>
             </View>
             <View style={style.top}>
-            <Text>5</Text>
+            <Text>5시</Text>
             </View>
             <View style={style.top}>
-            <Text>순점</Text>
+            <Text></Text> 
             </View>
             
 
@@ -148,16 +223,20 @@ useEffect(() => {
             <View style={{ 
           flexDirection: 'row', 
           flexWrap: 'nowrap',
-          margin : 5,
-          borderWidth : 1,}}>
+          margin : 20,
+          marginTop : 0,
+          borderWidth : 0,
+          borderColor:'#000',
+          }}>
 
             <View style={{ 
           flexDirection: 'column', 
           flexWrap: 'wrap',
-          margin : 1,
-          borderWidth : 1,
-          width: windowWidth*0.13,
-      height : windowWidth*0.53,}}>
+          margin : 0,
+          borderWidth : 0,
+          width: windowWidth*0.12,
+      //height : windowWidth*1
+    }}>
 
     { soon.map((index) => (
   
@@ -167,20 +246,18 @@ useEffect(() => {
       width: windowWidth*0.12,
       height : windowWidth*0.12,
       aspectRatio: 1,
-      margin: 3,
-      marginLeft :  0,
-      marginTop :  0,
-      borderWidth: 2,
-      borderRadius: 3,
+      margin: 0,
+      borderWidth: 0,
+      borderRadius: 0,
       justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
     alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-      borderColor: '#ccc',
+      //borderColor: '#ccc',
       overflow: 'hidden',
       alignContent : 'center',
     }}
   
   >
-    <Text>{(index+1)/5 +1}</Text>
+    <Text>{(index+1)/5 +1}순</Text>
   </View>
 ))}
       </View>
@@ -189,9 +266,9 @@ useEffect(() => {
         <View style={{ 
           flexDirection: 'row', 
           flexWrap: 'wrap',
-          margin : 1,
-          borderWidth : 1,
-          width : windowWidth*0.65,}}>
+          margin : 0,
+          borderWidth : 0,
+          width : windowWidth*0.60,}}>
           
           {/* 이전 사각형들 출력 */}
         
@@ -203,12 +280,14 @@ useEffect(() => {
       width: windowWidth*0.12,
       height : windowWidth*0.12,
       aspectRatio: 1,
-      margin: 3,
+      margin: 0,
       marginLeft :  0,
       marginTop :  0,
-      borderWidth: 2,
-      borderRadius: 3,
-      borderColor: '#ccc',
+      borderWidth: 0.5,
+      borderRadius: 0,
+      //justifyContent: 'center', // 이미지를 세로로 중앙에 배치
+      alignItems: 'center',     // 이미지를 가로로 중앙에 배치
+      //borderColor: '#ccc',
       overflow: 'hidden',
     }}
     onPress={() => navigation.navigate('Target_select', {boxidx : index})}
@@ -218,7 +297,8 @@ useEffect(() => {
       <Image
         key={index}
         source={partImages[shot]}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '130%', height: '130%', marginTop:-3}}
+      
       />
    }
   </TouchableOpacity>
@@ -229,12 +309,13 @@ useEffect(() => {
     width: windowWidth*0.12,
     height : windowWidth*0.12,
     aspectRatio: 1,
-    margin: 3,
+    margin: 0,
     marginLeft :  0,
       marginTop :  0,
-    borderWidth: 2,
-    borderRadius: 3,
-    borderColor: '#ccc',
+    borderWidth: 0.5,
+    borderRadius: 0,
+    borderColor: '#000',
+    backgroundColor: '#fff',
     overflow: 'hidden',
   }}
   onPress={() => navigation.navigate('Target_select', {boxidx : shots.length})} //shots.length
@@ -247,12 +328,13 @@ useEffect(() => {
         <View style={{ 
           flexDirection: 'column', 
           flexWrap: 'wrap',
-          margin : 1,
-          borderWidth : 1,
-          width: windowWidth*0.13,
-      height : windowWidth*0.53,}}>
+          margin : 0,
+          borderWidth : 0,
+          width: windowWidth*0.12,
+      //height : windowWidth*0.8,
+    }}>
 
-          { jeong.map((index) => (
+          { jeong.map((jeong1, index) => (
   
   <View
     key={index}
@@ -260,20 +342,20 @@ useEffect(() => {
       width: windowWidth*0.12,
       height : windowWidth*0.12,
       aspectRatio: 1,
-      margin: 3,
+      margin: 0,
       marginLeft :  0,
       marginTop :  0,
-      borderWidth: 2,
-      borderRadius: 3,
+      borderWidth: 0,
+      borderRadius: 0,
       justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
     alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-      borderColor: '#ccc',
+      //borderColor: '#ccc',
       overflow: 'hidden',
       alignContent : 'center',
     }}
   
   >
-    <Text>{jeong[index]}</Text>
+    <Text>{jeong1}중</Text>
   </View>
 ))}
       </View>
@@ -283,10 +365,20 @@ useEffect(() => {
       </ScrollView>
 
       {/* 현재 라인의 평균 출력 */}
-      <View style={{ alignItems: 'center', marginBottom: 10 }}>
-      <Text>{test}</Text>
-        <Text style={{ fontSize: 18 }}>평 {calculateAverage(shots)}중</Text>
-      </View>
+      <View style={{
+        flexDirection : 'row', 
+        justifyContent: 'space-between',
+         marginBottom: 10,  borderWidth : 0, width : windowWidth*0.8 }}>
+        <View style={{textAlign : 'left', borderWidth : 0}}>
+         <Text style={{ fontSize: 16, color : '#777' }}>
+          {year+' - '+month+' - '+day}</Text>
+        </View>
+        <View>
+          <Text style={{ fontSize: 16, fontWeight : '400', textAlign : 'left', borderWidth : 0 }}>
+            평 {calculateAverage(shots)} 중{'\n'}
+            계 {shots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length} / {shots.length}</Text>
+        </View>
+        </View>
     </View>
   );
 };
@@ -295,12 +387,12 @@ const style = StyleSheet.create({
   top: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: windowWidth * 0.131,
+    width: windowWidth * 0.12,
     height : windowWidth*0.12,
     //backgroundColor: "#fff",
     justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
     alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-    borderWidth : 1,
+    borderWidth : 0,
    
 
     
