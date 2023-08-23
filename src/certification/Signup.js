@@ -14,6 +14,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [jeong, setJeong] = useState('');
+  const [start_year, setStart_year] = useState('');
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
   const [imageUri, setImageUri] = useState(null);
@@ -31,7 +33,7 @@ const Signup = () => {
       try {
         // 이미지 업로드
         spinner.start();
-        const user = await signup({name, email, password, imageUri});
+        const user = await signup({name, email, password, imageUri, jeong, start_year});
             Alert.alert('회원가입이 완료되었습니다.');
            dispatch(user);
         
@@ -101,6 +103,18 @@ const pickImage = async () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="소속 정 또는 학교"
+        value={jeong}
+        onChangeText={setJeong}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="집궁 연도"
+        value={start_year}
+        onChangeText={setStart_year}
       />
       <SignupButton style={styles.button} title="회원가입" onPress={handleSignup}>
         <SignupText>회원가입</SignupText></SignupButton>

@@ -15,6 +15,8 @@ export const theme = {
     background: colors.white,
     text: colors.black,
     imageBackground: colors.grey_0,
+    imageButtonBackground: colors.grey_1,
+    imageButtonIcon: colors.white,
 
     SpinnerBackground: colors.black,
     SpinnerIndicator: colors.white,

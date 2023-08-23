@@ -1,4 +1,5 @@
 import Login from './login.js';
 import Signup from './Signup.js';
+import KakaoLogin from './KakaoLogin.js';
 
-export { Login, Signup};
+export { Login, Signup, KakaoLogin};

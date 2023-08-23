@@ -3,7 +3,7 @@ import {TouchableOpacity, Text} from 'react-native';
 
 const MapMain = ({ }) => {
 return(
-<Text>HomeMain</Text>
+<Text>활터 지도</Text>
 );
 }
 export default MapMain;

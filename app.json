@@ -14,6 +14,19 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "@react-native-seoul/kakao-login",
+        {
+          "kakaoAppKey": "7198cfaf41e709bc2378c015c28ce7ba",
+          "overrideKakaoSDKVersion": "2.9.0",
+          "kotlinVersion": "1.5.10"
+        }
+      ],
+      [
+        "expo-camera"
+      ]
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -21,10 +34,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.taeyou.reactexam"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "91df4db1-caa7-42fd-b47a-5fc4c9979550"
+      }
     }
   }
 }

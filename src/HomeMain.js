@@ -8,7 +8,7 @@ const HomeMain = () => {
 
   return (
     
-    <Text>home</Text>
+    <Text>커뮤니티</Text>
     
   );
 };

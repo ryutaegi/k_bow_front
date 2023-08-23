@@ -1,14 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth,updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import {signInWithPopup, GoogleAuthProvider, getAuth,updateProfile, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import base64 from 'react-native-base64';
 import config from '../../firebase.json';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { useEffect } from 'react';
-import {
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import * as KakaoLogins from "@react-native-seoul/kakao-login";
 
 const app = initializeApp(config);
 const auth = getAuth(app);
@@ -16,17 +13,9 @@ const db = getFirestore();
 const storage = getStorage(app);
 
 
-export const signInGoogle = async () => {
-  const provider = new GoogleAuthProvider();
+export const kakaoLogin = async () => {
 
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    return user;
-  } catch (error) {
-    console.error("Google 로그인 에러: ", error);
-    throw error;
-  }
+
 };
 
 export const getCurrentUser = () => {
@@ -89,9 +78,9 @@ export const uploadImage = async uri => {
   // return imageUrl;
 };
 
-export const signup = async ({name, email, password, imageUri}) => {
+export const signup = async ({name, email, password, imageUri, jeong, start_year}) => {
   
-  console.log('signup 함수 호출됨', name, email, password, imageUri);
+  console.log('signup 함수 호출됨', name, email, password, imageUri, jeong, start_year);
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
   const storageUrl = imageUri.startsWith('https')
   ? imageUri
@@ -100,8 +89,17 @@ export const signup = async ({name, email, password, imageUri}) => {
   await updateProfile(user, {
     displayName: name,
     photoURL : storageUrl,
+
   });
 
+  setDoc(doc(db, 'users', user.uid), {  //소속이랑 집궁년도 잘 안넘어감
+    name, 
+    email, 
+    photoURL: storageUrl, 
+    jeong, 
+    start_year 
+  });
+  console.log(user);
   return user;
   //const imageUrl = await uploadImage(imageUri, `${user.uid}_profile_pic.jpg`);
   //await setDoc(doc(db, 'users', user.uid), { name, email, imageUrl });

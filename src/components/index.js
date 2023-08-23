@@ -1,4 +1,4 @@
 //import Image from './Image';
 import Spinner from './Spinner';
-
-export {  Spinner };
+import Image from './Image';
+export {  Spinner, Image };

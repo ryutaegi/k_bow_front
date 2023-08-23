@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { images } from '../utils/images';
-import { login, signInGoogle } from '../utils/firebase';
+import { login, kakaoLogin } from '../utils/firebase';
 import styled from 'styled-components/native';
-
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,6 +13,7 @@ const Login = ({ navigation }) => {
   const { dispatch } = useContext(UserContext);
 
  
+
 
   const handleLogin = async () => {
     try {
@@ -26,18 +27,8 @@ const Login = ({ navigation }) => {
       spinner.stop();
     }
   };
-  const googleLogin = async () => {
-    // try {
-    //   spinner.start();
-      const user = await signInGoogle();
-      //dispatch(user);
-      //alert("로그인");
-    // } catch (e) {
-    //   Alert.alert('로그인 오류', e.message);
-    // } finally {
-    //   spinner.stop();
-    // }
-  };
+ 
+  
 
   return (
     <Container>
@@ -63,11 +54,15 @@ const Login = ({ navigation }) => {
         <OtherButtonText>회원 가입</OtherButtonText>
       </SignupButton>
         <Text>|</Text>
-      <SignupButton onPress={() => navigation.navigate('Signup')}>
+      <SignupButton onPress={() => navigation.navigate('KakaoLogin')}>
         <OtherButtonText>계정 찾기</OtherButtonText>
       </SignupButton>
+
+      
       </View>
-     
+      <LoginButton onPress={() => navigation.navigate('KakaoLogin')}>
+        <LoginButtonText>카카오 로그인</LoginButtonText>
+      </LoginButton>
       
     </Container>
   );
