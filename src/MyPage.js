@@ -6,6 +6,7 @@ import  {Image}  from './components';
 import { Button, Alert } from 'react-native';
 import { Input } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
+import axios from 'axios';
 
 const Container = styled.View`
 flex : 1;
@@ -20,7 +21,7 @@ const MyPage = () => {
  const { spinner } = useContext(ProgressContext);
  const theme = useContext(ThemeContext);
 
- const user = getCurrentUser();
+ const {user} = useContext(UserContext);//getCurrentUser(); 이거 카카오 껄로 바꿔야함
  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
 
  const _handleLogoutButtonPress = async () => {
@@ -47,7 +48,27 @@ const MyPage = () => {
   }
  };
 
-
+ const logoutFromKakao = async () => {
+  try {
+      const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
+          headers: {
+              Authorization: `Bearer ${user.uid}`
+          }
+      });
+      
+      if (response.status === 200) {
+          console.log("Successfully logged out from Kakao");
+          dispatch({});
+          return true;
+      } else {
+          console.error("Failed to log out from Kakao");
+          return false;
+      }
+  } catch (error) {
+      console.error("Error logging out from Kakao:", error);
+      return false;
+  }
+};
 
  
 
@@ -67,6 +88,12 @@ const MyPage = () => {
       <Button
       title="logout"
       onPress={_handleLogoutButtonPress}
+      containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
+    />
+
+<Button
+      title="logout_kakao"
+      onPress={logoutFromKakao}
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
     />
     </Container>

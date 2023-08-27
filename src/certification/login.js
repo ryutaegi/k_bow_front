@@ -19,6 +19,7 @@ const Login = ({ navigation }) => {
     try {
       spinner.start();
       const user = await login({ email, password });
+      console.log(user)
       dispatch(user);
       //alert("로그인");
     } catch (e) {

@@ -22,7 +22,7 @@ const MyPageContent = () => {
 
   return (
     <>
-      {user?.uid && user?.email ? <MyPage /> : <AuthStack />}
+      {user?.uid ? <MyPage /> : <AuthStack />}
       {inProgress && <Spinner />}
     </>
   );

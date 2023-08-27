@@ -55,7 +55,7 @@ export const uploadImage = async uri => {
     
      xhr.responseType = 'blob';
      xhr.open('GET', uri, true);
-     xhr.send(); //여기 막아봄
+     xhr.send(); 
     
   });
  
