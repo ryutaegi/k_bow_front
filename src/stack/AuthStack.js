@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../certification/login';
 import Signup from '../certification/Signup';
 import KakaoLogin from '../certification/KakaoLogin';
+import { NaverLogin } from '../certification';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +13,7 @@ const AuthStack = () => {
       <Stack.Screen name="Login" component={Login} options={{headerShown : false,}}/>
       <Stack.Screen name="Signup" component={Signup} options={{headerShown : false,}} />
       <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{headerShown : false,}} />
+      <Stack.Screen name="NaverLogin" component={NaverLogin} options={{headerShown : false,}} />
     </Stack.Navigator>
   );
 };

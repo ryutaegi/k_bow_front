@@ -61,9 +61,15 @@ const Login = ({ navigation }) => {
 
       
       </View>
-      <LoginButton onPress={() => navigation.navigate('KakaoLogin')}>
-        <LoginButtonText>카카오 로그인</LoginButtonText>
-      </LoginButton>
+      
+      <SocialLoginButton style={{marginTop : '5%'}} onPress={() => navigation.navigate('KakaoLogin')}>
+      <Image style={{width : '100%', height : '100%', resizeMode : 'cover'}} source={require('../../images/login/kakao_login_large_wide.png')} />
+      </SocialLoginButton>
+
+      <SocialLoginButton style={{backgroundColor : '#03C75A'}} onPress={() => navigation.navigate('NaverLogin')}>
+      <Image style={{width : '65%', height : '100%', resizeMode : 'cover'}} source={require('../../images/login/btnG_완성형.png')} />
+      </SocialLoginButton>
+
       
     </Container>
   );
@@ -110,6 +116,16 @@ const LoginButton = styled.TouchableOpacity`
   align-items: center;
   margin-top : 20px;
   margin-bottom: 10px;
+`;
+
+const SocialLoginButton = styled.TouchableOpacity`
+width: 100%;
+height: 50px;
+justify-content: center;
+
+align-items: center;
+margin-top : 10px;
+
 `;
 
 const SignupButton = styled.TouchableOpacity``;

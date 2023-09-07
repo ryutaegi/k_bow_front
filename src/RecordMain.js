@@ -176,15 +176,6 @@ useEffect(() => {
     return ((hitCount / totalShots) * 5).toFixed(1);
   };  
 
-  const saveRecord = async () => {
-    try {
-      await AsyncStorage.setItem('shots', JSON.stringify(shots)); // 결과 저장
-      await AsyncStorage.setItem('averages', JSON.stringify(averages)); // 평균 저장
-      console.log('Record saved successfully');
-    } catch (error) {
-      console.log('Failed to save record:', error);
-    }
-  };
 
   return (
     

@@ -15,7 +15,7 @@ justify-content: center;
 align-items: center;
 padding: 0 20px;
 `;
-
+const CLIENT_ID = 'M0Z_vtlzGvZMv9VU2eFj';
 const MyPage = () => {
  const { dispatch } = useContext(UserContext);
  const { spinner } = useContext(ProgressContext);
@@ -58,7 +58,7 @@ const MyPage = () => {
       
       if (response.status === 200) {
           console.log("Successfully logged out from Kakao");
-          dispatch({});
+          dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
           return true;
       } else {
           console.error("Failed to log out from Kakao");
@@ -69,6 +69,13 @@ const MyPage = () => {
       return false;
   }
 };
+
+const logoutFromNaver = async () => {
+          dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
+          console.log("Successfully logged out from Naver");
+};
+
+
 
  
 
@@ -91,9 +98,15 @@ const MyPage = () => {
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
     />
 
-<Button
+    <Button
       title="logout_kakao"
       onPress={logoutFromKakao}
+      containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
+    />
+
+<Button
+      title="logout_naver"
+      onPress={logoutFromNaver}
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
     />
     </Container>

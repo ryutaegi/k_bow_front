@@ -7,7 +7,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const REST_API_KEY = '9fd6d6c300b1e8d443843c3301a50ac5';
-const REDIRECT_URI = 'http://192.168.1.102:19006';
+const REDIRECT_URI = 'https://exp.host/@taeyou/react-exam/index.exp?sdkVersion=48.0.0';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 

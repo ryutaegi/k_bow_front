@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Dimensions } from 'react-native';
 import Target_select from './Target_select.js';
 import HomeMain from './HomeMain.js';
+import HomeStack from './stack/HomeStack.js';
 import EquipmentMain from './EquipmentMain.js';
 import MapMain from './MapMain.js';
 import RecordMain from './RecordMain.js';
