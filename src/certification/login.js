@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { images } from '../utils/images';
-import { login, kakaoLogin } from '../utils/firebase';
+
 import styled from 'styled-components/native';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -15,19 +15,7 @@ const Login = ({ navigation }) => {
  
 
 
-  const handleLogin = async () => {
-    try {
-      spinner.start();
-      const user = await login({ email, password });
-      console.log(user)
-      dispatch(user);
-      //alert("로그인");
-    } catch (e) {
-      Alert.alert('로그인 오류', e.message);
-    } finally {
-      spinner.stop();
-    }
-  };
+ 
  
   
 
@@ -35,38 +23,15 @@ const Login = ({ navigation }) => {
     <Container>
       <Logo source={{ uri: images.logo }} />
       <Title></Title>
-      <Input
-        placeholder="이메일"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Input
-        placeholder="비밀번호"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <LoginButton onPress={handleLogin}>
-        <LoginButtonText>로그인</LoginButtonText>
-      </LoginButton>
-
-      <View style={{flexDirection : 'row', justifyContent : 'space-between', width : "45%"}}>
-      <SignupButton onPress={() => navigation.navigate('Signup')}>
-        <OtherButtonText>회원 가입</OtherButtonText>
-      </SignupButton>
-        <Text>|</Text>
-      <SignupButton onPress={() => navigation.navigate('KakaoLogin')}>
-        <OtherButtonText>계정 찾기</OtherButtonText>
-      </SignupButton>
+     
 
       
-      </View>
       
       <SocialLoginButton style={{marginTop : '5%'}} onPress={() => navigation.navigate('KakaoLogin')}>
-      <Image style={{width : '100%', height : '100%', resizeMode : 'cover'}} source={require('../../images/login/kakao_login_large_wide.png')} />
+      <Image style={{width : '100%', height : '100%', resizeMode : 'cover', borderRadius : 50}} source={require('../../images/login/kakao_login_large_wide.png')} />
       </SocialLoginButton>
 
-      <SocialLoginButton style={{backgroundColor : '#03C75A'}} onPress={() => navigation.navigate('NaverLogin')}>
+      <SocialLoginButton style={{backgroundColor : '#03C75A'}} >
       <Image style={{width : '65%', height : '100%', resizeMode : 'cover'}} source={require('../../images/login/btnG_완성형.png')} />
       </SocialLoginButton>
 
@@ -122,7 +87,7 @@ const SocialLoginButton = styled.TouchableOpacity`
 width: 100%;
 height: 50px;
 justify-content: center;
-
+border-radius : 50px;
 align-items: center;
 margin-top : 10px;
 

@@ -1,5 +1,6 @@
 import Notice_list from '../home/notice_list';
 import HomeMain from '../HomeMain';
+import CreatePost from '../home/CreatePost';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
@@ -8,7 +9,6 @@ const HomeStack = () => {
     <Stack.Navigator>
         <Stack.Screen name="HomeMain" component={HomeMain} options={{headerShown : false,}}/>
       <Stack.Screen name="notice_list" component={Notice_list} options={{headerShown : false,}}/>
-      
     </Stack.Navigator>
     )
     

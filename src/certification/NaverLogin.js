@@ -37,13 +37,13 @@ const { dispatch } = useContext(UserContext);
 
   const handleWebViewNavigationStateChange = async (webViewState) => {
     const { url } = webViewState;
-
+    console.log(url);
     if (url.includes('access_token=')) {
       const token = url.split('access_token=')[1].split('&')[0];
       const userInfo = await fetchNaverUserInfo(token);
       
       if (userInfo) {
-        dispatch({name : userInfo.name, email : userInfo.id, uid : token});
+        dispatch({LoginType : "naver", name : userInfo.name, email : userInfo.id, uid : token});
         //Alert.alert('네이버 로그인 성공', `사용자 이름: ${userInfo.name}`);
         console.log(userInfo);
       }

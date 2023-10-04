@@ -5,6 +5,7 @@ import { ProgressContext, UserContext } from '../contexts';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode';
 
 const REST_API_KEY = '9fd6d6c300b1e8d443843c3301a50ac5';
 const REDIRECT_URI = 'https://exp.host/@taeyou/react-exam/index.exp?sdkVersion=48.0.0';
@@ -37,49 +38,74 @@ const KaKaoLogin = ({navigation}) => {
         client_id: REST_API_KEY,
         redirect_uri: REDIRECT_URI,
         code: authorize_code,
+
       },
     }).then((response) => {
       AccessToken = response.data.access_token;
       console.log(AccessToken);
-      requestUserInfo(AccessToken);
-      storeData(AccessToken);
+      //console.log(response);
+      
+      
+
+      
+
+      return axios({
+        method : 'post',
+        url: 'http://43.201.78.159:3000/api/kakao/login',
+        data: {
+          token : AccessToken,
+        },
+      }).then((response1) => {
+        console.log('response1',response1.data);
+        const decodedToken = jwtDecode(response1.data.token);
+       console.log('Decoded Token', decodedToken);
+        dispatch({name : decodedToken.nickname, 
+          imageURL : decodedToken.image_url, 
+          social_id : decodedToken.social_id,
+          user_id : decodedToken.user_id,
+          social_type : decodedToken.social_type,
+          jwtToken : response1.data.token});
+
+
+      }).catch(function (error) {
+        console.log('error', error);
+      })
       
     }).catch(function (error) {
       console.log('error', error);
     })
-    //const user = {user: {email : "sdf", uid : "sdfg", jeong : null, start_year : null}};
-      
-    
-    //navigation.navigate("MyPage", { screen: "MyPage" } );
+
+   
+   
   };
 
-  function requestUserInfo(AccessToken)  {
-    axios ({
-      method: 'GET',
-      url: 'https://kapi.kakao.com/v2/user/me',
-      headers: {
-        Authorization : `Bearer ${AccessToken}`
-      },
-    }).then((response) => {
-      var user_email = response.data.kakao_account.email;
-      var user_range = response.data.kakao_account.age_range;
-      var user_gender = response.data.kakao_account.gender;
-      console.log("user_emil", user_email);
-      console.log("user_range", user_range);
-      console.log("user_gender", user_gender);
-      dispatch({email : user_email, uid : AccessToken});
-    }).catch(function (error) {
-      console.log('error', error);
-    })
-    return;
-  }
+  // function requestUserInfo(AccessToken)  { 이건 백에서 처리할거
+  //   axios ({
+  //     method: 'GET',
+  //     url: 'https://kapi.kakao.com/v2/user/me',
+  //     headers: {
+  //       Authorization : `Bearer ${AccessToken}`
+  //     },
+  //   }).then((response) => {
+  //     var user_email = response.data.kakao_account.email;
+  //     var user_range = response.data.kakao_account.age_range;
+  //     var user_gender = response.data.kakao_account.gender;
+  //     console.log("user_emil", user_email);
+  //     console.log("user_range", user_range);
+  //     console.log("user_gender", user_gender);
+  //     dispatch({LoginType : "kakao", email : user_email, uid : AccessToken});
+  //   }).catch(function (error) {
+  //     console.log('error', error);
+  //   })
+  //   return;
+  // }
 
-  const storeData = async (returnValue) => {
-    try {
-      await AsyncStorage.setItem('userAccessToken', returnValue);
-    } catch (error) {
-    }
-  }
+  // const storeData = async (returnValue) => { 백에서 발급한 accesstoken 사용할거임
+  //   try {
+  //     await AsyncStorage.setItem('userAccessToken', returnValue);
+  //   } catch (error) {
+  //   }
+  // }
 
   return (
     <View style={Styles.container}>      

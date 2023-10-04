@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
-import { getCurrentUser, logout, updateUserPhoto } from './utils/firebase';
 import { UserContext, ProgressContext } from './contexts';
 import  {Image}  from './components';
 import { Button, Alert } from 'react-native';
@@ -15,65 +14,96 @@ justify-content: center;
 align-items: center;
 padding: 0 20px;
 `;
-const CLIENT_ID = 'M0Z_vtlzGvZMv9VU2eFj';
+
 const MyPage = () => {
  const { dispatch } = useContext(UserContext);
  const { spinner } = useContext(ProgressContext);
  const theme = useContext(ThemeContext);
 
- const {user} = useContext(UserContext);//getCurrentUser(); 이거 카카오 껄로 바꿔야함
- const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
+ const {user} = useContext(UserContext);
+ const [photoUrl, setPhotoUrl] = useState(user.imageURL);
 
  const _handleLogoutButtonPress = async () => {
-  try{
-    spinner.start();
-    await logout();
-  }catch (e) {
-    console.log('[Profile] logout : ', e.message);
-  } finally {
+  console.log(user.social_id);
+  axios({
+    method : 'post',
+    url: 'http://43.201.78.159:3000/api/kakao/logout',
+    data: {
+      social_id : user.social_id,
+    },
+  }).then((response1) => {
     dispatch({});
-    spinner.stop();
-  }
- };
+    console.log('로그아웃 완료',response1.data);
+  }).catch(function (error) {
+    console.log('error', error);
+  })
 
- const _handlePhotoChange = async url => {
-  try {
-    spinner.start();
-    const updateUser = await updateUserPhoto(url);
-    setPhotoUrl(updateUser.photoUrl);
-  } catch (e) {
-    Alert.alert('Photo Error', e.message);
-  } finally{
-    spinner.stop();
-  }
- };
-
- const logoutFromKakao = async () => {
-  try {
-      const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
-          headers: {
-              Authorization: `Bearer ${user.uid}`
-          }
-      });
+//   if(user.LoginType=="kakao")
+//   {
+//     try {
+//       const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
+//           headers: {
+//               Authorization: `Bearer ${user.uid}`
+//           }
+//       });
       
-      if (response.status === 200) {
-          console.log("Successfully logged out from Kakao");
-          dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-          return true;
-      } else {
-          console.error("Failed to log out from Kakao");
-          return false;
-      }
-  } catch (error) {
-      console.error("Error logging out from Kakao:", error);
-      return false;
-  }
-};
+//       if (response.status === 200) {
+//           console.log("Successfully logged out from Kakao");
+//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
+//           return true;
+//       } else {
+//           console.error("Failed to log out from Kakao");
+//           return false;
+//       }
+//   } catch (error) {
+//       console.error("Error logging out from Kakao:", error);
+//       return false;
+//   }
+//   }else if(user.LoginType=="naver"){
+//     dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
+//           console.log("Successfully logged out from Naver");
+//   }
+//   else{
+//   try{
+//     spinner.start();
+//     await logout();
+//   }catch (e) {
+//     console.log('[Profile] logout : ', e.message);
+//   } finally {
+//     dispatch({});
+//     spinner.stop();
+//   }
+// }
+ };
 
-const logoutFromNaver = async () => {
-          dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-          console.log("Successfully logged out from Naver");
-};
+
+
+//  const logoutFromKakao = async () => {
+//   try {
+//       const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
+//           headers: {
+//               Authorization: `Bearer ${user.uid}`
+//           }
+//       });
+      
+//       if (response.status === 200) {
+//           console.log("Successfully logged out from Kakao");
+//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
+//           return true;
+//       } else {
+//           console.error("Failed to log out from Kakao");
+//           return false;
+//       }
+//   } catch (error) {
+//       console.error("Error logging out from Kakao:", error);
+//       return false;
+//   }
+// };
+
+// const logoutFromNaver = async () => {
+//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
+//           console.log("Successfully logged out from Naver");
+// };
 
 
 
@@ -83,22 +113,18 @@ const logoutFromNaver = async () => {
     <Container>
       <Image
       url={photoUrl}
-      onChangeImage={_handlePhotoChange}
       showbutton
       rounded
       />
 
-      <Input label="이름" value={user.name}/>
-      <Input label="이메일" value={user.email}/>
-      <Input label="소속 활터" value={user.jeong}/>
-      <Input label="집궁 연도" value={user.start_year}/>
-      <Button
-      title="logout"
-      onPress={_handleLogoutButtonPress}
-      containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
-    />
+      <Input label="닉네임" value={user.name}/>
+      
+    <LoginButton onPress={_handleLogoutButtonPress}>
+    <LoginButtonText>로그아웃</LoginButtonText>
+    </LoginButton>
+    
 
-    <Button
+    {/* <Button
       title="logout_kakao"
       onPress={logoutFromKakao}
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
@@ -108,10 +134,25 @@ const logoutFromNaver = async () => {
       title="logout_naver"
       onPress={logoutFromNaver}
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
-    />
+    /> */}
     </Container>
    
   );
 };
+const LoginButton = styled.TouchableOpacity`
+  width: 100%;
+  height: 40px;
+  background-color: rgb(2,126,229); /* 배경 색상을 원하는 대로 변경하세요 */
+  justify-content: center;
+  border-radius : 10px;
+  align-items: center;
+  margin-top : 20px;
+  margin-bottom: 10px;
+`;
+
+const LoginButtonText = styled.Text`
+  color: white; /* 텍스트 색상을 원하는 대로 변경하세요 */
+  font-size: 16px;
+`;
 
 export default MyPage;

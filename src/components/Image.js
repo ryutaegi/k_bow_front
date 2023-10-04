@@ -10,8 +10,9 @@ margin-bottom: 30px;
 
 const StyledImage = styled.Image`
 background-color: ${({ theme }) => theme.imageBackground};
-width: 100px;
-height: 100px;
+width: 200px;
+height: 200px;
+border-radius : 100px;
 `;
 
 const ButtonContainer = styled.TouchableOpacity`

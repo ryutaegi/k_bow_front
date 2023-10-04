@@ -1,14 +1,14 @@
 import React, {useEffect, useState, createContext} from 'react';
 
 const UserContext = createContext({
-    user: {name : null, email : null, uid : null, jeong : null, start_year : null},
+    user: {imageURL : null, LoginType : null, name : null, email : null, social_id : null, social_type : null, user_id : null, jwtToken : null},
     dispatch: () => {},
 });
 
 const UserProvider = ({ children }) => {
     const  [user, setUser] = useState({});
-    const dispatch = ({ name, email, uid, jeong, start_year }) => {
-        setUser({name, email, uid, jeong, start_year});
+    const dispatch = ({ imageURL, LoginType, name, email, social_id, social_type, user_id, jwtToken }) => {
+        setUser({imageURL, LoginType, name, email, social_id, social_type, user_id, jwtToken});
     };
     const value = { user, dispatch};
     useEffect(() => {

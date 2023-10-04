@@ -7,11 +7,11 @@ import MyPage from './MyPage';
 
 const MyPageMain = () => {
   return (
-    <UserProvider>
-      <ProgressProvider>
+    
+     
         <MyPageContent />
-      </ProgressProvider>
-    </UserProvider>
+      
+    
   );
 };
 
@@ -22,7 +22,7 @@ const MyPageContent = () => {
 
   return (
     <>
-      {user?.uid ? <MyPage /> : <AuthStack />}
+      {user?.user_id ? <MyPage /> : <AuthStack />}
       {inProgress && <Spinner />}
     </>
   );

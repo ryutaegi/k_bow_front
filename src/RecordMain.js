@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, ScrollView, AsyncStorage } from 'react-native';
-import { Dimensions, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+  ScrollView,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
+import axios from 'axios';
+import { UserContext } from './contexts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Input, Icon } from '@rneui/themed';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+
 
 const RecordMain = ({ navigation, route }) => {
   const [shots, setShots] = useState([]); // 사각형의 결과를 저장하는 상태
@@ -12,15 +23,107 @@ const RecordMain = ({ navigation, route }) => {
   const [selectedImage, setSelectedImage] = useState(null); // 전달된 이미지를 저장하는 상태
   const [soon, setSoon] = useState([-1]);
   const [jeong, setJeong] = useState([]);
+  const [feedback, setFeedback] = useState("");
+  const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
+  const { user } = useContext(UserContext);
+
   const today = new Date();
-  
   const year = today.getFullYear(); // 년도
   const month = today.getMonth() + 1;  // 월
   const day = today.getDate();  // 날짜
+  const dateString = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`; // 날짜를 문자열로 변환합니다. 월과 일이 한 자리 수인 경우 앞에 0을 붙입니다.
 
  
+  useEffect(() => {
+    const loadShots = async () => {
+      try {
+        const [savedShots, savedSoon, savedJeong, savedFeedback] = await Promise.all([
+          AsyncStorage.getItem('shots'),
+          AsyncStorage.getItem('soon'),
+          AsyncStorage.getItem('jeong'),
+          AsyncStorage.getItem('feedback'),
+        ]);
+        const storedDate = await AsyncStorage.getItem('today'); // 'today' 키에 저장된 값을 가져옵니다.
+        
+        if(storedDate !== null) { // 값이 존재하면
+          console.log('Stored Date: ', storedDate); // 콘솔에 출력합니다.
+          console.log(JSON.stringify(savedShots));
+          if(storedDate == dateString)
+          {
+            console.log("데이터 불러오기")
+     
+            if (savedShots !== null) setShots(JSON.parse(savedShots));
+            if (savedSoon !== null) setSoon(JSON.parse(savedSoon)); 
+            if (savedJeong !== null) setJeong(JSON.parse(savedJeong)); 
+            if (savedFeedback !== null) setFeedback(JSON.parse(savedFeedback));
+
+          }
+          else{
+            //디비로 넘길 부분
+            axios({
+              method : 'post',
+              url: 'http://43.201.78.159:3000/api/shot/save',
+              headers: {
+                'Authorization': `${user.jwtToken}`
+            },
+            data: { user_id : user.user_id, date : storedDate, shot : JSON.stringify(savedShots), feedback : JSON.stringify(savedFeedback)},
+            }).then((response) => {
+              console.log("DB업로드 완료", response.data);
+            }).catch(function (error) {
+              console.log('error', error);
+            })
 
 
+          }
+        } else {
+          console.log('No Date stored'); // storageDate값이 존재하지 않으면, 콘솔에 메시지를 출력합니다.
+        }
+
+        await AsyncStorage.setItem('today', dateString); // 날짜 문자열을 AsyncStorage에 저장합니다.
+
+        } catch (error) {
+        console.error(error);
+      }
+      try {
+        
+      } catch (error) {
+        console.error('날짜 저장 중 오류 발생: ', error); // 오류가 발생한 경우 콘솔에 오류 메시지를 출력합니다.
+      }
+    };
+    loadShots();
+  }, []);
+  
+
+// shot 데이터 저장하기
+const saveShots = async () => {
+  try {
+    await AsyncStorage.setItem('shots', JSON.stringify(shots));
+    await AsyncStorage.setItem('soon', JSON.stringify(soon));
+    await AsyncStorage.setItem('jeong', JSON.stringify(jeong));
+    await AsyncStorage.setItem('feedback', JSON.stringify(feedback));
+  } catch (error) {
+    console.error(error);
+  }
+};
+//feedback 데이터 저장하기
+const saveFeedback = async () => {
+  try {
+
+    await AsyncStorage.setItem('feedback', JSON.stringify(feedback));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  saveShots();
+  console.log(shots, soon, jeong, feedback);
+}, [jeong]);
+
+useEffect(() => {
+  saveFeedback();
+  console.log(feedback);
+}, [feedback]);
 
 
 const updateShots = (image, boxindex) => {
@@ -125,7 +228,7 @@ useEffect(() => {
   if (route.params?.image){//&& route.params?.boxindex) {
     
     const { image, boxindex } = route.params;
-    console.log(shots); //boxindex는 클릭한 박스의 순서 0부터 시작. image는 선택한 이미지 index 0부터 시작.
+    //console.log(shots); //boxindex는 클릭한 박스의 순서 0부터 시작. image는 선택한 이미지 index 0부터 시작.
     updateShots(image, boxindex); // updateShots 함수를 호출하여 shots 배열 업데이트
   }
   
@@ -356,20 +459,40 @@ useEffect(() => {
       </ScrollView>
 
       {/* 현재 라인의 평균 출력 */}
+     
+      
       <View style={{
         flexDirection : 'row', 
         justifyContent: 'space-between',
          marginBottom: 10,  borderWidth : 0, width : windowWidth*0.8 }}>
+          
         <View style={{textAlign : 'left', borderWidth : 0}}>
          <Text style={{ fontSize: 16, color : '#777' }}>
           {year+' - '+month+' - '+day}</Text>
         </View>
+        
         <View>
           <Text style={{ fontSize: 16, fontWeight : '400', textAlign : 'left', borderWidth : 0 }}>
             평 {calculateAverage(shots)} 중{'\n'}
             계 {shots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length} / {shots.length}</Text>
         </View>
         </View>
+        <View style={{
+         marginBottom: -10, width : windowWidth*0.9 }}>
+
+<Input
+    placeholder='이곳에 습사일지를 입력하세요'
+    multiline={true}
+    numberOfLines={4}
+    value={feedback}
+    onChangeText={setFeedback}
+    inputContainerStyle={{ 
+        height: Math.min(feedbackHeight, 100), // 최대 높이 적용
+        overflow: 'scroll' // 스크롤 설정
+    }}
+    onContentSizeChange={(e) => setFeedbackHeight(e.nativeEvent.contentSize.height)}
+/>
+         </View>
     </View>
   );
 };
