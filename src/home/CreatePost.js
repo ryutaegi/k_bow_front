@@ -3,14 +3,16 @@ import { View, Text, TextInput, Button } from 'react-native';
 import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
+import getEnvVars from '../../environmant';
 
-const API_URL = 'http://43.201.78.159:3000/api/board/create';
+
 
 const CreatePost = ({ route, navigation }) => {
   const theme = useContext(ThemeContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const { user }  = useContext(UserContext);
+  const { apiUrl } = getEnvVars();
   const board_type = route.params.board_type;
 
 
@@ -34,7 +36,7 @@ const CreatePost = ({ route, navigation }) => {
     }
         axios({
             method : 'post',
-            url: API_URL,
+            url: apiUrl+ '/api/board/create',
             headers: {
               'Authorization': `${user.jwtToken}`
           },

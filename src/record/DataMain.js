@@ -4,6 +4,9 @@ import { LocaleConfig } from 'react-native-calendars';
 import { UserContext } from '../contexts';
 import { Text } from 'react-native-elements';
 import axios from 'axios';
+import getEnvVars from '../../environmant';
+import { Dimensions, View, TouchableOpacity } from 'react-native';
+
 LocaleConfig.locales['kr'] = {
   monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
   monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
@@ -12,21 +15,44 @@ LocaleConfig.locales['kr'] = {
   today: '오늘'
 };
 LocaleConfig.defaultLocale = 'kr';
-const URL = "http://43.201.78.159:3000";
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 const DataMain = ({navigation}) => {
+  const { apiUrl } = getEnvVars();
     const [data, setData] = useState("");
     const { user } = useContext(UserContext);
     const [markedDates, setMarkedDates] = useState({});
     const [dataDetails, setDataDetails] = useState({}); // 날짜별 shots와 feedback을 저장하기 위한 state
+    const [monthDate, setMonthDate] = useState('');
+    const [shotDates, setShotDates] = useState('');
+    const [shotCounts, setShotCount] = useState('');
+    let shotDate = [];
+    let shotCount = 0;
 
+    function getDecodingLevel(dataString) {
+      try {
+          const firstDecode = JSON.parse(dataString);
+          if (typeof firstDecode === "string") {
+              // 첫 번째 디코딩 후 문자열이 반환된 경우 두 번 인코딩되었음을 의미합니다.
+              const secondDecode = JSON.parse(firstDecode);
+              return { level: 2, data: secondDecode };
+          } else {
+              // 첫 번째 디코딩에서 데이터 구조가 반환된 경우 한 번만 인코딩되었음을 의미합니다.
+              return { level: 1, data: firstDecode };
+          }
+      } catch (e) {
+          // 디코딩 중 오류가 발생한 경우
+          return { level: 0, error: "Not a valid JSON encoded string" };
+      }
+  }
 
-    
       const onDayPress = (day) => {
         console.log('Selected Day', day.dateString); // YYYY-MM-DD 형식으로 출력됩니다.
         setData(day.dateString)
-        navigation.navigate('Record');
+        navigation.navigate('Record', {date : day.dateString});
       };
       
       useEffect(() => {
@@ -34,12 +60,14 @@ const DataMain = ({navigation}) => {
         const currentMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         axios({
           method : 'post',
-          url: URL+'/api/shot/month',
+          url: apiUrl+'/api/shot/month',
           headers: {
             'Authorization': `${user.jwtToken}`
         },
         data: { month : currentMonth },
         }).then((response) => {
+          shotCount = 0;
+          shotDate = [];
           //console.log("DB업로드 완료", response.data);
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
@@ -50,23 +78,17 @@ const DataMain = ({navigation}) => {
 
             // Check if shot_array is not null before trying to parse
             if (item.shot_array !== null) {
-                const firstParsedValue = JSON.parse(item.shot_array);
-                if (typeof firstParsedValue === "string") {
-                    try {
-                        shotArray = JSON.parse(firstParsedValue);
-                    } catch (error) {
-                        shotArray = [firstParsedValue];  // If it's a simple string, make it an array
-                    }
-                } else {
-                    shotArray = [firstParsedValue]; // If it's a non-string parsed value, make it an array
-                }
+              shotArray = getDecodingLevel(item.shot_array).data;
+                
             }
-
+            shotDate = [...shotDate, ...shotArray];
             const filteredShotsCount = shotArray.filter(value => ((value >= 4 && value <= 12)||(value == 17))).length;
+            shotCount += filteredShotsCount;
             const percent = 200 - (filteredShotsCount/shotArray.length)*5*40
             console.log(shotArray);
             console.log(filteredShotsCount);
             console.log(percent);
+            console.log('shotdate', shotDate);
 
 
             // Calculate the percentage of shot values between 9 and 14
@@ -91,7 +113,10 @@ const DataMain = ({navigation}) => {
 
           }, {});
           setMarkedDates(newData);
-          
+          setMonthDate(Object.keys(newData)[0].slice(0,7));
+          setShotCount(shotCount);
+          setShotDates(shotDate.length);
+
         }).catch(function (error) {
           console.log('error', error);
         })
@@ -106,14 +131,16 @@ const DataMain = ({navigation}) => {
             console.log(monthString);
             axios({
               method : 'post',
-              url: URL+'/api/shot/month',
+              url: apiUrl+'/api/shot/month',
               headers: {
                 'Authorization': `${user.jwtToken}`
             },
             data: { month : monthString },
             }).then((response) => {
               //console.log("DB업로드 완료", response.data);
-
+              shotDate = [];
+              shotCount = 0;
+             
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
                 console.log("item",item);
@@ -123,23 +150,20 @@ const DataMain = ({navigation}) => {
 
                 // Check if shot_array is not null before trying to parse
                 if (item.shot_array !== null) {
-                    const firstParsedValue = JSON.parse(item.shot_array);
-                    if (typeof firstParsedValue === "string") {
-                        try {
-                            shotArray = JSON.parse(firstParsedValue);
-                        } catch (error) {
-                            shotArray = [firstParsedValue];  // If it's a simple string, make it an array
-                        }
-                    } else {
-                        shotArray = [firstParsedValue]; // If it's a non-string parsed value, make it an array
-                    }
+                  if (item.shot_array !== null) {
+                    shotArray = getDecodingLevel(item.shot_array).data;
+                      
+                  }
                 }
-
+                shotDate = [...shotDate, ...shotArray];
                 const filteredShotsCount = shotArray.filter(value => ((value >= 4 && value <= 12)||(value == 17))).length;
+                shotCount += filteredShotsCount;
                 const percent = 200 - (filteredShotsCount/shotArray.length)*5*40
-                console.log(shotArray);
+                console.log("shotarray", shotArray);
                 console.log(filteredShotsCount);
                 console.log(percent);
+                console.log('shotdate', shotDate);
+               
 
 
                 // Calculate the percentage of shot values between 9 and 14
@@ -162,18 +186,125 @@ const DataMain = ({navigation}) => {
                 return acc;
               }, {});
               setMarkedDates(newData);
+              setMonthDate(Object.keys(newData)[0].slice(0,7));
+              setShotCount(shotCount);
+              setShotDates(shotDate.length);
+              
             }).catch(function (error) {
               console.log('error', error);
             })
         }
     };
+    
 
       return (
       <><Calendar markedDates={markedDates}
       onDayPress={onDayPress} 
       onVisibleMonthsChange={onVisibleMonthsChange}
       />
-      <Text>{data}</Text>
+
+
+
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#fff", marginTop : 40 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', }}>
+        {[...Array(3)].map((_, index) => (
+          <TouchableOpacity
+            key={index}
+            style={{
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.3,
+              height: windowWidth * 0.15,
+              borderWidth: 0.5,
+              borderRadius: 1,
+              overflow: 'hidden',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          />
+        ))}
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity
+          key={3}
+          style={{
+            width: windowWidth * 0.15,
+            height: windowWidth * 0.3,
+            borderWidth: 0.5,
+            borderRadius: 1,
+            overflow: 'hidden',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+        <View>
+          {[...Array(3)].map((_, index) => (
+            <View key={index} style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', flex: 0.75 }}>
+              {[...Array(3)].map((_, subIndex) => (
+                <TouchableOpacity
+                  key={subIndex + index * 3 + 4}
+                  style={{
+                    width: windowWidth * 0.1,
+                    height: windowWidth * 0.1,
+                    backgroundColor : 'rgb(255, 70, 70)',
+                    borderWidth: 0.1,
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                />
+              ))}
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity
+          key={13}
+          style={{
+            width: windowWidth * 0.15,
+            height: windowWidth * 0.3,
+            borderWidth: 0.5,
+            borderRadius: 1,
+            overflow: 'hidden',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
+      </View>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
+        {[...Array(3)].map((_, index) => (
+          <TouchableOpacity
+            key={index + 14}
+            style={{
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.3,
+              height: windowWidth * 0.15,
+              borderWidth: 0.5,
+              borderRadius: 1,
+              overflow: 'hidden',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          />
+        ))}
+      </View>
+    </View>
+
+    <View style={{
+        flexDirection : 'row', 
+        justifyContent: 'space-between',
+         marginBottom: 10,  borderWidth : 0, width : windowWidth, paddingLeft : 10, paddingRight : 10 }}>
+          
+        <View style={{textAlign : 'left', borderWidth : 0}}>
+         <Text style={{ fontSize: 16, color : '#777' }}>
+         {monthDate}
+          </Text>
+        </View>
+        
+        <View>
+          <Text style={{ fontSize: 16, fontWeight : '400', textAlign : 'left', borderWidth : 0 }}>
+            평  {((shotCounts/shotDates) * 5).toFixed(1)} 중{'\n'}
+            계 {shotCounts} / {shotDates}</Text>
+        </View>
+        </View>
+      
       </>
       );
 }

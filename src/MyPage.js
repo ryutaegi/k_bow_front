@@ -6,6 +6,8 @@ import { Button, Alert } from 'react-native';
 import { Input } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
 import axios from 'axios';
+import getEnvVars from '../environmant';
+
 
 const Container = styled.View`
 flex : 1;
@@ -16,6 +18,7 @@ padding: 0 20px;
 `;
 
 const MyPage = () => {
+  const { apiUrl } = getEnvVars();
  const { dispatch } = useContext(UserContext);
  const { spinner } = useContext(ProgressContext);
  const theme = useContext(ThemeContext);
@@ -27,7 +30,7 @@ const MyPage = () => {
   console.log(user.social_id);
   axios({
     method : 'post',
-    url: 'http://43.201.78.159:3000/api/kakao/logout',
+    url: apiUrl+'/api/kakao/logout',
     data: {
       social_id : user.social_id,
     },

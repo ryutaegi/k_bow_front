@@ -7,8 +7,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { SpeedDial } from '@rneui/themed';
+import getEnvVars from '../../environmant';
 
-const API_URL = 'http://43.201.78.159:3000/api/board/list/';
 
 
  
@@ -22,6 +22,7 @@ const Notice_list = ({route, navigation}) => {
     const { user } = useContext(UserContext);
     const isFocused = useIsFocused(); // 현재 화면의 포커스 상태를 확인
     const [open, setOpen] = useState(false);
+    const { apiUrl } = getEnvVars();
 
     useEffect(() => {
         if(isFocused) {
@@ -29,7 +30,7 @@ const Notice_list = ({route, navigation}) => {
             console.log(user);
             
             try{
-            const response = await axios.get(API_URL+board_type, {
+            const response = await axios.get(apiUrl+'/api/board/list/'+board_type, {
                 headers: {
                     'Authorization': `${user.jwtToken}`
                 }

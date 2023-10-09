@@ -3,14 +3,14 @@ import { View, Text, TextInput, Button } from 'react-native';
 import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
-
-const API_URL = 'http://43.201.78.159:3000';
+import getEnvVars from '../../environmant';
 
 const UpdatePost = ({ route, navigation }) => {
   const theme = useContext(ThemeContext);
   const [title, setTitle] = useState(route.params.title);
   const [content, setContent] = useState(route.params.content);
   const { user }  = useContext(UserContext);
+  const { apiUrl } = getEnvVars();
   const board_type = route.params.board_type;
   const board_id = route.params.board_id;
 
@@ -35,7 +35,7 @@ const UpdatePost = ({ route, navigation }) => {
     }
     axios({
       method : 'post',
-      url: `${API_URL}/api/board/modify/${board_id}`,
+      url: `${apiUrl}/api/board/modify/${board_id}`,
       headers: {
         'Authorization': `${user.jwtToken}`
     },

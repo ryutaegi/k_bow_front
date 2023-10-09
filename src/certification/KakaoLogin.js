@@ -6,6 +6,8 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
+import getEnvVars from "../../environmant";
+
 
 const REST_API_KEY = '9fd6d6c300b1e8d443843c3301a50ac5';
 const REDIRECT_URI = 'https://exp.host/@taeyou/react-exam/index.exp?sdkVersion=48.0.0';
@@ -14,8 +16,8 @@ const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from
 
 const KaKaoLogin = ({navigation}) => {
   const { dispatch } = useContext(UserContext);
+  const { apiUrl } = getEnvVars();
 
- 
 
   function KakaoLoginWebView (data) {
     const exp = "code=";
@@ -51,7 +53,7 @@ const KaKaoLogin = ({navigation}) => {
 
       return axios({
         method : 'post',
-        url: 'http://43.201.78.159:3000/api/kakao/login',
+        url: apiUrl+'/api/kakao/login',
         data: {
           token : AccessToken,
         },

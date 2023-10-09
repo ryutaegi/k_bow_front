@@ -140,12 +140,12 @@ function RecordTab() {
             options={{title : '시수 기록', headerShown : true}}/>
           <Stack.Screen name="DataMain" component={DataMain}
             options={{
-              title : '데이터 기록', headerShown : true,
+              title : '월별 기록', headerShown : true,
             }}
           />
           <Stack.Screen name="Record" component={Record}
             options={{
-              title : '데이터 기록', headerShown : true,
+              title : '일별 기록', headerShown : true,
             }}
           />
         </Stack.Navigator>

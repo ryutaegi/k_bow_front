@@ -12,6 +12,10 @@ import axios from 'axios';
 import { UserContext } from './contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Input, Icon } from '@rneui/themed';
+import getEnvVars from '../environmant';
+
+
+
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
@@ -26,6 +30,7 @@ const RecordMain = ({ navigation, route }) => {
   const [feedback, setFeedback] = useState("");
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
+  const { apiUrl } = getEnvVars();
 
   const today = new Date();
   const year = today.getFullYear(); // 년도
@@ -62,11 +67,11 @@ const RecordMain = ({ navigation, route }) => {
             //디비로 넘길 부분
             axios({
               method : 'post',
-              url: 'http://43.201.78.159:3000/api/shot/save',
+              url: apiUrl+'/api/shot/save',
               headers: {
                 'Authorization': `${user.jwtToken}`
             },
-            data: { user_id : user.user_id, date : storedDate, shot : JSON.stringify(savedShots), feedback : JSON.stringify(savedFeedback)},
+            data: { user_id : user.user_id, date : storedDate, shot : savedShots, feedback : savedFeedback},
             }).then((response) => {
               console.log("DB업로드 완료", response.data);
             }).catch(function (error) {

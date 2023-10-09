@@ -12,6 +12,7 @@ import axios from 'axios';
 import { UserContext } from '../contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Input, Icon } from '@rneui/themed';
+import getEnvVars from '../../environmant';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
@@ -21,11 +22,12 @@ const RecordMain = ({ navigation, route }) => {
   const [averages, setAverages] = useState([]); // 각 라인의 평균을 저장하는 상태
   const [test, setTest] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null); // 전달된 이미지를 저장하는 상태
-  const [soon, setSoon] = useState([-1]);
+  const [soon, setSoon] = useState(0);
   const [jeong, setJeong] = useState([]);
   const [feedback, setFeedback] = useState("");
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
+  const { apiUrl } = getEnvVars();
 
   const today = new Date();
   const year = today.getFullYear(); // 년도
@@ -33,6 +35,24 @@ const RecordMain = ({ navigation, route }) => {
   const day = today.getDate();  // 날짜
   const dateString = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`; // 날짜를 문자열로 변환합니다. 월과 일이 한 자리 수인 경우 앞에 0을 붙입니다.
 
+
+
+  function getDecodingLevel(dataString) {
+    try {
+        const firstDecode = JSON.parse(dataString);
+        if (typeof firstDecode === "string") {
+            // 첫 번째 디코딩 후 문자열이 반환된 경우 두 번 인코딩되었음을 의미합니다.
+            const secondDecode = JSON.parse(firstDecode);
+            return { level: 2, data: secondDecode };
+        } else {
+            // 첫 번째 디코딩에서 데이터 구조가 반환된 경우 한 번만 인코딩되었음을 의미합니다.
+            return { level: 1, data: firstDecode };
+        }
+    } catch (e) {
+        // 디코딩 중 오류가 발생한 경우
+        return { level: 0, error: "Not a valid JSON encoded string" };
+    }
+}
  
   useEffect(() => {
     const loadShots = async () => {
@@ -40,15 +60,20 @@ const RecordMain = ({ navigation, route }) => {
             //디비로 넘길 부분
             axios({
               method : 'post',
-              url: 'http://43.201.78.159:3000/api/shot/detail',
+              url: apiUrl+'/api/shot/detail',
               headers: {
                 'Authorization': `${user.jwtToken}`
             },
-            data: { user_id : user.user_id, date : route.date},
+            data: { user_id : user.user_id, date : route.params.date},
             }).then((response) => {
-              console.log("데이터 받아오기 완료", response.data);
-              setShots(response.data.shots);
-              setFeedback(response.data.feedback);
+              console.log("데이터 받아오기 완료", response.data[0]);
+              const decoding = getDecodingLevel(response.data[0].shot_array);
+               //실수로 9월말 2번 인코딩해서 데이터 넣는 걸로 만듦. 고치긴 했는데 이전 데이터 받기위해이렇게함
+              const decoding1 = getDecodingLevel(response.data[0].feedback);
+              setSoon(decoding.data.length)
+              setShots(decoding.data);
+              setFeedback(decoding1.data);
+            
             }).catch(function (error) {
               console.log('error', error);
             })
@@ -58,108 +83,111 @@ const RecordMain = ({ navigation, route }) => {
      
     };
     loadShots();
+    console.log(shots);
+    console.log(typeof shots)
+    console.log(Array.isArray(shots));
   }, []);
   
 
 
 
 
-const updateShots = (image, boxindex) => {
-  setSelectedImage(image);
+// const updateShots = (image, boxindex) => {
+//   setSelectedImage(image);
 
-  const updatejeong = [...jeong];
-  let jeongdata = 0;
+//   const updatejeong = [...jeong];
+//   let jeongdata = 0;
   
-  if(boxindex%5 == 4) //5시 수정 시
-  {
-    if((image>=4 && image<=12) || image == 17)
-    jeongdata++;
-    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
-    jeongdata++;
-    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
-    jeongdata++;
-    if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
-    jeongdata++;
-    if((shots[boxindex-4] >= 4 && shots[boxindex-4]<=12) || shots[boxindex-4] == 17)
-    jeongdata++;
-    updatejeong[Math.floor(boxindex/5)] = jeongdata;
-  }
-  else if(boxindex%5 == 3) // 4시 수정 시
-  {
-    if((image>=4 && image<=12) || image == 17)
-    jeongdata++;
-    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
-    jeongdata++;
-    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
-    jeongdata++;
-    if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
-    jeongdata++;
-    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
-    jeongdata++;
-    updatejeong[Math.floor(boxindex/5)] = jeongdata;
-  }
-  else if(boxindex%5 == 2) // 3시 수정 시
-  {
-    if((image>=4 && image<=12) || image == 17)
-    jeongdata++;
-    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
-    jeongdata++;
-    if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
-    jeongdata++;
-    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
-    jeongdata++;
-    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
-    jeongdata++;
-    updatejeong[Math.floor(boxindex/5)] = jeongdata;
-  }
-  else if(boxindex%5 == 1) // 2시 수정 시
-  {
-    if((image>=4 && image<=12) || image == 17)
-    jeongdata++;
-    if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
-    jeongdata++;
-    if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
-    jeongdata++;
-    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
-    jeongdata++;
-    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
-    jeongdata++;
-    updatejeong[Math.floor(boxindex/5)] = jeongdata;
-  }
-  else if(boxindex%5 == 0) // 1시 수정 시
-  {
-    if((image>=4 && image<=12) || image == 17)
-    jeongdata++;
-    if((shots[boxindex+4] >= 4 && shots[boxindex+4]<=12) || shots[boxindex+4] == 17)
-    jeongdata++;
-    if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
-    jeongdata++;
-    if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
-    jeongdata++;
-    if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
-    jeongdata++;
-    updatejeong[Math.floor(boxindex/5)] = jeongdata;
-  }
-  setJeong(updatejeong);
+//   if(boxindex%5 == 4) //5시 수정 시
+//   {
+//     if((image>=4 && image<=12) || image == 17)
+//     jeongdata++;
+//     if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-4] >= 4 && shots[boxindex-4]<=12) || shots[boxindex-4] == 17)
+//     jeongdata++;
+//     updatejeong[Math.floor(boxindex/5)] = jeongdata;
+//   }
+//   else if(boxindex%5 == 3) // 4시 수정 시
+//   {
+//     if((image>=4 && image<=12) || image == 17)
+//     jeongdata++;
+//     if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-3] >= 4 && shots[boxindex-3]<=12) || shots[boxindex-3] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+//     jeongdata++;
+//     updatejeong[Math.floor(boxindex/5)] = jeongdata;
+//   }
+//   else if(boxindex%5 == 2) // 3시 수정 시
+//   {
+//     if((image>=4 && image<=12) || image == 17)
+//     jeongdata++;
+//     if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+//     jeongdata++;
+//     if((shots[boxindex-2] >= 4 && shots[boxindex-2]<=12) || shots[boxindex-2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+//     jeongdata++;
+//     updatejeong[Math.floor(boxindex/5)] = jeongdata;
+//   }
+//   else if(boxindex%5 == 1) // 2시 수정 시
+//   {
+//     if((image>=4 && image<=12) || image == 17)
+//     jeongdata++;
+//     if((shots[boxindex-1] >= 4 && shots[boxindex-1]<=12) || shots[boxindex-1] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+//     jeongdata++;
+//     updatejeong[Math.floor(boxindex/5)] = jeongdata;
+//   }
+//   else if(boxindex%5 == 0) // 1시 수정 시
+//   {
+//     if((image>=4 && image<=12) || image == 17)
+//     jeongdata++;
+//     if((shots[boxindex+4] >= 4 && shots[boxindex+4]<=12) || shots[boxindex+4] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+3] >= 4 && shots[boxindex+3]<=12) || shots[boxindex+3] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+2] >= 4 && shots[boxindex+2]<=12) || shots[boxindex+2] == 17)
+//     jeongdata++;
+//     if((shots[boxindex+1] >= 4 && shots[boxindex+1]<=12) || shots[boxindex+1] == 17)
+//     jeongdata++;
+//     updatejeong[Math.floor(boxindex/5)] = jeongdata;
+//   }
+//   setJeong(updatejeong);
   
-  if (boxindex < shots.length) { //이전 데이터 수정 시
-    setTest(prevTest => prevTest + 1);
+//   if (boxindex < shots.length) { //이전 데이터 수정 시
+//     setTest(prevTest => prevTest + 1);
    
 
-    const updatedShots = [...shots];
-    updatedShots[boxindex] = parseInt(image); // shots 배열의 해당 인덱스 값을 변경
-    setShots(updatedShots);
-  }else {
+//     const updatedShots = [...shots];
+//     updatedShots[boxindex] = parseInt(image); // shots 배열의 해당 인덱스 값을 변경
+//     setShots(updatedShots);
+//   }else {
 
-    const updatedShots = [...shots, parseInt(image)]; // shots 배열에 추가
-    setShots(updatedShots);
-    if(boxindex%5 == 4){ //순 추가
-      const updatedShots = [...soon, boxindex];
-      setSoon(updatedShots);
-      console.log(soon);
-    }
-  } 
-};
+//     const updatedShots = [...shots, parseInt(image)]; // shots 배열에 추가
+//     setShots(updatedShots);
+//     if(boxindex%5 == 4){ //순 추가
+//       const updatedShots = [...soon, boxindex];
+//       setSoon(updatedShots);
+//       console.log(soon);
+//     }
+//   } 
+// };
 
 useEffect(() => {
   
@@ -174,11 +202,11 @@ useEffect(() => {
   setAverages((prevAverages) => [...prevAverages, currentAverage]);//배열쓰지말기
 }, [route.params?.image, route.params?.boxindex]);
 
-// 이후 코드는 동일합니다.
+// // 이후 코드는 동일합니다.
 
 
- // const missImage = require('./images/hit_image11.png'); // 미스 이미지
-  //const hitImage = require('./images/hit_image10.png'); // 히트 이미지
+//  // const missImage = require('./images/hit_image11.png'); // 미스 이미지
+//   //const hitImage = require('./images/hit_image10.png'); // 히트 이미지
   const partImages = [
     require('../../images/hit/leftup.png'),
     require('../../images/hit/up.png'),
@@ -270,28 +298,27 @@ useEffect(() => {
       //height : windowWidth*1
     }}>
 
-    { soon.map((index) => (
-  
-  <View
-    key={index}
-    style={{
-      width: windowWidth*0.12,
-      height : windowWidth*0.12,
-      aspectRatio: 1,
-      margin: 0,
-      borderWidth: 0,
-      borderRadius: 0,
-      justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
-    alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-      //borderColor: '#ccc',
-      overflow: 'hidden',
-      alignContent : 'center',
-    }}
-  
-  >
-    <Text>{(index+1)/5 +1}순</Text>
-  </View>
-))}
+{
+  [...Array(parseInt(soon/5)==0 ? parseInt(soon/5)+1 : parseInt(soon/5))].map((_, index) => (
+    <View
+      key={index}
+      style={{
+        width: windowWidth*0.12,
+        height: windowWidth*0.12,
+        aspectRatio: 1,
+        margin: 0,
+        borderWidth: 0,
+        borderRadius: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+        alignContent: 'center',
+      }}
+    >
+      <Text>{(index+1)}순</Text>
+    </View>
+  ))
+}
       </View>
       
 
@@ -304,7 +331,7 @@ useEffect(() => {
           
           {/* 이전 사각형들 출력 */}
         
-    {shots.map((shot, index) => (
+    {Array.isArray(shots) && shots.map((shot, index) => (
   
   <TouchableOpacity
     key={index}
@@ -335,23 +362,7 @@ useEffect(() => {
   </TouchableOpacity>
 ))}
 
-<TouchableOpacity
-  style={{
-    width: windowWidth*0.12,
-    height : windowWidth*0.12,
-    aspectRatio: 1,
-    margin: 0,
-    marginLeft :  0,
-      marginTop :  0,
-    borderWidth: 0.5,
-    borderRadius: 0,
-    borderColor: '#000',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }}
->
- 
-</TouchableOpacity>
+
 
 
         </View>
@@ -364,7 +375,7 @@ useEffect(() => {
       //height : windowWidth*0.8,
     }}>
 
-          { jeong.map((jeong1, index) => (
+          {/* {jeong &&  jeong.map((jeong1, index) => (
   
   <View
     key={index}
@@ -387,7 +398,7 @@ useEffect(() => {
   >
     <Text>{jeong1}중</Text>
   </View>
-))}
+))} */}
       </View>
       
         </View>
@@ -404,7 +415,7 @@ useEffect(() => {
           
         <View style={{textAlign : 'left', borderWidth : 0}}>
          <Text style={{ fontSize: 16, color : '#777' }}>
-          {year+' - '+month+' - '+day}</Text>
+          {route.params.date}</Text>
         </View>
         
         <View>
@@ -413,21 +424,12 @@ useEffect(() => {
             계 {shots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length} / {shots.length}</Text>
         </View>
         </View>
-        <View style={{
-         marginBottom: -10, width : windowWidth*0.9 }}>
+<View style={{
+  marginBottom: -10, width : windowWidth*0.9 }}>
 
-<Input
-    placeholder='이곳에 습사일지를 입력하세요'
-    multiline={true}
-    numberOfLines={4}
-    value={feedback}
-    onChangeText={setFeedback}
-    inputContainerStyle={{ 
-        height: Math.min(feedbackHeight, 100), // 최대 높이 적용
-        overflow: 'scroll' // 스크롤 설정
-    }}
-    onContentSizeChange={(e) => setFeedbackHeight(e.nativeEvent.contentSize.height)}
-/>
+<ScrollView style={style.textContainer}>
+    <Text style={style.feedbackText}>{feedback}</Text>
+  </ScrollView>
          </View>
     </View>
   );
@@ -452,6 +454,18 @@ const style = StyleSheet.create({
   alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
  
     alignContent : 'center',
+  },
+  textContainer: {
+    borderWidth: 0.5, // Input 컴포넌트와 유사한 스타일을 적용하려면 추가
+    borderColor: 'gray',
+    borderRadius: 4,
+    padding: 10,
+    height: 110,
+    marginBottom : 30,
+  },
+  feedbackText: {
+    fontSize : 16
+    // 원하는 스타일을 여기에 추가
   }
 })
 

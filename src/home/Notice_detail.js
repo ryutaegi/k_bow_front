@@ -5,10 +5,10 @@ import { UserContext } from '../contexts';
 import axios from 'axios';
 import UpdatePost from './UpdatePost';
 import { SpeedDial } from '@rneui/themed';
-
-const API_URL = 'http://43.201.78.159:3000';
+import getEnvVars from '../../environmant';
 
 const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => {
+  const { apiUrl } = getEnvVars();
   const theme = useContext(ThemeContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -26,7 +26,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
 
   const delete_post = async () => {
     try {
-        const response = await axios.post(`${API_URL}/api/board/delete/${board_id}`, 
+        const response = await axios.post(`${apiUrl}/api/board/delete/${board_id}`, 
         {},
         {
             headers: {
@@ -64,7 +64,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
     useEffect(() => {
         const fetchPosts = async () => {
         try{
-            const response = await axios.get(API_URL+'/api/board/detail/'+board_id, {
+            const response = await axios.get(apiUrl+'/api/board/detail/'+board_id, {
                 headers: {
                     'Authorization': `${user.jwtToken}`
                 }
