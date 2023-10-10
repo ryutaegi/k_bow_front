@@ -16,6 +16,7 @@ import Notice_detail from './home/Notice_detail.js';
 import UpdatePost from './home/UpdatePost.js';
 import DataMain from './record/DataMain.js';
 import Record from './record/Record.js';
+import TargetSelect from './record/TargetSelect.js';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
@@ -29,6 +30,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabs, Icon } from 'react-native-elements';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 const Tab = createBottomTabNavigator();
@@ -146,6 +148,13 @@ function RecordTab() {
           <Stack.Screen name="Record" component={Record}
             options={{
               title : '일별 기록', headerShown : true,
+              
+            }}
+          />
+           <Stack.Screen name="TargetSelect" component={TargetSelect}
+            options={{
+              title : '시수 기록', headerShown : true,
+              
             }}
           />
         </Stack.Navigator>

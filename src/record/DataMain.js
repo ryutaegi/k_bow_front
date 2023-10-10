@@ -29,6 +29,8 @@ const DataMain = ({navigation}) => {
     const [monthDate, setMonthDate] = useState('');
     const [shotDates, setShotDates] = useState('');
     const [shotCounts, setShotCount] = useState('');
+    const [hitPercent, setHitPercent] = useState([]);
+    const [missPercent, setMissPercent] = useState([]);
     let shotDate = [];
     let shotCount = 0;
 
@@ -66,8 +68,9 @@ const DataMain = ({navigation}) => {
         },
         data: { month : currentMonth },
         }).then((response) => {
-          shotCount = 0;
           shotDate = [];
+              shotCount = 0;
+              
           //console.log("DB업로드 완료", response.data);
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
@@ -116,6 +119,27 @@ const DataMain = ({navigation}) => {
           setMonthDate(Object.keys(newData)[0].slice(0,7));
           setShotCount(shotCount);
           setShotDates(shotDate.length);
+          setHitPercent(
+            [shotDate.filter(value => (value == 4)).length / shotCount,
+            shotDate.filter(value => (value == 5)).length / shotCount,
+            shotDate.filter(value => (value == 6)).length / shotCount,
+            shotDate.filter(value => (value == 7)).length / shotCount,
+            shotDate.filter(value => (value == 8)).length / shotCount,
+            shotDate.filter(value => (value == 9)).length / shotCount,
+            shotDate.filter(value => (value == 10)).length / shotCount,
+            shotDate.filter(value => (value == 11)).length / shotCount,
+            shotDate.filter(value => (value == 12)).length / shotCount, 
+          ]);
+          setMissPercent(
+            [shotDate.filter(value => (value == 0)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 1)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 2)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 3)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 13)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 14)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
+            shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
+          ]);
 
         }).catch(function (error) {
           console.log('error', error);
@@ -140,6 +164,7 @@ const DataMain = ({navigation}) => {
               //console.log("DB업로드 완료", response.data);
               shotDate = [];
               shotCount = 0;
+              
              
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
@@ -186,9 +211,30 @@ const DataMain = ({navigation}) => {
                 return acc;
               }, {});
               setMarkedDates(newData);
-              setMonthDate(Object.keys(newData)[0].slice(0,7));
-              setShotCount(shotCount);
-              setShotDates(shotDate.length);
+            setMonthDate(Object.keys(newData)[0].slice(0,7));
+            setShotCount(shotCount);
+            setShotDates(shotDate.length);
+            setHitPercent(
+              [shotDate.filter(value => (value == 4)).length / shotCount,
+              shotDate.filter(value => (value == 5)).length / shotCount,
+              shotDate.filter(value => (value == 6)).length / shotCount,
+              shotDate.filter(value => (value == 7)).length / shotCount,
+              shotDate.filter(value => (value == 8)).length / shotCount,
+              shotDate.filter(value => (value == 9)).length / shotCount,
+              shotDate.filter(value => (value == 10)).length / shotCount,
+              shotDate.filter(value => (value == 11)).length / shotCount,
+              shotDate.filter(value => (value == 12)).length / shotCount, 
+            ]);
+            setMissPercent(
+              [shotDate.filter(value => (value == 0)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 1)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 2)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 3)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 13)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 14)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
+              shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
+            ]);
               
             }).catch(function (error) {
               console.log('error', error);
@@ -205,16 +251,18 @@ const DataMain = ({navigation}) => {
 
 
 
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#fff", marginTop : 40 }}>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#fff", marginTop : 70 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', }}>
         {[...Array(3)].map((_, index) => (
           <TouchableOpacity
             key={index}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.3,
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.15,
               height: windowWidth * 0.15,
-              borderWidth: 0.5,
-              borderRadius: 1,
+              backgroundColor : `rgb(255, 255, ${200-2000*missPercent[index]})`,
+              borderWidth: 0.1,
+            borderRadius: 0.5,
+            margin : 1,
               overflow: 'hidden',
               justifyContent: 'center',
               alignItems: 'center',
@@ -227,9 +275,11 @@ const DataMain = ({navigation}) => {
           key={3}
           style={{
             width: windowWidth * 0.15,
-            height: windowWidth * 0.3,
-            borderWidth: 0.5,
-            borderRadius: 1,
+            height: windowWidth * 0.15,
+            backgroundColor : `rgb(255, 255, ${200-2000*missPercent[3]})`,
+            borderWidth: 0.1,
+            margin : 1,
+            borderRadius: 0.5,
             overflow: 'hidden',
             justifyContent: 'center',
             alignItems: 'center',
@@ -242,11 +292,12 @@ const DataMain = ({navigation}) => {
                 <TouchableOpacity
                   key={subIndex + index * 3 + 4}
                   style={{
-                    width: windowWidth * 0.1,
-                    height: windowWidth * 0.1,
-                    backgroundColor : 'rgb(255, 70, 70)',
+                    width: windowWidth * 0.05,
+                    height: windowWidth * 0.05,
+                    margin : 0.33,
+                    backgroundColor : `rgb(255, ${150-1500*hitPercent[subIndex + index * 3]}, ${150-1500*hitPercent[subIndex + index * 3]})`,
                     borderWidth: 0.1,
-                    borderRadius: 1,
+                    borderRadius: 0.5,
                     overflow: 'hidden',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -260,9 +311,11 @@ const DataMain = ({navigation}) => {
           key={13}
           style={{
             width: windowWidth * 0.15,
-            height: windowWidth * 0.3,
-            borderWidth: 0.5,
-            borderRadius: 1,
+            height: windowWidth * 0.15,
+            margin : 1,
+            backgroundColor : `rgb(255, 255, ${200-2000*missPercent[4]})`,
+            borderWidth: 0.1,
+            borderRadius: 0.5,
             overflow: 'hidden',
             justifyContent: 'center',
             alignItems: 'center',
@@ -274,10 +327,12 @@ const DataMain = ({navigation}) => {
           <TouchableOpacity
             key={index + 14}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.3,
+              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.15,
               height: windowWidth * 0.15,
-              borderWidth: 0.5,
-              borderRadius: 1,
+            backgroundColor : `rgb(255, 255, ${200-2000*missPercent[index+5]})`,
+            borderWidth: 0.1,
+            borderRadius: 0.5,
+            margin : 1,
               overflow: 'hidden',
               justifyContent: 'center',
               alignItems: 'center',
@@ -290,11 +345,11 @@ const DataMain = ({navigation}) => {
     <View style={{
         flexDirection : 'row', 
         justifyContent: 'space-between',
-         marginBottom: 10,  borderWidth : 0, width : windowWidth, paddingLeft : 10, paddingRight : 10 }}>
+         marginBottom: 10,  borderWidth : 0, width : windowWidth, paddingLeft : 20, paddingRight : 20, paddingBottom : 5 }}>
           
         <View style={{textAlign : 'left', borderWidth : 0}}>
          <Text style={{ fontSize: 16, color : '#777' }}>
-         {monthDate}
+         {monthDate.slice(0,4)} - {monthDate.slice(5,8)}
           </Text>
         </View>
         
