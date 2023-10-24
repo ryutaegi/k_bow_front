@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  AppState
 } from 'react-native';
 import axios from 'axios';
 import { UserContext } from '../contexts';
@@ -17,7 +18,7 @@ import getEnvVars from '../../environmant';
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 
-const RecordMain = ({ navigation, route }) => {
+const Record = ({ navigation, route }) => {
   const [shots, setShots] = useState([]); // 사각형의 결과를 저장하는 상태
   const [averages, setAverages] = useState([]); // 각 라인의 평균을 저장하는 상태
   const [test, setTest] = useState(0);
@@ -28,7 +29,16 @@ const RecordMain = ({ navigation, route }) => {
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
+  // 현재의 상태를 알려주는것 
+  const appState = useRef(AppState.currentState);
+
+  // 현재 사용자의 앱을 활성화 / 비활성화 여부 
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   
+    const initialShots = useRef(shots);
+    const initialFeedback = useRef(feedback);
+    const finalShots = useRef(shots);
+    const finalFeedback = useRef(feedback);
 
   const today = new Date();
   const year = today.getFullYear(); // 년도
@@ -70,7 +80,7 @@ const RecordMain = ({ navigation, route }) => {
               console.log("데이터 받아오기 완료", response.data[0]);
               const decoding = getDecodingLevel(response.data[0].shot_array);
                //실수로 9월말 2번 인코딩해서 데이터 넣는 걸로 만듦. 고치긴 했는데 이전 데이터 받기위해이렇게함
-              const decoding1 = getDecodingLevel(response.data[0].feedback);
+              
               let arr = [];
               let arr1 = [];
               for (let i = -1; i <= decoding.data.length-1; i += 5) {
@@ -95,11 +105,14 @@ const RecordMain = ({ navigation, route }) => {
                 }
               }
               console.log("arr1은",arr1);
-
+              
               setSoon(arr);
               setShots(decoding.data);
               setJeong(arr1);
-              setFeedback(decoding1.data);
+              setFeedback(response.data[0].feedback.slice(1, -1));
+              console.log("피드백은", response.data[0].feedback.slice(1, -1))
+              initialShots.current = decoding.data;
+              initialFeedback.current = response.data[0].feedback.slice(1, -1);
             
             }).catch(function (error) {
               console.log('error', error);
@@ -113,21 +126,73 @@ const RecordMain = ({ navigation, route }) => {
     console.log(typeof shots)
     console.log(Array.isArray(shots));
 
-    // return () => {
-    //    axios({
-    //     method : 'post',
-    //     url: apiUrl+'/api/shot/save'+,
-    //     headers: {
-    //       'Authorization': `${user.jwtToken}`
-    //   },
-    //   data: { user_id : user.user_id, date : storedDate, shot : savedShots, feedback : savedFeedback},
-    //   }).then((response) => {
-    //     console.log("DB업로드 완료", response.data);
-    //   }).catch(function (error) {
-    //     console.log('error', error);
-    //   })
-    // };
+   
   }, []);
+  useEffect(() => {
+    console.log(shots);
+    console.log(feedback);
+    finalShots.current = shots;
+    finalFeedback.current = feedback;
+}, [shots, feedback]);
+
+
+  const sendDataToServer = () => {
+    if (finalShots.current !== initialShots.current || finalFeedback.current !== initialFeedback.current) {
+      console.log(finalShots.current);
+      console.log(initialShots.current);
+    axios({
+        method: 'post',
+        url: `${apiUrl}/api/shot/modify`,
+        headers: {
+            'Authorization': `${user.jwtToken}`
+        },
+        data: {
+            date : route.params.date,
+            shots: JSON.stringify(finalShots.current),
+            feedback: JSON.stringify(finalFeedback.current)
+        }
+    }).then(response => {
+        console.log("Data sent successfully:", response.data);
+        initialShots.current = finalShots.current;
+        initialFeedback.current = finalFeedback.current;
+    }).catch(error => {
+        console.error("Error sending data:", error);
+    });
+  }
+};
+
+// Handle unmount
+useEffect(() => {
+    return sendDataToServer;
+}, []);
+
+
+
+ 
+ const fn_handleAppStateChange = (nextAppState) => {
+
+  console.log("appState.current ::: ", appState.current);
+  console.log("nextappstate ::: ", nextAppState); //active, inactive, background 전달받음
+
+ 
+  if (nextAppState === 'background') {
+                sendDataToServer();
+            }
+  appState.current = nextAppState;    // 변경된 상태를 바꿔줌.
+  setAppStateVisible(appState.current);
+};
+
+
+useEffect(() => {
+
+  // 사용자가 앱의 상태가 변경 되었을 경우 실행이 된다.
+  const myListener = AppState.addEventListener('change', fn_handleAppStateChange);
+  return () => {
+      myListener.remove();
+  };
+
+
+}, []);
   
 
 
@@ -541,4 +606,4 @@ const style = StyleSheet.create({
 })
 
 
-export default RecordMain;
+export default Record;

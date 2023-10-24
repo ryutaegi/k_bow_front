@@ -33,6 +33,7 @@ import { BottomTabs, Icon } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
 
 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const community = ['공지사항', '자유게시판', '정보게시판', '홍보게시판', '중고게시판'];
@@ -62,11 +63,11 @@ function HomeTab() {
         options={({ route }) => ({
           title: community[route.params.board_type-1],
           headerShown: true,
-          headerRight: () => (
-            <TouchableOpacity onPress={() => alert('Icon Pressed!')}>
-              <Icon name="menu" size={30} color="#000" style={{ marginRight: 10 }} />
-            </TouchableOpacity>
-          )
+          // headerRight: () => (
+          //   <TouchableOpacity onPress={() => alert('Icon Pressed!')}>
+          //     <Icon name="menu" size={30} color="#000" style={{ marginRight: 10 }} />
+          //   </TouchableOpacity>
+          // )
         })} 
         
       />
@@ -148,8 +149,13 @@ function RecordTab() {
           <Stack.Screen name="Record" component={Record}
             options={{
               title : '일별 기록', headerShown : true,
-              
+              // headerRight: () => (
+              //   <TouchableOpacity onPress={() => }>
+              //     <Entypo name="save" size={30} color="#000" style={{ marginRight: 10 }} />
+              //   </TouchableOpacity>
+              // )
             }}
+            
           />
            <Stack.Screen name="TargetSelect" component={TargetSelect}
             options={{
@@ -163,6 +169,8 @@ function RecordTab() {
     </>
   );
 }
+
+
 
 
 
@@ -213,8 +221,9 @@ const App = () => {
           }}
         />
         <Tab.Screen
-          name="지도"
+          name="활터 정보"
           component={MapMain}
+          
           options={{
             tabBarIcon: ({ color }) => (
               <Icon name="map" color={color} size={26} type="font-awesome" />

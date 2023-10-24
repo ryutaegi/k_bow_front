@@ -27,6 +27,16 @@ const colors = {
     gray6 : 'rgb(245,245,245)', 
     blue4 : '#2E64FE',
     blue5 : 'rgb(2,126,229)', 
+
+    wiget1 : 'rgb(216, 241, 244)',
+    wiget11 : 'rgb(50, 181, 198)',
+    wiget2 : 'rgb(210, 234, 253)',
+    wiget22 : 'rgb(5, 155, 244)',
+    wiget3 : 'rgb(253, 225, 210)',
+    wiget32 : 'rgb(245, 100, 18)',
+    wiget4 : 'rgb(204, 231, 220)',
+    wiget42 : 'rgb(5, 133, 73)',
+    
 };
 
 export const theme = {
@@ -71,6 +81,17 @@ export const theme = {
     gray : colors.gray,
     white : colors.white,
     black : colors.black,
+
+    wiget1 : colors.wiget1,
+    wiget11 : colors.wiget11,
+    wiget2 : colors.wiget2,
+    wiget22 : colors.wiget22,
+    wiget3 : colors.wiget3,
+    wiget32 : colors.wiget32,
+    wiget4 : colors.wiget4,
+    wiget42 : colors.wiget42,
+
+    red : colors.red,
 
     viewHeight : height,
     viewWidth : width,
