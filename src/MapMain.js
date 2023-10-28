@@ -1,5 +1,5 @@
 import React, {useState, useContext, useRef} from "react";
-import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Button, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import { ButtonGroup } from '@rneui/themed'
 import MapView from "react-native-maps";
 import { Marker, Callout} from "react-native-maps";
@@ -8,6 +8,7 @@ import { Text } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Linking from 'expo-linking';
+import { BottomSheet, ListItem } from 'react-native-elements';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -43,6 +44,53 @@ const MapMain = ({}) => {
 
   const mapRef = useRef(null);
   const markerRefs = useRef([]);
+
+  const Sheet = () => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    const list = [
+      { title: '서울특별시', onPress: () => console.log('Option 1 Pressed') },
+      { title: '인천광역시', onPress: () => console.log('Option 2 Pressed') },
+      { title: '부산광역시', onPress: () => console.log('Option 3 Pressed') },
+      { title: '광주특별시', onPress: () => console.log('Option 1 Pressed') },
+      { title: '대구광역시', onPress: () => console.log('Option 2 Pressed') },
+      { title: '대전광역시', onPress: () => console.log('Option 3 Pressed') },
+      { title: '울산광역시', onPress: () => console.log('Option 1 Pressed') },
+      { title: '세종특별자치시', onPress: () => console.log('Option 2 Pressed') },
+     
+      { title: '경기도', onPress: () => console.log('Option 1 Pressed') },
+      { title: '강원도', onPress: () => console.log('Option 2 Pressed') },
+      { title: '충청북도', onPress: () => console.log('Option 3 Pressed') },
+      { title: '충청남도', onPress: () => console.log('Option 1 Pressed') },
+      { title: '전라북도', onPress: () => console.log('Option 2 Pressed') },
+      { title: '전라남도', onPress: () => console.log('Option 3 Pressed') },
+      { title: '경상북도', onPress: () => console.log('Option 1 Pressed') },
+      { title: '경상남도', onPress: () => console.log('Option 2 Pressed') },
+      { title: '제주도', onPress: () => console.log('Option 3 Pressed') },
+
+    ];
+  
+    return (
+      <View style={Style.sheetContainer}>
+        <Button title="Show BottomSheet" onPress={() => setIsVisible(true)} />
+  
+        <BottomSheet isVisible={isVisible}>
+          {list.map((item, index) => (
+            <ListItem key={index} onPress={item.onPress}>
+              <ListItem.Content style={{height : 30}}>
+                <ListItem.Title style={{borderWidth : 0, textAlign : 'center'}}>{item.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+          <ListItem containerStyle={Style.cancelContainer} onPress={() => setIsVisible(false)}>
+            <ListItem.Content>
+              <ListItem.Title style={Style.cancelText}>취소</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        </BottomSheet>
+      </View>
+    );
+  }
 
   const moveMap = (index) => {
     const region = {
@@ -202,7 +250,7 @@ const MapMain = ({}) => {
            
           />
         </MapView>
-
+        <Sheet></Sheet>
         <BoardButton></BoardButton>
        
       </View>
@@ -266,6 +314,9 @@ const Style = StyleSheet.create({
   container: {
     flex: 1,
   },
+  sheetContainer: {
+    flex: 1,
+  },
   map: {
     top : 0,
     width: "100%",
@@ -286,7 +337,15 @@ const Style = StyleSheet.create({
     top : -3,
     width : '100%',
     height : '50%',
-  }
+  },
+  cancelContainer: {
+    backgroundColor: '#FF3B30',
+
+  },
+  cancelText: {
+    color: 'white',
+    textAlign: 'center',
+  },
 });
 
 const BoardButton = styled.TouchableOpacity`
