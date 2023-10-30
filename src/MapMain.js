@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Linking from 'expo-linking';
 import { BottomSheet, ListItem } from 'react-native-elements';
-
+import { locations } from "./LocationData";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -44,35 +44,42 @@ const MapMain = ({}) => {
 
   const mapRef = useRef(null);
   const markerRefs = useRef([]);
+  const mapRef_local = useRef(null);
+  const markerRefs_local = useRef([]);
 
   const Sheet = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [city, setCity] = useState("지역을 선택하세요");
 
     const list = [
-      { title: '서울특별시', onPress: () => console.log('Option 1 Pressed') },
-      { title: '인천광역시', onPress: () => console.log('Option 2 Pressed') },
-      { title: '부산광역시', onPress: () => console.log('Option 3 Pressed') },
-      { title: '광주특별시', onPress: () => console.log('Option 1 Pressed') },
-      { title: '대구광역시', onPress: () => console.log('Option 2 Pressed') },
-      { title: '대전광역시', onPress: () => console.log('Option 3 Pressed') },
-      { title: '울산광역시', onPress: () => console.log('Option 1 Pressed') },
-      { title: '세종특별자치시', onPress: () => console.log('Option 2 Pressed') },
-     
-      { title: '경기도', onPress: () => console.log('Option 1 Pressed') },
-      { title: '강원도', onPress: () => console.log('Option 2 Pressed') },
-      { title: '충청북도', onPress: () => console.log('Option 3 Pressed') },
-      { title: '충청남도', onPress: () => console.log('Option 1 Pressed') },
-      { title: '전라북도', onPress: () => console.log('Option 2 Pressed') },
-      { title: '전라남도', onPress: () => console.log('Option 3 Pressed') },
-      { title: '경상북도', onPress: () => console.log('Option 1 Pressed') },
-      { title: '경상남도', onPress: () => console.log('Option 2 Pressed') },
-      { title: '제주도', onPress: () => console.log('Option 3 Pressed') },
+      { title: '서울특별시', onPress: () => {setCity('서울특별시'); setIsVisible(false);} },
+      { title: '부산광역시', onPress: () => {setCity('부산광역시'); setIsVisible(false);} },
+      { title: '인천광역시', onPress: () => {setCity('인천광역시'); setIsVisible(false);} },
+      { title: '대구광역시', onPress: () => {setCity('대구광역시'); setIsVisible(false);} },
+      { title: '광주광역시', onPress: () => {setCity('광주광역시'); setIsVisible(false);} },
+      { title: '대전광역시', onPress: () => {setCity('대전광역시'); setIsVisible(false);} },
+      { title: '울산광역시', onPress: () => {setCity('울산광역시'); setIsVisible(false);} },
+      { title: '세종특별자치시', onPress: () => {setCity('세종특별자치시'); setIsVisible(false);} },
+      { title: '경기도', onPress: () => {setCity('경기도'); setIsVisible(false);} },
+      { title: '충청북도', onPress: () => {setCity('충청북도'); setIsVisible(false);} },
+      { title: '충청남도', onPress: () => {setCity('충청남도'); setIsVisible(false);} },
+      { title: '전라북도', onPress: () => {setCity('전라북도'); setIsVisible(false);} },
+      { title: '전라남도', onPress: () => {setCity('전라남도'); setIsVisible(false);} },
+      { title: '경상북도', onPress: () => {setCity('경상북도'); setIsVisible(false);} },
+      { title: '경상남도', onPress: () => {setCity('경상남도'); setIsVisible(false);} },
+      { title: '강원특별자치도', onPress: () => {setCity('강원특별자치도'); setIsVisible(false);} },
+      { title: '제주특별자치도', onPress: () => {setCity('제주특별자치도'); setIsVisible(false);} },
 
     ];
   
     return (
-      <View style={Style.sheetContainer}>
-        <Button title="Show BottomSheet" onPress={() => setIsVisible(true)} />
+      <View >
+        <TouchableOpacity 
+        style={{width : '100%', height : 40, backgroundColor : theme.wiget22,
+          alignItems : 'center', justifyContent : 'center'}}
+         onPress={() => setIsVisible(true)} >
+          <Text style={{color : 'white', fontWeight : 'bold'}}>{city}</Text>
+        </TouchableOpacity>
   
         <BottomSheet isVisible={isVisible}>
           {list.map((item, index) => (
@@ -91,6 +98,21 @@ const MapMain = ({}) => {
       </View>
     );
   }
+  const moveMap_local = (index) => {
+    const region_local = {
+        latitude: locations[0][index]["lat"], 
+        longitude: locations[0][index]["lon"], 
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    };
+    mapRef_local.current.animateToRegion(region_local, 500);  // 0.5초 동안 애니메이션
+    console.log(region_local)
+    setTimeout(() => {
+      if (markerRefs_local.current[index]) {
+          markerRefs_local.current[index].showCallout();
+      }
+  }, 500);
+  };
 
   const moveMap = (index) => {
     const region = {
@@ -239,19 +261,57 @@ const MapMain = ({}) => {
             longitudeDelta: 0.0421,
           }}
           style={Style.map}
+          ref={mapRef_local}
         >
+          {locations[0].map((_, index) => (
           <Marker
+          key ={index}
             coordinate={{
-              latitude: 37.6334,
-              longitude: 127.0781,
+              latitude: locations[0][index]["lat"],
+              longitude: locations[0][index]["lon"],
             }}
             //pinColor="#2D63E2"
-            title="붕어방"
-           
-          />
+          
+            ref={(ref) => { markerRefs_local.current[index] = ref; }}
+          >
+             <Callout 
+             onPress={() => console.log("press")}>
+          <View>
+      
+            <Text style={{fontWeight : 'bold'}}>{locations[0][index]["name"]} 
+            <Text style={{fontSize : 13}}>  {'>'}</Text></Text>
+            
+            <View style={{
+            width : "40%",
+            height : 2.5,
+            marginBottom : 5,
+            backgroundColor : theme.wiget22
+          }}>
+
+          </View>
+          </View>
+        </Callout>
+          </Marker>
+          ))}
         </MapView>
-        <Sheet></Sheet>
-        <BoardButton></BoardButton>
+        <Sheet/>
+
+        <ScrollView>
+        {locations[0].map((_,index) => (
+          <BoardButton key={index} onPress={() => {moveMap_local(index)}}>
+          <Text style={{width : '20%'}}>{"  "}{locations[0][index]["name"]}</Text>
+          <Text style={{width : '66%'}}>{locations[0][index]["address"]}</Text>
+          <TouchableOpacity style={{
+            backgroundColor : theme.wiget2, width : 40, height : 50, alignItems : 'center', justifyContent : 'center'
+            }} onPress={() => {Linking.openURL(`tel:${locations[0][index]["phone"]}`)}}>
+      <Text style={{color : 'black'}}>{">"}</Text>
+      </TouchableOpacity>
+        </BoardButton>
+        )
+          
+        )}
+        </ScrollView>
+        
        
       </View>
       
@@ -355,11 +415,13 @@ const BoardButton = styled.TouchableOpacity`
   
   background-color : ${({ theme }) => theme.white};
   border-radius : 10px;
-
-  margin-left : 3px;
-  margin-right : 3px;
-  margin-bottom : 10px;
+  margin : 0 auto;
+  margin-top : 5px;
+  margin-bottom : 5px;
   overflow : hidden;
+  flex-direction : row;
+  justifyContent : space-between;
+  align-items : center;
 
 `;
 
