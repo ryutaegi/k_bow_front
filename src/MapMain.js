@@ -42,10 +42,8 @@ const MapMain = ({}) => {
     
   ];
 
-  const mapRef = useRef(null);
-  const markerRefs = useRef([]);
-  const mapRef_local = useRef(null);
-  const markerRefs_local = useRef([]);
+ 
+  
 
   const Sheet = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -98,49 +96,40 @@ const MapMain = ({}) => {
       </View>
     );
   }
-  const moveMap_local = (index) => {
-    const region_local = {
-        latitude: locations[0][index]["lat"], 
-        longitude: locations[0][index]["lon"], 
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-    };
-    mapRef_local.current.animateToRegion(region_local, 500);  // 0.5초 동안 애니메이션
-    console.log(region_local)
-    setTimeout(() => {
-      if (markerRefs_local.current[index]) {
-          markerRefs_local.current[index].showCallout();
-      }
-  }, 500);
-  };
+ 
 
-  const moveMap = (index) => {
-    const region = {
-        latitude: lat[index], 
-        longitude: lon[index], 
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-    };
-    mapRef.current.animateToRegion(region, 500);  // 0.5초 동안 애니메이션
-
-    setTimeout(() => {
-      if (markerRefs.current[index]) {
-          markerRefs.current[index].showCallout();
-      }
-  }, 500);
-  };
+  
 
   const link = (url) => {
     Linking.openURL(url)
 }
 
   const Innerplace = () => {
+    const mapRef = useRef(null);
+    const markerRefs = useRef([]);
+
+    const moveMap = (index) => {
+      const region = {
+          latitude: lat[index], 
+          longitude: lon[index], 
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      };
+      mapRef.current.animateToRegion(region, 500);  // 0.5초 동안 애니메이션
+  
+      setTimeout(() => {
+        if (markerRefs.current[index]) {
+            markerRefs.current[index].showCallout();
+        }
+    }, 500);
+    };
+
     return (
       <>
       <MapView
           initialRegion={{
-            latitude: 37.6334,
-            longitude: 127.0781,
+            latitude: lat[0],
+            longitude: lon[0],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -251,12 +240,31 @@ const MapMain = ({}) => {
   }
   
   const Secondplace = () => {
+    const mapRef_local = useRef(null);
+    const markerRefs_local = useRef([]);
+
+    const moveMap_local = (index) => {
+      const region_local = {
+          latitude: locations[0][index]["lat"], 
+          longitude: locations[0][index]["lon"], 
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      };
+      mapRef_local.current.animateToRegion(region_local, 500);  // 0.5초 동안 애니메이션
+      console.log(region_local)
+      setTimeout(() => {
+        if (markerRefs_local.current[index]) {
+            markerRefs_local.current[index].showCallout();
+        }
+    }, 500);
+    };
+
     return (
         <View style={Style.container}>
         <MapView
           initialRegion={{
-            latitude: 37.6334,
-            longitude: 127.0781,
+            latitude: locations[0][0]["lat"],
+            longitude: locations[0][0]["lon"],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -267,7 +275,7 @@ const MapMain = ({}) => {
           <Marker
           key ={index}
             coordinate={{
-              latitude: locations[0][index]["lat"],
+              latitude: locations[0][index]['lat'],
               longitude: locations[0][index]["lon"],
             }}
             //pinColor="#2D63E2"
@@ -279,7 +287,7 @@ const MapMain = ({}) => {
           <View>
       
             <Text style={{fontWeight : 'bold'}}>{locations[0][index]["name"]} 
-            <Text style={{fontSize : 13}}>  {'>'}</Text></Text>
+            <Text style={{fontSize : 13}}> 예약 {'>'}</Text></Text>
             
             <View style={{
             width : "40%",
@@ -293,6 +301,8 @@ const MapMain = ({}) => {
         </Callout>
           </Marker>
           ))}
+
+        
         </MapView>
         <Sheet/>
 
