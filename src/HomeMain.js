@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Button, FlatList } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Card, Text, ListItem } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -103,11 +103,13 @@ const HomeMain = ( {navigation} ) => {
       <__communityButton1>
       <CommunityText>
         <CommunityText1>  그룹</CommunityText1>
+        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
         <Text style={{color:'gray'}}>추가하기 <Ionicons name="add" size={16} color="gray" /></Text>
+        </TouchableOpacity>
         </CommunityText>
       <HorizontalLine/>
       
-      <GroupAdd>
+      <GroupAdd onPress={() => {navigation.navigate('GroupAdd')}}>
       <AntDesign name="pluscircle" size={40} color={theme.wiget32} />
       <Text style={{padding : 10}}>그룹을 추가해 구/신사와 교류하세요
       </Text>

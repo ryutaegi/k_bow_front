@@ -17,6 +17,8 @@ import UpdatePost from './home/UpdatePost.js';
 import DataMain from './record/DataMain.js';
 import Record from './record/Record.js';
 import TargetSelect from './record/TargetSelect.js';
+import GroupMain from './home/group/GroupMain.js';
+import GroupAdd from './home/group/GroupAdd.js';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
@@ -97,6 +99,18 @@ function HomeTab() {
       >
         {props => <Notice_detail {...props} modalVisible={modalVisible} setModalVisible={setModalVisible} />}
       </Stack.Screen>
+
+      <Stack.Screen 
+        name="GroupMain"
+        component={GroupMain} 
+        options={{title : '그룹이름', headerShown : true}} 
+      />
+
+      <Stack.Screen 
+        name="GroupAdd"
+        component={GroupAdd} 
+        options={{title : '그룹추가', headerShown : true}} 
+      />
     </Stack.Navigator>
   );
 }
