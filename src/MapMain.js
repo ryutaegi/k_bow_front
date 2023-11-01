@@ -9,11 +9,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Linking from 'expo-linking';
 import { BottomSheet, ListItem } from 'react-native-elements';
-import { locations } from "./LocationData";
+import { locations, locations_public } from "./LocationData";
 
 const Tab = createMaterialTopTabNavigator();
 
 const MapMain = ({}) => {
+  const [citynum, setCitynum] = useState(0);
+  const [city, setCity] = useState("서울특별시");
   const theme = useContext(ThemeContext);
   const place_name = ["TAC 본점", "TAC 낙성대점", "TAC 이대점", "활쏘아", "주몽처럼"];
   const lat = [37.5632,  37.4765, 37.5563, 37.6339, 37.4757 ];
@@ -47,26 +49,27 @@ const MapMain = ({}) => {
 
   const Sheet = () => {
     const [isVisible, setIsVisible] = useState(false);
-    const [city, setCity] = useState("지역을 선택하세요");
+    
+    
 
     const list = [
-      { title: '서울특별시', onPress: () => {setCity('서울특별시'); setIsVisible(false);} },
-      { title: '부산광역시', onPress: () => {setCity('부산광역시'); setIsVisible(false);} },
-      { title: '인천광역시', onPress: () => {setCity('인천광역시'); setIsVisible(false);} },
-      { title: '대구광역시', onPress: () => {setCity('대구광역시'); setIsVisible(false);} },
-      { title: '광주광역시', onPress: () => {setCity('광주광역시'); setIsVisible(false);} },
-      { title: '대전광역시', onPress: () => {setCity('대전광역시'); setIsVisible(false);} },
-      { title: '울산광역시', onPress: () => {setCity('울산광역시'); setIsVisible(false);} },
-      { title: '세종특별자치시', onPress: () => {setCity('세종특별자치시'); setIsVisible(false);} },
-      { title: '경기도', onPress: () => {setCity('경기도'); setIsVisible(false);} },
-      { title: '충청북도', onPress: () => {setCity('충청북도'); setIsVisible(false);} },
-      { title: '충청남도', onPress: () => {setCity('충청남도'); setIsVisible(false);} },
-      { title: '전라북도', onPress: () => {setCity('전라북도'); setIsVisible(false);} },
-      { title: '전라남도', onPress: () => {setCity('전라남도'); setIsVisible(false);} },
-      { title: '경상북도', onPress: () => {setCity('경상북도'); setIsVisible(false);} },
-      { title: '경상남도', onPress: () => {setCity('경상남도'); setIsVisible(false);} },
-      { title: '강원특별자치도', onPress: () => {setCity('강원특별자치도'); setIsVisible(false);} },
-      { title: '제주특별자치도', onPress: () => {setCity('제주특별자치도'); setIsVisible(false);} },
+      { title: '서울특별시', onPress: () => {setCity('서울특별시'); setCitynum(0); setIsVisible(false);} },
+      { title: '부산광역시', onPress: () => {setCity('부산광역시'); setCitynum(1); setIsVisible(false);} },
+      { title: '인천광역시', onPress: () => {setCity('인천광역시'); setCitynum(2); setIsVisible(false);} },
+      { title: '대구광역시', onPress: () => {setCity('대구광역시'); setCitynum(3); setIsVisible(false);} },
+      { title: '광주광역시', onPress: () => {setCity('광주광역시'); setCitynum(4); setIsVisible(false);} },
+      { title: '대전광역시', onPress: () => {setCity('대전광역시'); setCitynum(5); setIsVisible(false);} },
+      { title: '울산광역시', onPress: () => {setCity('울산광역시'); setCitynum(6); setIsVisible(false);} },
+      { title: '세종특별자치시', onPress: () => {setCity('세종특별자치시'); setCitynum(7); setIsVisible(false);} },
+      { title: '경기도', onPress: () => {setCity('경기도'); setCitynum(8); setIsVisible(false);} },
+      { title: '충청북도', onPress: () => {setCity('충청북도'); setCitynum(9); setIsVisible(false);} },
+      { title: '충청남도', onPress: () => {setCity('충청남도'); setCitynum(10); setIsVisible(false);} },
+      { title: '전라북도', onPress: () => {setCity('전라북도'); setCitynum(11); setIsVisible(false);} },
+      { title: '전라남도', onPress: () => {setCity('전라남도'); setCitynum(12); setIsVisible(false);} },
+      { title: '경상북도', onPress: () => {setCity('경상북도'); setCitynum(13); setIsVisible(false);} },
+      { title: '경상남도', onPress: () => {setCity('경상남도'); setCitynum(14); setIsVisible(false);} },
+      { title: '강원특별자치도', onPress: () => {setCity('강원특별자치도'); setCitynum(15); setIsVisible(false);} },
+      { title: '제주특별자치도', onPress: () => {setCity('제주특별자치도'); setCitynum(16); setIsVisible(false);} },
 
     ];
   
@@ -239,14 +242,14 @@ const MapMain = ({}) => {
     );
   }
   
-  const Secondplace = () => {
+  const Localplace = () => {
     const mapRef_local = useRef(null);
     const markerRefs_local = useRef([]);
 
     const moveMap_local = (index) => {
       const region_local = {
-          latitude: locations[0][index]["lat"], 
-          longitude: locations[0][index]["lon"], 
+          latitude: locations[citynum][index]["lat"], 
+          longitude: locations[citynum][index]["lon"], 
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
       };
@@ -263,20 +266,20 @@ const MapMain = ({}) => {
         <View style={Style.container}>
         <MapView
           initialRegion={{
-            latitude: locations[0][0]["lat"],
-            longitude: locations[0][0]["lon"],
+            latitude: locations[citynum][0]["lat"] || locations[0][0]["lat"],
+            longitude: locations[citynum][0]["lon"] || locations[0][0]["lon"],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
           style={Style.map}
           ref={mapRef_local}
         >
-          {locations[0].map((_, index) => (
+          {locations[citynum]?.map((_, index) => (
           <Marker
           key ={index}
             coordinate={{
-              latitude: locations[0][index]['lat'],
-              longitude: locations[0][index]["lon"],
+              latitude: locations[citynum][index]['lat'] ,
+              longitude: locations[citynum][index]["lon"],
             }}
             //pinColor="#2D63E2"
           
@@ -285,9 +288,11 @@ const MapMain = ({}) => {
              <Callout 
              onPress={() => console.log("press")}>
           <View>
-      
-            <Text style={{fontWeight : 'bold'}}>{locations[0][index]["name"]} 
-            <Text style={{fontSize : 13}}> 예약 {'>'}</Text></Text>
+            
+            <Text style={{fontWeight : 'bold'}}>
+            <Text style={{fontSize : 13}}> {' '}</Text>
+            {locations[citynum][index]["name"]} 
+            <Text style={{fontSize : 13}}> {' '}</Text></Text>
             
             <View style={{
             width : "40%",
@@ -307,13 +312,104 @@ const MapMain = ({}) => {
         <Sheet/>
 
         <ScrollView>
-        {locations[0].map((_,index) => (
+        {locations[citynum]?.map((_,index) => (
           <BoardButton key={index} onPress={() => {moveMap_local(index)}}>
-          <Text style={{width : '20%'}}>{"  "}{locations[0][index]["name"]}</Text>
-          <Text style={{width : '66%'}}>{locations[0][index]["address"]}</Text>
+          <Text style={{width : '20%'}}>{"  "}{locations[citynum][index]["name"]}</Text>
+          <Text style={{width : '66%'}}>{locations[citynum][index]["address"]}</Text>
           <TouchableOpacity style={{
             backgroundColor : theme.wiget2, width : 40, height : 50, alignItems : 'center', justifyContent : 'center'
-            }} onPress={() => {Linking.openURL(`tel:${locations[0][index]["phone"]}`)}}>
+            }} onPress={() => {Linking.openURL(`tel:${locations[citynum][index]["phone"]}`)}}>
+      <Text style={{color : 'black'}}>{">"}</Text>
+      </TouchableOpacity>
+        </BoardButton>
+        )
+          
+        )}
+        </ScrollView>
+        
+       
+      </View>
+      
+    );
+  }
+
+  const Publicplace = () => {
+    const mapRef_local = useRef(null);
+    const markerRefs_local = useRef([]);
+
+    const moveMap_local = (index) => {
+      const region_local = {
+          latitude: locations_public[citynum][index]["lat"], 
+          longitude: locations_public[citynum][index]["lon"], 
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+      };
+      mapRef_local.current.animateToRegion(region_local, 500);  // 0.5초 동안 애니메이션
+      console.log(region_local)
+      setTimeout(() => {
+        if (markerRefs_local.current[index]) {
+            markerRefs_local.current[index].showCallout();
+        }
+    }, 500);
+    };
+
+    return (
+        <View style={Style.container}>
+        <MapView
+          initialRegion={{
+            latitude: locations_public[citynum][0]["lat"] || locations[0][0]["lat"], 
+            longitude: locations_public[citynum][0]["lon"] || locations[0][0]["lon"],
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          style={Style.map}
+          ref={mapRef_local}
+        >
+          {locations_public[citynum]?.map((_, index) => (
+          <Marker
+          key ={index}
+            coordinate={{
+              latitude: locations_public[citynum][index]['lat'],
+              longitude: locations_public[citynum][index]["lon"],
+            }}
+            //pinColor="#2D63E2"
+          
+            ref={(ref) => { markerRefs_local.current[index] = ref; }}
+          >
+             <Callout 
+             onPress={() => console.log("press")}>
+          <View>
+            
+            <Text style={{fontWeight : 'bold'}}>
+            <Text style={{fontSize : 13}}> {' '}</Text>
+            {locations_public[citynum][index]["name"]} 
+            <Text style={{fontSize : 13}}> {' '}</Text></Text>
+            
+            <View style={{
+            width : "40%",
+            height : 2.5,
+            marginBottom : 5,
+            backgroundColor : theme.wiget22
+          }}>
+
+          </View>
+          </View>
+        </Callout>
+          </Marker>
+          ))}
+
+        
+        </MapView>
+        <Sheet/>
+
+        <ScrollView>
+        {locations_public[citynum]?.map((_,index) => (
+          <BoardButton key={index} onPress={() => {moveMap_local(index)}}>
+          <Text style={{width : '20%'}}>{"  "}{locations_public[citynum][index]["name"]}</Text>
+          <Text style={{width : '66%'}}>{locations_public[citynum][index]["address"]}</Text>
+          <TouchableOpacity style={{
+            backgroundColor : theme.wiget2, width : 40, height : 50, alignItems : 'center', justifyContent : 'center'
+            }} onPress={() => {Linking.openURL(`tel:${locations_public[citynum][index]["phone"]}`)}}>
       <Text style={{color : 'black'}}>{">"}</Text>
       </TouchableOpacity>
         </BoardButton>
@@ -358,12 +454,12 @@ const MapMain = ({}) => {
     }}
       >
 
-        <Tab.Screen name="Thirdplace" component={Secondplace} 
+        <Tab.Screen name="Thirdplace" component={Localplace} 
         options={{
           title : '지역 활터',
         }}/>
 
-        <Tab.Screen name="Secondplace" component={Secondplace} 
+        <Tab.Screen name="Secondplace" component={Publicplace} 
         options={{
           title : '공공 활터',
         }}/>
