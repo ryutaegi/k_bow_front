@@ -129,6 +129,7 @@ const Container = styled.TouchableOpacity`
   marginBottom: 10px;
   flexDirection: column;
   padding : 10px;
+  elevation : 3;
 `;
 
 const Title = styled.Text`

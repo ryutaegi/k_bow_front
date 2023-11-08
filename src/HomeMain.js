@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { Card, Text, ListItem } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -8,10 +8,66 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-
+import { UserContext } from './contexts';
+import getEnvVars from '../environmant';
 
 const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
+  const { user } = useContext(UserContext);
+  const [inputData, SetInput] = useState([]);
+  const { apiUrl } = getEnvVars();
+
+  useEffect(()=> {
+    if(user.user_id != null)
+    {
+    axios({
+      method: "get",
+      url: `${apiUrl}/api/group/join/list`,
+      headers: {
+        Authorization: `${user.jwtToken}`,
+      },
+    })
+      .then((response) => {
+        const _inputData = response.data.map((rowData) => ({
+          group_id: rowData.group_id,
+          group_name: rowData.group_name,
+          group_description: rowData.group_description,
+        }));
+        SetInput(_inputData);
+        
+        
+      })
+      .catch(function (e) {
+        // console.log(e);
+        if (e.response) {
+          // 서버가 2xx 외의 상태 코드로 응답한 경우
+          switch (e.response.status) {
+            case 403:
+              Alert.alert("안내", "권한이 없습니다.");
+              break;
+            case 500:
+              Alert.alert("안내", "서버 에러가 발생했습니다.");
+              break;
+            case 409:
+              Alert.alert("안내", "이미 가입한 그룹입니다.");
+              break;
+            default:
+              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+          }
+        } else if (e.request) {
+          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
+          Alert.alert("안내", "서버로부터 응답이 없습니다.");
+        } else {
+          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
+          Alert.alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+        }
+      });
+    }
+    else{
+      SetInput([]);
+    }
+  }, [user])
+
     return (
       <ScrollView showsHorizontalScrollIndicator={false}>
       <View style={{height : theme.viewHeight*0.23}}>
@@ -109,11 +165,34 @@ const HomeMain = ( {navigation} ) => {
         </CommunityText>
       <HorizontalLine/>
       
+      {inputData.length > 0 ?
+      (
+        inputData.map((group, index) => (
+          <Container
+            key={index}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            onPress={() => {navigation.navigate('GroupDetail')}}
+          >
+            <View>
+              <Title>{group.group_name}</Title>
+              <Content>{group.group_description}</Content>
+            </View>
+            
+          </Container>
+        ))
+      ) : (
       <GroupAdd onPress={() => {navigation.navigate('GroupAdd')}}>
       <AntDesign name="pluscircle" size={40} color={theme.wiget32} />
       <Text style={{padding : 10}}>그룹을 추가해 구/신사와 교류하세요
       </Text>
       </GroupAdd>
+      )
+      }
+      
       
       
        
@@ -146,6 +225,29 @@ const Style = StyleSheet.create({
   }
 })
 
+const Container = styled.TouchableOpacity`
+  align-content: center;
+  border-radius: 10px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.white};
+  //border : 1px solid red;
+  height: 80px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  padding: 10px;
+  elevation: 5;
+`;
+const Title = styled.Text`
+  aligncontent: center;
+  height: 40%;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 7px;
+`;
+const Content = styled.Text`
+  aligncontent: center;
+  height: 35%;
+`;
 
 const TopBoardButton = styled.TouchableOpacity`
   width: 150px; 
@@ -157,7 +259,7 @@ const TopBoardButton = styled.TouchableOpacity`
   align-items: center;
   margin-left : 15px;
   margin-right : 5px;
-
+  elevation : 4;
 `;
 
 const __menuButton = styled.TouchableOpacity`
@@ -234,7 +336,7 @@ color : ${({ theme }) => theme.black};
   const _CommunityList = styled.TouchableOpacity`
   width: 85px;
   height: 80px;
- 
+  
  
   
  
@@ -248,7 +350,7 @@ const CommunityList = styled.TouchableOpacity`
   border-radius : 10px;
  
   padding : 16px;
-  
+  elevation : 1;
  
 `;
 
@@ -283,7 +385,7 @@ width: 100%;
   flex-direction : row;
  align-item : center;
   padding-top : 30px;
-
+  elevation : 3;
 
 `
 

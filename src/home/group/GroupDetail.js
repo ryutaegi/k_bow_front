@@ -15,7 +15,7 @@ import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 
-const GroupAdd = ({ navigation }) => {
+const GroupDetail = ({ navigation }) => {
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
@@ -23,95 +23,6 @@ const GroupAdd = ({ navigation }) => {
   const [promptVisible, setPromptVisible] = useState(false);
   const [press_group_id, setPress_group_id] = useState(-1);
 
-  const handlePasswordSubmit = (password) => {
-    // 비밀번호를 처리합니다.
-    console.log("Entered password:", password);
-    console.log("group_id", press_group_id);
-    
-    axios({
-      method: "post",
-      url: `${apiUrl}/api/group/join/private`,
-      headers: {
-        Authorization: `${user.jwtToken}`,
-      },
-      data: { group_id: press_group_id, group_password : password },
-    })
-      .then((response) => {
-        console.log(response);
-        Alert.alert("안내", "가입 완료되었습니다", [{ text: "확인" }], {
-          cancelable: false,
-        });
-        navigation.navigate("board1"); // 성공하면 이전 화면으로 돌아갑니다.
-      })
-      .catch(function (e) {
-        // console.log(e);
-        if (e.response) {
-          // 서버가 2xx 외의 상태 코드로 응답한 경우
-          switch (e.response.status) {
-            case 401:
-              Alert.alert("안내", "비밀번호가 틀립니다.");
-              break;
-            case 403:
-              Alert.alert("안내", "권한이 없습니다.");
-              break;
-            case 500:
-              Alert.alert("안내", "서버 에러가 발생했습니다.");
-              break;
-            case 409:
-              Alert.alert("안내", "이미 가입한 그룹입니다.");
-              break;
-            default:
-              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
-          }
-        } else if (e.request) {
-          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
-          alert("안내", "서버로부터 응답이 없습니다.");
-        } else {
-          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
-        }
-      });
-
-    // 비밀번호 모달을 닫습니다.
-    setPromptVisible(false);
-  };
-
-  const PasswordPrompt = ({ isVisible, onClose, onSubmit }) => {
-    const [password, setPassword] = useState("");
-
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isVisible}
-        onRequestClose={onClose}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              secureTextEntry
-              style={styles.textInput}
-              placeholder="비밀번호를 입력하세요."
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: theme.wiget22 }]}
-              onPress={() => onSubmit(password)}
-            >
-              <Text style={styles.buttonText}>완료</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "red" }]}
-              onPress={onClose}
-            >
-              <Text style={styles.buttonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
 
   const joinPublicGroup = (index) => {
     axios({
@@ -195,6 +106,7 @@ const GroupAdd = ({ navigation }) => {
   }, []);
 
   return (
+    <>
     <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
       {inputData.map((group, index) => (
         <Container
@@ -214,23 +126,63 @@ const GroupAdd = ({ navigation }) => {
             }
           }}
         >
-          <View>
-            <Title>{group.group_name}</Title>
+          
+            <Title>{index+1}위 {group.group_name}</Title>
             <Content>{group.group_description}</Content>
-          </View>
-          {group.is_password == 1 ? (
-            <AntDesign name="lock" size={24} color={theme.wiget32} />
-          ) : (
-            <AntDesign name="unlock" size={24} color={theme.wiget22} />
-          )}
+          
+        
         </Container>
       ))}
-      <PasswordPrompt
-        isVisible={promptVisible}
-        onClose={() => setPromptVisible(false)}
-        onSubmit={handlePasswordSubmit}
-      />
+    
     </View>
+    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+      {inputData.map((group, index) => (
+        <Container
+          key={index}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            if (group.is_password == 0)
+              createTwoButtonAlert(group.group_name, group.group_id);
+            else
+            {
+               setPromptVisible(true);
+               setPress_group_id(group.group_id);
+            }
+          }}
+        >
+          
+            <Title>{index+1}위 {group.group_name}</Title>
+            <Content>{group.group_description}</Content>
+          
+        
+        </Container>
+      ))}
+    
+    </View>
+    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+    <CommunityText>
+        <CommunityText1>  그룹원</CommunityText1>
+        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
+        <Text style={{color:'gray'}}>추가하기 </Text>
+        </TouchableOpacity>
+        </CommunityText>
+      <HorizontalLine/>
+      </View>
+
+    <View style={{ backgroundColor: theme.gray6, padding: 15, flexDirection : "row" }}>
+          <View style={{flexDirection : "column", alignItems : "center"}}>
+          <MemberPrifile source={{uri: user.imageURL}}></MemberPrifile>
+          <Text>{user.name}</Text>
+          </View>
+          
+          
+
+    </View>
+    </>
   );
 };
 
@@ -278,36 +230,66 @@ const styles = StyleSheet.create({
   // ... other styles remain the same
 });
 
+const MemberPrifile = styled.Image`
+width : 70px;
+height : 70px;
+border-radius : 50px;
+background-color : ${({theme}) => theme.wiget22}
+`;
+
+const HorizontalLine = styled.View`
+width : 100%;
+border-bottom-width: 0.85px;
+border-bottom-color: ${({ theme }) => theme.gray2};
+margin-vertical: 3px; 
+`;
+
+const CommunityText = styled.View`
+flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  top : 0px;
+  margin-bottom : 3px;
+  
+`;
+
+const CommunityText1 = styled.Text`
+color : ${({ theme }) => theme.black};
+  font-size : 18px;
+  font-weight : bold;
+  `;
+
 const Container = styled.TouchableOpacity`
   align-content: center;
   border-radius: 10px;
   width: 100%;
   background-color: ${({ theme }) => theme.white};
   //border : 1px solid red;
-  height: 80px;
+  height: 30px;
   margin-bottom: 10px;
   flex-direction: column;
-  padding: 10px;
+  padding-left: 10px;
+  padding-right : 10px;
   elevation: 5;
 `;
 
 const Title = styled.Text`
   aligncontent: center;
-  height: 40%;
-  font-size: 16px;
+  
+  font-size: 13px;
   font-weight: bold;
-  margin-bottom: 7px;
+
 `;
 const Content = styled.Text`
-  aligncontent: center;
-  height: 35%;
+ font-size : 11px;
 `;
 
 const Footer = styled.Text`
-  aligncontent: center;
+
   font-size: 12px;
   margin-top: 10px;
   color: ${({ theme }) => theme.gray1};
 `;
 
-export default GroupAdd;
+export default GroupDetail;

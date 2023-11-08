@@ -19,6 +19,7 @@ import Record from './record/Record.js';
 import TargetSelect from './record/TargetSelect.js';
 import GroupMain from './home/group/GroupMain.js';
 import GroupAdd from './home/group/GroupAdd.js';
+import GroupDetail from './home/group/GroupDetail.js';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
@@ -109,7 +110,13 @@ function HomeTab() {
       <Stack.Screen 
         name="GroupAdd"
         component={GroupAdd} 
-        options={{title : '그룹추가', headerShown : true}} 
+        options={{title : '그룹 추가', headerShown : true}} 
+      />
+
+      <Stack.Screen 
+        name="GroupDetail"
+        component={GroupDetail} 
+        options={{title : '그룹 상세', headerShown : true}} 
       />
     </Stack.Navigator>
   );

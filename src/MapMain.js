@@ -528,6 +528,7 @@ const BoardButton = styled.TouchableOpacity`
   flex-direction : row;
   justifyContent : space-between;
   align-items : center;
+  elevation : 2;
 
 `;
 
@@ -543,6 +544,7 @@ const TopBoardButton = styled.TouchableOpacity`
   margin-right : 3px;
   margin-bottom : 10px;
   overflow : hidden;
+  elevation : 5;
 
 `;
 export default MapMain;
