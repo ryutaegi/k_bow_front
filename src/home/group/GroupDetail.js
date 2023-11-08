@@ -173,11 +173,20 @@ const GroupDetail = ({ navigation }) => {
       <HorizontalLine/>
       </View>
 
-    <View style={{ backgroundColor: theme.gray6, padding: 15, flexDirection : "row" }}>
-          <View style={{flexDirection : "column", alignItems : "center"}}>
+    <View style={{ backgroundColor: theme.gray6, padding: 15, 
+      flexDirection : "row", justifyContent : "space-around",
+      flexWrap : 'wrap',
+      }}>
+          <View style={{flexDirection : "column", alignItems : "center",
+        marginLeft : 10,
+        marginRight : 10,}}>
           <MemberPrifile source={{uri: user.imageURL}}></MemberPrifile>
-          <Text>{user.name}</Text>
+          <Text style={{marginTop : 5, fontWeight : 'bold'}}>{user.name}</Text>
           </View>
+          
+         
+          
+          
           
           
 
