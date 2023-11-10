@@ -15,11 +15,13 @@ import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 
-const GroupDetail = ({ navigation }) => {
+const GroupDetail = ({ route, navigation }) => {
+  const groupDetail_id = route.params.group_id;
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
   const [inputData, SetInput] = useState([]);
+  const [memberlist, SetMemberlist] = useState([]);
   const [promptVisible, setPromptVisible] = useState(false);
   const [press_group_id, setPress_group_id] = useState(-1);
 
@@ -105,9 +107,65 @@ const GroupDetail = ({ navigation }) => {
     gets();
   }, []);
 
+  useEffect(() => {
+    axios({
+      method: "post",
+      url: `${apiUrl}/api/group/list/memberdetail`,
+      headers: {
+        Authorization: `${user.jwtToken}`,
+      },
+      data: { group_id:  groupDetail_id},
+    })
+      .then((response) => {
+        const _inputData = response.data.map((rowData) => ({
+          user_id : rowData.user_id,
+          image_URL : rowData.image_url,
+          user_name : rowData.nickname,
+        }));
+        SetMemberlist(_inputData);
+      })
+      .catch(function (e) {
+        // console.log(e);
+        if (e.response) {
+          // 서버가 2xx 외의 상태 코드로 응답한 경우
+          switch (e.response.status) {
+            case 401:
+              Alert.alert("안내", "비밀번호가 틀립니다.");
+              break;
+            case 403:
+              Alert.alert("안내", "권한이 없습니다.");
+              break;
+            case 500:
+              Alert.alert("안내", "서버 에러가 발생했습니다.");
+              break;
+            case 409:
+              Alert.alert("안내", "이미 가입한 그룹입니다.");
+              break;
+            default:
+              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+          }
+        } else if (e.request) {
+          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
+          alert("안내", "서버로부터 응답이 없습니다.");
+        } else {
+          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
+          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+        }
+      });
+  }, []);
+
   return (
     <>
-    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
+    <RankingText>
+        <RankingText1>  시수 순위</RankingText1>
+        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
+       
+        </TouchableOpacity>
+        </RankingText>
+      <HorizontalLine/>
+      </View>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
       {inputData.map((group, index) => (
         <Container
           key={index}
@@ -135,7 +193,16 @@ const GroupDetail = ({ navigation }) => {
       ))}
     
     </View>
-    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
+    <RankingText>
+        <RankingText1>  습사 순위</RankingText1>
+        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
+       
+        </TouchableOpacity>
+        </RankingText>
+      <HorizontalLine/>
+      </View>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
       {inputData.map((group, index) => (
         <Container
           key={index}
@@ -163,7 +230,7 @@ const GroupDetail = ({ navigation }) => {
       ))}
     
     </View>
-    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
     <CommunityText>
         <CommunityText1>  그룹원</CommunityText1>
         <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
@@ -173,17 +240,20 @@ const GroupDetail = ({ navigation }) => {
       <HorizontalLine/>
       </View>
 
-    <View style={{ backgroundColor: theme.gray6, padding: 15, 
+    <View style={{ backgroundColor: theme.white, padding: 15, 
       flexDirection : "row", justifyContent : "space-around",
       flexWrap : 'wrap',
       }}>
-          <View style={{flexDirection : "column", alignItems : "center",
+        {memberlist.map((member, index) => (
+          <View 
+          key={member.user_id}
+          style={{flexDirection : "column", alignItems : "center",
         marginLeft : 10,
         marginRight : 10,}}>
-          <MemberPrifile source={{uri: user.imageURL}}></MemberPrifile>
-          <Text style={{marginTop : 5, fontWeight : 'bold'}}>{user.name}</Text>
+          <MemberPrifile source={{uri : member.image_URL}}></MemberPrifile>
+          <Text style={{marginTop : 5, fontWeight : 'bold'}}>{member.user_name}</Text>
           </View>
-          
+        ))}
          
           
           
@@ -252,6 +322,22 @@ border-bottom-width: 0.85px;
 border-bottom-color: ${({ theme }) => theme.gray2};
 margin-vertical: 3px; 
 `;
+
+const RankingText = styled.View`
+flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  top : 0px;
+  margin-bottom : 3px;
+  
+`;
+
+const RankingText1 = styled.Text`
+color : ${({ theme }) => theme.black};
+  font-size : 16px;
+
+  `;
 
 const CommunityText = styled.View`
 flex-direction: row;

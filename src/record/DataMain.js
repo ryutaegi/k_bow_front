@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Calendar } from 'react-native-calendars';
 import { LocaleConfig } from 'react-native-calendars';
-import { UserContext } from '../contexts';
+import { UserContext, ProgressContext } from '../contexts';
 import { Text } from 'react-native-elements';
 import axios from 'axios';
 import getEnvVars from '../../environmant';
@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 
 
 const DataMain = ({navigation}) => {
+  const { spinner } = useContext(ProgressContext);
   const { apiUrl } = getEnvVars();
     const [data, setData] = useState("");
     const { user } = useContext(UserContext);
@@ -58,6 +59,7 @@ const DataMain = ({navigation}) => {
       };
       
       useEffect(() => {
+      
         const date = new Date();
         const currentMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         axios({
@@ -75,7 +77,8 @@ const DataMain = ({navigation}) => {
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
             console.log("item",item);
-            const date = item.shot_date;
+            const date = item.shot_date.slice(0,10);
+            console.log("date는",date);
 
             let shotArray = [];
 
@@ -140,6 +143,7 @@ const DataMain = ({navigation}) => {
             shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
             shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
           ]);
+        
 
         }).catch(function (error) {
           console.log('error', error);
@@ -169,7 +173,7 @@ const DataMain = ({navigation}) => {
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
                 console.log("item",item);
-                const date = item.shot_date;
+                const date = item.shot_date.slice(0,10);
 
                 let shotArray = [];
 

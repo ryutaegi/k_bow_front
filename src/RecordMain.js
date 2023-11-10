@@ -71,7 +71,8 @@ const RecordMain = ({ navigation, route }) => {
               headers: {
                 'Authorization': `${user.jwtToken}`
             },
-            data: { user_id : user.user_id, date : storedDate, shot : savedShots, feedback : savedFeedback},
+            data: { user_id : user.user_id, date : storedDate, shot : savedShots, 
+              feedback : savedFeedback, shot_count : shots.length, target_count : shots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length},
             }).then((response) => {
               console.log("DB업로드 완료", response.data);
             }).catch(function (error) {

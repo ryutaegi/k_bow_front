@@ -175,7 +175,7 @@ const HomeMain = ( {navigation} ) => {
               justifyContent: "space-between",
               alignItems: "center",
             }}
-            onPress={() => {navigation.navigate('GroupDetail')}}
+            onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id})}}
           >
             <View>
               <Title>{group.group_name}</Title>
@@ -238,14 +238,14 @@ const Container = styled.TouchableOpacity`
   elevation: 5;
 `;
 const Title = styled.Text`
-  aligncontent: center;
+ 
   height: 40%;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 7px;
 `;
 const Content = styled.Text`
-  aligncontent: center;
+ 
   height: 35%;
 `;
 

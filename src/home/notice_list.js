@@ -133,19 +133,19 @@ const Container = styled.TouchableOpacity`
 `;
 
 const Title = styled.Text`
-  alignContent: center;
+  
   height : 30%;
  font-size : 16px;
  font-weight : bold;
  margin-bottom : 7px;
 `;
 const Content = styled.Text`
-  alignContent: center;
+
   height : 26%;
 `;
 
 const Footer = styled.Text`
-  alignContent: center;
+
   font-size : 12px;
   margin-top : 10px;
   color : ${({ theme }) => theme.gray1};

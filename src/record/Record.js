@@ -149,7 +149,9 @@ const Record = ({ navigation, route }) => {
         data: {
             date : route.params.date,
             shots: JSON.stringify(finalShots.current),
-            feedback: JSON.stringify(finalFeedback.current)
+            feedback: JSON.stringify(finalFeedback.current),
+            shot_count : finalShots.current.length,
+            target_count : finalShots.current.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length,
         }
     }).then(response => {
         console.log("Data sent successfully:", response.data);
