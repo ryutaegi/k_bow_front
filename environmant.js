@@ -11,14 +11,14 @@ const localhost =
 
 const ENV = {
  dev: {
-   apiUrl: "http://15.164.220.113:3000"
+   apiUrl: "http://3.37.213.77:3000"
  },
  staging: {
-   apiUrl: "http://15.164.220.113:3000"
+   apiUrl: "http://3.37.213.77:3000"
    // Add other keys you want here
  },
  prod: {
-   apiUrl: "http://15.164.220.113:3000"
+   apiUrl: "http://3.37.213.77:3000"
    // Add other keys you want here
  }
 };

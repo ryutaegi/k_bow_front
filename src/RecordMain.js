@@ -33,6 +33,7 @@ const RecordMain = ({ navigation, route }) => {
   const { apiUrl } = getEnvVars();
 
   const today = new Date();
+  //today.setHours(today.getHours() + 9);
   const year = today.getFullYear(); // 년도
   const month = today.getMonth() + 1;  // 월
   const day = today.getDate();  // 날짜
@@ -40,6 +41,10 @@ const RecordMain = ({ navigation, route }) => {
 
  
   useEffect(() => {
+    console.log("오늘날짜", today);
+    console.log(year, month, day);
+    console.log(today.toLocaleString());
+    console.log("datastring", dateString);
     const loadShots = async () => {
       try {
         const [savedShots, savedSoon, savedJeong, savedFeedback] = await Promise.all([
@@ -53,7 +58,7 @@ const RecordMain = ({ navigation, route }) => {
         if(storedDate !== null) { // 값이 존재하면
           console.log('Stored Date: ', storedDate); // 콘솔에 출력합니다.
           console.log(JSON.stringify(savedShots));
-          if(storedDate == dateString)
+          if(storedDate == dateString) //저장된 날짜가 당일이라면
           {
             console.log("데이터 불러오기")
      
@@ -65,20 +70,26 @@ const RecordMain = ({ navigation, route }) => {
           }
           else{
             //디비로 넘길 부분
+            if((JSON.parse(savedShots).length > 0) || (savedFeedback.length > 2))
+            {
+              console.log(savedFeedback);
+            console.log("savedshots.lengths", JSON.parse(savedShots).length);
+            console.log("savedshots", JSON.parse(savedShots))
+            console.log("filter",JSON.parse(savedShots).filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length);
             axios({
               method : 'post',
               url: apiUrl+'/api/shot/save',
               headers: {
                 'Authorization': `${user.jwtToken}`
             },
-            data: { user_id : user.user_id, date : storedDate, shot : savedShots, 
-              feedback : savedFeedback, shot_count : savedShots.length, target_count : savedShots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length},
+            data: { user_id : user.user_id, date : storedDate+" 00:00:00", shot : savedShots, 
+              feedback : savedFeedback, shot_count : JSON.parse(savedShots).length, target_count : JSON.parse(savedShots).filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length}, //shot_count : savedShots.length, target_count : savedShots.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length
             }).then((response) => {
               console.log("DB업로드 완료", response.data);
             }).catch(function (error) {
               console.log('error', error);
             })
-
+          }
 
           }
         } else {

@@ -61,6 +61,8 @@ const DataMain = ({navigation}) => {
       useEffect(() => {
       
         const date = new Date();
+        //date.setHours(date.getHours() + 9);
+        //console.log("오늘날짜", date)
         const currentMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         axios({
           method : 'post',
@@ -77,8 +79,8 @@ const DataMain = ({navigation}) => {
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
             console.log("item",item);
-            const date = item.shot_date.slice(0,10);
-            console.log("date는",date);
+            const date = item.shot_date_korean.slice(0,10);
+            console.log("date는",item.shot_date_korean);
 
             let shotArray = [];
 
@@ -173,7 +175,7 @@ const DataMain = ({navigation}) => {
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
                 console.log("item",item);
-                const date = item.shot_date.slice(0,10);
+                const date = item.shot_date_korean.slice(0,10);
 
                 let shotArray = [];
 

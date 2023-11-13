@@ -40,7 +40,7 @@ const Notice_list = ({route, navigation}) => {
                 board_id: rowData.board_id,
                 title: rowData.title,
                 content: rowData.content,
-                date : rowData.created_at,
+                date : rowData.created_at_korean,
             }));
             SetInput(_inputData);
             console.log(inputData);

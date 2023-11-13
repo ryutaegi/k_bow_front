@@ -22,84 +22,45 @@ const GroupDetail = ({ route, navigation }) => {
   const { apiUrl } = getEnvVars();
   const [inputData, SetInput] = useState([]);
   const [memberlist, SetMemberlist] = useState([]);
-  const [promptVisible, setPromptVisible] = useState(false);
-  const [press_group_id, setPress_group_id] = useState(-1);
+  const [userList, setUserList] = useState([]);
+  const [countList, setCountList] = useState([]);
+  
+  
 
 
-  const joinPublicGroup = (index) => {
-    axios({
-      method: "post",
-      url: `${apiUrl}/api/group/join/public`,
-      headers: {
-        Authorization: `${user.jwtToken}`,
-      },
-      data: { group_id: index },
-    })
-      .then((response) => {
-        console.log(response);
-        Alert.alert("안내", "가입 완료되었습니다", [{ text: "확인" }], {
-          cancelable: false,
-        });
-        navigation.navigate("board1"); // 성공하면 이전 화면으로 돌아갑니다.
-      })
-      .catch(function (e) {
-        // console.log(e);
-        if (e.response) {
-          // 서버가 2xx 외의 상태 코드로 응답한 경우
-          switch (e.response.status) {
-            case 403:
-              Alert.alert("안내", "권한이 없습니다.");
-              break;
-            case 500:
-              Alert.alert("안내", "서버 에러가 발생했습니다.");
-              break;
-            case 409:
-              Alert.alert("안내", "이미 가입한 그룹입니다.");
-              break;
-            default:
-              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
-          }
-        } else if (e.request) {
-          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
-          Alert.alert("안내", "서버로부터 응답이 없습니다.");
-        } else {
-          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          Alert.alert("안내", "요청 생성 중에 오류가 발생했습니다.");
-        }
-      });
-  };
 
-  const createTwoButtonAlert = (name, group_id) =>
-    Alert.alert(
-      "그룹 가입하기",
-      name + "에 가입하시겠습니까 ?",
-      [
-        {
-          text: "아니오",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "예", onPress: () => joinPublicGroup(group_id) },
-      ],
-      { cancelable: false }
-    );
 
   useEffect(() => {
     const gets = async () => {
       try {
-        const response = await axios.get(apiUrl + "/api/group/list", {
+        const response = await axios.get(apiUrl + "/api/group/rank/"+groupDetail_id, {
           headers: {
             Authorization: `${user.jwtToken}`,
           },
         });
-        const _inputData = response.data.map((rowData) => ({
-          group_id: rowData.group_id,
-          group_name: rowData.group_name,
-          group_description: rowData.group_description,
-          is_password: rowData.is_password,
+       console.log(response.data)
+        const _inputData = response.data.sortedRatioResults.map((rowData) => ({
+          user_id : rowData.user_id,
+          nickname : rowData.nickname,
+          // is_push : JSON.parse(response.is_push),
+          // pushed_like_count : JSON.parse(response.pushed_like_count),
+          average : rowData.ratio,
+          //shot_day : rowData.elementCount,
         }));
-        SetInput(_inputData);
-        console.log(inputData);
+        const __inputData = response.data.sortedElementCountResults.map((rowData) => ({
+          user_id : rowData.user_id,
+          nickname : rowData.nickname,
+          // is_push : JSON.parse(response.is_push),
+          // pushed_like_count : JSON.parse(response.pushed_like_count),
+          
+          shot_day : parseInt(rowData.elementCount),
+        }));
+
+        setUserList(_inputData);
+       setCountList(__inputData);
+        console.log(_inputData);
+        console.log(__inputData);
+
       } catch (e) {
         console.log("에러가 발생했습니다.", e);
       }
@@ -166,7 +127,7 @@ const GroupDetail = ({ route, navigation }) => {
       <HorizontalLine/>
       </View>
     <View style={{ backgroundColor: theme.white, padding: 15 }}>
-      {inputData.map((group, index) => (
+      {userList.slice(0,3).map((group, index) => (
         <Container
           key={index}
           style={{
@@ -174,19 +135,19 @@ const GroupDetail = ({ route, navigation }) => {
             justifyContent: "space-between",
             alignItems: "center",
           }}
-          onPress={() => {
-            if (group.is_password == 0)
-              createTwoButtonAlert(group.group_name, group.group_id);
-            else
-            {
-               setPromptVisible(true);
-               setPress_group_id(group.group_id);
-            }
-          }}
+          
         >
           
-            <Title>{index+1}위 {group.group_name}</Title>
-            <Content>{group.group_description}</Content>
+            <Title>{index+1}위 {group.nickname}</Title>
+            <Content>평 {group.average}중</Content>
+           
+            
+            {/* <AntDesign name="hearto" size={24} color="black" />
+            <Text>
+              {group.pushed_like_count}
+            </Text> */}
+            
+            
           
         
         </Container>
@@ -203,7 +164,7 @@ const GroupDetail = ({ route, navigation }) => {
       <HorizontalLine/>
       </View>
     <View style={{ backgroundColor: theme.white, padding: 15 }}>
-      {inputData.map((group, index) => (
+    {countList.slice(0,3).map((group, index) => (
         <Container
           key={index}
           style={{
@@ -211,19 +172,17 @@ const GroupDetail = ({ route, navigation }) => {
             justifyContent: "space-between",
             alignItems: "center",
           }}
-          onPress={() => {
-            if (group.is_password == 0)
-              createTwoButtonAlert(group.group_name, group.group_id);
-            else
-            {
-               setPromptVisible(true);
-               setPress_group_id(group.group_id);
-            }
-          }}
+          
         >
           
-            <Title>{index+1}위 {group.group_name}</Title>
-            <Content>{group.group_description}</Content>
+            <Title>{index+1}위 {group.nickname}</Title>
+            <Content> {group.shot_day}일 습사</Content>
+            {/* <View>
+            <AntDesign name="hearto" size={24} color="black" />
+            <Text>
+              {group.pushed_like_count}
+            </Text>
+            </View> */}
           
         
         </Container>
@@ -233,9 +192,6 @@ const GroupDetail = ({ route, navigation }) => {
     <View style={{ backgroundColor: theme.white, padding: 15 }}>
     <CommunityText>
         <CommunityText1>  그룹원</CommunityText1>
-        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
-        <Text style={{color:'gray'}}>추가하기 </Text>
-        </TouchableOpacity>
         </CommunityText>
       <HorizontalLine/>
       </View>
