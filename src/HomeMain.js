@@ -32,6 +32,7 @@ const HomeMain = ( {navigation} ) => {
           group_id: rowData.group_id,
           group_name: rowData.group_name,
           group_description: rowData.group_description,
+          is_password: rowData.is_password,
         }));
         SetInput(_inputData);
         
@@ -174,12 +175,31 @@ const HomeMain = ( {navigation} ) => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              overflow : 'hidden'
             }}
             onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id})}}
           >
-            <View>
+            <View style={{flexDirection : 'row', alignItems : 'center'}}>
+            {group.is_password==1 ? (<View
+            style={{
+              backgroundColor : theme.wiget22,
+              width : 5,
+              height : 90
+            }}>
+            </View>) : (
+              <View
+            style={{
+              backgroundColor : theme.wiget32,
+              width : 5,
+              height : 90
+            }}>
+            </View>
+            )}
+
+            <View style={{marginLeft : 20}}>
               <Title>{group.group_name}</Title>
               <Content>{group.group_description}</Content>
+            </View>
             </View>
             
           </Container>

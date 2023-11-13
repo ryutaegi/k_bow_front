@@ -14,6 +14,8 @@ import { UserContext } from "../../contexts";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
+import { SpeedDial } from '@rneui/themed';
+import { ScrollView } from "react-native-gesture-handler";
 
 const GroupDetail = ({ route, navigation }) => {
   const groupDetail_id = route.params.group_id;
@@ -24,6 +26,7 @@ const GroupDetail = ({ route, navigation }) => {
   const [memberlist, SetMemberlist] = useState([]);
   const [userList, setUserList] = useState([]);
   const [countList, setCountList] = useState([]);
+  const [open, setOpen] = useState(false);
   
   
 
@@ -195,7 +198,7 @@ const GroupDetail = ({ route, navigation }) => {
         </CommunityText>
       <HorizontalLine/>
       </View>
-
+            <ScrollView>
     <View style={{ backgroundColor: theme.white, padding: 15, 
       flexDirection : "row", justifyContent : "space-around",
       flexWrap : 'wrap',
@@ -210,13 +213,25 @@ const GroupDetail = ({ route, navigation }) => {
           <Text style={{marginTop : 5, fontWeight : 'bold'}}>{member.user_name}</Text>
           </View>
         ))}
-         
-          
-          
-          
-          
-
     </View>
+    </ScrollView>
+    <SpeedDial
+            color={theme.wiget22}
+            isOpen={open}
+            icon={{ name: 'info', color: '#fff' }}
+            openIcon={{ name: 'close', color: '#fff' }}
+            onOpen={() => setOpen(!open)}
+            onClose={() => setOpen(!open)}
+          >
+            <SpeedDial.Action
+            color='#254EDB'
+              icon={{ name: 'add', color: '#fff' }}
+              title="그룹 탈퇴하기"
+                onPress={() => Alert.alert('안내', '그룹에서 탈퇴하시겠습니까?')}
+              
+            />
+           
+          </SpeedDial>
     </>
   );
 };

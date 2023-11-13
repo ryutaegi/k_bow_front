@@ -20,6 +20,7 @@ import TargetSelect from './record/TargetSelect.js';
 import GroupMain from './home/group/GroupMain.js';
 import GroupAdd from './home/group/GroupAdd.js';
 import GroupDetail from './home/group/GroupDetail.js';
+import GroupMake from './home/group/GroupMake.js';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
@@ -37,12 +38,15 @@ import { FontAwesome } from '@expo/vector-icons';
 
 
 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const community = ['공지사항', '자유게시판', '정보게시판', '홍보게시판', '중고게시판'];
 
 
 function HomeTab() {
+  const navigation = useNavigation(); // useNavigation hook to get the navigation prop
+
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <Stack.Navigator
@@ -104,19 +108,35 @@ function HomeTab() {
       <Stack.Screen 
         name="GroupMain"
         component={GroupMain} 
-        options={{title : '그룹이름', headerShown : true}} 
+        options={{title : '그룹이름', headerShown : true,
+        }} 
       />
 
       <Stack.Screen 
         name="GroupAdd"
         component={GroupAdd} 
-        options={{title : '그룹 추가', headerShown : true}} 
+        options={{title : '그룹 추가', headerShown : true,
+        headerRight: () => (              
+          <TouchableOpacity 
+            style={{marginRight : 15}}
+            onPress={() => navigation.navigate('GroupMake')} // Navigate to DataMain when pressed
+          >
+           <Ionicons name="add" size={24} color="black" />
+          </TouchableOpacity>
+        )
+       }} 
       />
 
       <Stack.Screen 
         name="GroupDetail"
         component={GroupDetail} 
         options={{title : '그룹 상세', headerShown : true}} 
+      />
+
+      <Stack.Screen 
+        name="GroupMake"
+        component={GroupMake} 
+        options={{title : '그룹 생성', headerShown : true}} 
       />
     </Stack.Navigator>
   );
@@ -208,7 +228,7 @@ const App = () => {
       <Tab.Navigator
         initialRouteName="활로"
         screenOptions={{
-          tabBarActiveTintColor: theme.mainColor4,
+          tabBarActiveTintColor: theme.wiget22,
           tabBarInactiveTintColor: "gray",
           tabBarStyle: { backgroundColor: '#fff', height: 55 },
           tabBarShowLabel: false,
