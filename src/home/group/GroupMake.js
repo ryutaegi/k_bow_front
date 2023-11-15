@@ -15,6 +15,7 @@ import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import { ButtonGroup } from '@rneui/themed'
+import { ScrollView } from "react-native-gesture-handler";
 
 const GroupMake = ({ navigation }) => {
   const theme = useContext(ThemeContext);
@@ -55,29 +56,30 @@ const [selectedIndexes, setSelectedIndexes] = useState([0]);
         alert('유효하지 않은 문자가 포함되어 있습니다. utf8 문자만 사용 가능합니다.');
         return;
     }
-        // axios({
-        //     method : 'post',
-        //     url: apiUrl+ '/api/board/create',
-        //     headers: {
-        //       'Authorization': `${user.jwtToken}`
-        //   },
-        //   data: { board_type : board_type, title : title, content : content},
-        //   }).then((response) => {
-        //     navigation.navigate('board2', {board_type: board_type}); // 성공하면 이전 화면으로 돌아갑니다.
-        //   }).catch(function (error) {
-        //     console.error('게시글 작성 중 에러 발생:', error);
-        //     if (error.response && error.response.data && error.response.data.error) {
-        //         alert(error.response.data.error); // 서버로부터 받은 오류 메시지를 알림으로 표시
-        //     } else {
-        //         alert('Unknown error occurred'); // 알 수 없는 오류
-        //     }
-        //   })
+        axios({
+            method : 'post',
+            url: apiUrl+ '/api/group/make',
+            headers: {
+              'Authorization': `${user.jwtToken}`
+          },
+          data: { group_name : title, group_description : content, group_password : password, is_password : selectedIndex},
+          }).then((response) => {
+            navigation.navigate('board1'); // 성공하면 이전 화면으로 돌아갑니다.
+          }).catch(function (error) {
+            console.error('게시글 작성 중 에러 발생:', error);
+            if (error.response && error.response.data && error.response.data.error) {
+                alert(error.response.data.error); // 서버로부터 받은 오류 메시지를 알림으로 표시
+            } else {
+                alert('Unknown error occurred'); // 알 수 없는 오류
+            }
+          })
    
   };
   
   return (
    <>
    <View style={{ padding: 20, height: theme.viewHeight * 0.8 }}>
+    <ScrollView>
       <Label>그룹 이름</Label>
       <StyledInput
         placeholder="그룹 이름을 입력하세요"
@@ -113,6 +115,7 @@ const [selectedIndexes, setSelectedIndexes] = useState([0]);
       <SubmitButton onPress={handleSubmit}>
         <Text style={{ color: 'white' }}>그룹 생성</Text>
       </SubmitButton>
+      </ScrollView>
     </View>
    </>
   );

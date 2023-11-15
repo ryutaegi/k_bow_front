@@ -35,6 +35,8 @@ import { Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabs, Icon } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
+import { Spinner } from './components';
+
 
 
 
@@ -218,8 +220,9 @@ function RecordTab() {
 
 
 const App = () => {
-
+  const { inProgress } = useContext(ProgressContext);
   return(
+    
     <SafeAreaView style={{ flex: 1 }}>
       <UserProvider>
 <ProgressProvider>
@@ -294,6 +297,7 @@ const App = () => {
     </ThemeProvider>
     </ProgressProvider>
         </UserProvider>
+        {inProgress && <Spinner />}
   </SafeAreaView>
   )
 };

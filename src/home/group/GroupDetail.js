@@ -27,6 +27,93 @@ const GroupDetail = ({ route, navigation }) => {
   const [userList, setUserList] = useState([]);
   const [countList, setCountList] = useState([]);
   const [open, setOpen] = useState(false);
+
+
+  const withdraw = () => {
+    axios({
+      method: "post",
+      url: `${apiUrl}/api/group/withdraw`,
+      headers: {
+        Authorization: `${user.jwtToken}`,
+      },
+      data: { group_id:  groupDetail_id},
+    })
+      .then((response) => {
+        console.log(response);
+        navigation.navigate('board1');
+      })
+      .catch(function (e) {
+        // console.log(e);
+        if (e.response) {
+          // 서버가 2xx 외의 상태 코드로 응답한 경우
+          switch (e.response.status) {
+            case 401:
+              Alert.alert("안내", "비밀번호가 틀립니다.");
+              break;
+            case 403:
+              Alert.alert("안내", "권한이 없습니다.");
+              break;
+            case 500:
+              Alert.alert("안내", "서버 에러가 발생했습니다.");
+              break;
+            case 409:
+              Alert.alert("안내", "이미 가입한 그룹입니다.");
+              break;
+            default:
+              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+          }
+        } else if (e.request) {
+          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
+          alert("안내", "서버로부터 응답이 없습니다.");
+        } else {
+          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
+          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+        }
+      });
+  }
+
+  const groupdelete = () => {
+    axios({
+      method: "post",
+      url: `${apiUrl}/api/group/delete`,
+      headers: {
+        Authorization: `${user.jwtToken}`,
+      },
+      data: { group_id:  groupDetail_id},
+    })
+      .then((response) => {
+        console.log(response);
+        navigation.navigate('board1');
+      })
+      .catch(function (e) {
+        // console.log(e);
+        if (e.response) {
+          // 서버가 2xx 외의 상태 코드로 응답한 경우
+          switch (e.response.status) {
+            case 401:
+              Alert.alert("안내", "비밀번호가 틀립니다.");
+              break;
+            case 403:
+              Alert.alert("안내", "권한이 없습니다.");
+              break;
+            case 500:
+              Alert.alert("안내", "서버 에러가 발생했습니다.");
+              break;
+            case 409:
+              Alert.alert("안내", "이미 가입한 그룹입니다.");
+              break;
+            default:
+              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+          }
+        } else if (e.request) {
+          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
+          alert("안내", "서버로부터 응답이 없습니다.");
+        } else {
+          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
+          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+        }
+      });
+  }
   
   
 
@@ -132,7 +219,7 @@ const GroupDetail = ({ route, navigation }) => {
     <View style={{ backgroundColor: theme.white, padding: 15 }}>
       {userList.slice(0,3).map((group, index) => (
         <Container
-          key={index}
+          key={group.nickname}
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -169,7 +256,7 @@ const GroupDetail = ({ route, navigation }) => {
     <View style={{ backgroundColor: theme.white, padding: 15 }}>
     {countList.slice(0,3).map((group, index) => (
         <Container
-          key={index}
+          key={group.nickname}
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -227,7 +314,38 @@ const GroupDetail = ({ route, navigation }) => {
             color='#254EDB'
               icon={{ name: 'add', color: '#fff' }}
               title="그룹 탈퇴하기"
-                onPress={() => Alert.alert('안내', '그룹에서 탈퇴하시겠습니까?')}
+                onPress={() => Alert.alert(
+                  "그룹 탈퇴하기",
+                  "그룹에서 탈퇴하시겠습니까?",
+                  [
+                    {
+                      text: "아니오",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel",
+                    },
+                    { text: "예", onPress: () => withdraw() },
+                  ],
+                  { cancelable: false }
+                )}
+              
+            />
+            <SpeedDial.Action
+            color='#254EDB'
+              icon={{ name: 'add', color: '#fff' }}
+              title="그룹 삭제하기"
+                onPress={() => Alert.alert(
+                  "그룹 삭제하기",
+                  "그룹을 삭제하시겠습니까?",
+                  [
+                    {
+                      text: "아니오",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel",
+                    },
+                    { text: "예", onPress: () => groupdelete() },
+                  ],
+                  { cancelable: false }
+                )}
               
             />
            
@@ -341,7 +459,7 @@ const Container = styled.TouchableOpacity`
 `;
 
 const Title = styled.Text`
-  aligncontent: center;
+
   
   font-size: 13px;
   font-weight: bold;

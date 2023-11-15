@@ -35,7 +35,12 @@ const MyPage = () => {
       social_id : user.social_id,
     },
   }).then((response1) => {
-    dispatch({});
+    dispatch({name : null, 
+      imageURL : null, 
+      social_id : null,
+      user_id : null,
+      social_type : null,
+      jwtToken : null});
     console.log('로그아웃 완료',response1.data);
   }).catch(function (error) {
     console.log('error', error);

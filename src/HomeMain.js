@@ -10,6 +10,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { UserContext } from './contexts';
 import getEnvVars from '../environmant';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
@@ -17,9 +18,11 @@ const HomeMain = ( {navigation} ) => {
   const [inputData, SetInput] = useState([]);
   const { apiUrl } = getEnvVars();
 
-  useEffect(()=> {
-    if(user.user_id != null)
+  const rerend = () => {
+    console.log("user",user.user_id)
+    if((user.user_id !== null) && (user.user_id !== undefined))
     {
+      console.log("왜실행됨")
     axios({
       method: "get",
       url: `${apiUrl}/api/group/join/list`,
@@ -28,6 +31,7 @@ const HomeMain = ( {navigation} ) => {
       },
     })
       .then((response) => {
+        console.log(response.data);
         const _inputData = response.data.map((rowData) => ({
           group_id: rowData.group_id,
           group_name: rowData.group_name,
@@ -67,6 +71,16 @@ const HomeMain = ( {navigation} ) => {
     else{
       SetInput([]);
     }
+  }
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("focus");
+      rerend();
+    }, [user])
+  );
+
+  useEffect(()=> {
+    rerend();
   }, [user])
 
     return (
@@ -116,7 +130,12 @@ const HomeMain = ( {navigation} ) => {
         <_CommunityList>
       <CommunityList
         style={{backgroundColor : theme.wiget1, padding : 10}}
-        onPress={() => navigation.navigate('board2', {board_type:1})}
+        onPress={() => {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          {navigation.navigate('board2', {board_type:1})}
+        }}
         >
           <AntDesign name="notification" size={28} color={theme.wiget11} />
        </CommunityList>
@@ -126,7 +145,12 @@ const HomeMain = ( {navigation} ) => {
        <_CommunityList>
       <CommunityList
         style={{backgroundColor : theme.wiget2, padding : 10}}
-        onPress={() => navigation.navigate('board2', {board_type:2})}
+        onPress={() => {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          {navigation.navigate('board2', {board_type:2})}
+        }}
         >
           <FontAwesome name="pencil-square-o" size={28} color={theme.wiget22} />
        </CommunityList>
@@ -136,7 +160,12 @@ const HomeMain = ( {navigation} ) => {
        <_CommunityList>
       <CommunityList
         style={{backgroundColor : theme.wiget3}}
-        onPress={() => navigation.navigate('board2', {board_type:4})}
+        onPress={() => {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          {navigation.navigate('board2', {board_type:4})}
+        }}
         >
           <AntDesign name="bells" size={28} color={theme.wiget32} />
        </CommunityList>
@@ -146,8 +175,13 @@ const HomeMain = ( {navigation} ) => {
        <_CommunityList>
       <CommunityList
         style={{backgroundColor : theme.wiget4}}
-        onPress={() => navigation.navigate('board2', {board_type:3})}
-        >
+        onPress={() => {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          {navigation.navigate('board2', {board_type:3})}
+        }
+      }>
           <AntDesign name="info" size={28} color={theme.wiget42} />
        </CommunityList>
        <Text style={{marginLeft : 13}}>정 보</Text>
@@ -160,7 +194,14 @@ const HomeMain = ( {navigation} ) => {
       <__communityButton1>
       <CommunityText>
         <CommunityText1>  그룹</CommunityText1>
-        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
+        <TouchableOpacity onPress={() => 
+        {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          {navigation.navigate('GroupAdd')}
+        }
+          }>
         <Text style={{color:'gray'}}>추가하기 <Ionicons name="add" size={16} color="gray" /></Text>
         </TouchableOpacity>
         </CommunityText>
@@ -182,14 +223,14 @@ const HomeMain = ( {navigation} ) => {
             <View style={{flexDirection : 'row', alignItems : 'center'}}>
             {group.is_password==1 ? (<View
             style={{
-              backgroundColor : theme.wiget22,
+              backgroundColor : theme.wiget32,
               width : 5,
               height : 90
             }}>
             </View>) : (
               <View
             style={{
-              backgroundColor : theme.wiget32,
+              backgroundColor : theme.wiget22,
               width : 5,
               height : 90
             }}>
@@ -205,7 +246,14 @@ const HomeMain = ( {navigation} ) => {
           </Container>
         ))
       ) : (
-      <GroupAdd onPress={() => {navigation.navigate('GroupAdd')}}>
+      <GroupAdd onPress={() => {
+        {
+          if(user.user_id == null)
+          {Alert.alert("안내", "로그인이 필요합니다");}
+          else
+          { navigation.navigate('GroupAdd') }
+        }
+       }}>
       <AntDesign name="pluscircle" size={40} color={theme.wiget32} />
       <Text style={{padding : 10}}>그룹을 추가해 구/신사와 교류하세요
       </Text>

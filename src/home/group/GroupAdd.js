@@ -14,6 +14,7 @@ import { UserContext } from "../../contexts";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const GroupAdd = ({ navigation }) => {
   const theme = useContext(ThemeContext);
@@ -196,6 +197,7 @@ const GroupAdd = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+      <ScrollView>
       {inputData.map((group, index) => (
         <Container
           key={index}
@@ -230,6 +232,7 @@ const GroupAdd = ({ navigation }) => {
         onClose={() => setPromptVisible(false)}
         onSubmit={handlePasswordSubmit}
       />
+      </ScrollView>
     </View>
   );
 };
@@ -292,19 +295,16 @@ const Container = styled.TouchableOpacity`
 `;
 
 const Title = styled.Text`
-  aligncontent: center;
   height: 40%;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 7px;
 `;
 const Content = styled.Text`
-  aligncontent: center;
   height: 35%;
 `;
 
 const Footer = styled.Text`
-  aligncontent: center;
   font-size: 12px;
   margin-top: 10px;
   color: ${({ theme }) => theme.gray1};

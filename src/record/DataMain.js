@@ -59,7 +59,7 @@ const DataMain = ({navigation}) => {
       };
       
       useEffect(() => {
-      
+        spinner.start();
         const date = new Date();
         //date.setHours(date.getHours() + 9);
         //console.log("오늘날짜", date)
@@ -74,6 +74,9 @@ const DataMain = ({navigation}) => {
         }).then((response) => {
           shotDate = [];
               shotCount = 0;
+          console.log("response.data", response.data)
+          if(response.data.length !== 0)
+           {
               
           //console.log("DB업로드 완료", response.data);
           const newData = response.data.reduce((acc, item) => {
@@ -145,7 +148,8 @@ const DataMain = ({navigation}) => {
             shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
             shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
           ]);
-        
+        }
+        spinner.stop();
 
         }).catch(function (error) {
           console.log('error', error);
@@ -154,6 +158,7 @@ const DataMain = ({navigation}) => {
 
       const onVisibleMonthsChange = (months) => {
         if(months && months.length > 0) {
+          spinner.start();
             const firstVisibleMonth = months[0];
             // YYYY-MM-DD 형식의 문자열로 월을 표시합니다.
             const monthString = `${firstVisibleMonth.year}-${firstVisibleMonth.month.toString().padStart(2, '0')}`;
@@ -168,6 +173,9 @@ const DataMain = ({navigation}) => {
             data: { month : monthString },
             }).then((response) => {
               //console.log("DB업로드 완료", response.data);
+              console.log("response.data", response.data)
+              if(response.data.length !== 0)
+              {
               shotDate = [];
               shotCount = 0;
               
@@ -241,6 +249,8 @@ const DataMain = ({navigation}) => {
               shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
               shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
             ]);
+          }
+            spinner.stop();
               
             }).catch(function (error) {
               console.log('error', error);

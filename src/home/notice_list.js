@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Alert } from 'react-native';
 import axios from 'axios';
 import { UserContext } from '../contexts';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -47,7 +47,7 @@ const Notice_list = ({route, navigation}) => {
         }catch(error) {
             if (error.response && error.response.status === 401) {
                 console.error("권한 없음", error);
-                alert("로그인하세요");
+                Alert.alert("안내", "로그인이 필요합니다");
 
                 navigation.navigate('board1');
                 // 여기에 추가적인 동작(예: 알림 또는 리다이렉션)을 넣을 수 있습니다.
