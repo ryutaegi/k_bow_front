@@ -22,7 +22,6 @@ const HomeMain = ( {navigation} ) => {
     console.log("user",user.user_id)
     if((user.user_id !== null) && (user.user_id !== undefined))
     {
-      console.log("왜실행됨")
     axios({
       method: "get",
       url: `${apiUrl}/api/group/join/list`,
@@ -36,6 +35,7 @@ const HomeMain = ( {navigation} ) => {
           group_id: rowData.group_id,
           group_name: rowData.group_name,
           group_description: rowData.group_description,
+          group_maker_id : rowData.group_maker_id,
           is_password: rowData.is_password,
         }));
         SetInput(_inputData);
@@ -216,22 +216,23 @@ const HomeMain = ( {navigation} ) => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              overflow : 'hidden'
+              overflow : 'hidden',
+              backgroundColor : theme.white
             }}
-            onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id})}}
+            onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id, group_maker_id : group.group_maker_id})}}
           >
             <View style={{flexDirection : 'row', alignItems : 'center'}}>
             {group.is_password==1 ? (<View
             style={{
               backgroundColor : theme.wiget32,
-              width : 5,
+              width : 6,
               height : 90
             }}>
             </View>) : (
               <View
             style={{
               backgroundColor : theme.wiget22,
-              width : 5,
+              width : 6,
               height : 90
             }}>
             </View>
@@ -239,7 +240,7 @@ const HomeMain = ( {navigation} ) => {
 
             <View style={{marginLeft : 20}}>
               <Title>{group.group_name}</Title>
-              <Content>{group.group_description}</Content>
+              {/* <Content>{group.group_description}</Content> */}
             </View>
             </View>
             
@@ -299,17 +300,16 @@ const Container = styled.TouchableOpacity`
   width: 100%;
   background-color: ${({ theme }) => theme.white};
   //border : 1px solid red;
-  height: 80px;
+  height: 50px;
   margin-bottom: 10px;
   flex-direction: column;
-  padding: 10px;
+  padding: 0px;
   elevation: 5;
 `;
 const Title = styled.Text`
  
   height: 40%;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
   margin-bottom: 7px;
 `;
 const Content = styled.Text`

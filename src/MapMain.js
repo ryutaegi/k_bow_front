@@ -128,7 +128,7 @@ const MapMain = ({}) => {
     };
 
     return (
-      <>
+      <View style={{backgroundColor : theme.white, flex : 1}}>
       <MapView
           initialRegion={{
             latitude: lat[0],
@@ -238,7 +238,7 @@ const MapMain = ({}) => {
           
           </View>
           </ScrollView>
-          </>
+          </View>
     );
   }
   
@@ -263,7 +263,7 @@ const MapMain = ({}) => {
     };
 
     return (
-        <View style={Style.container}>
+        <View style={{backgroundColor : theme.white, flex : 1}}>
         <MapView
           initialRegion={{
             latitude: locations[citynum][0]["lat"] || locations[0][0]["lat"],
@@ -354,7 +354,7 @@ const MapMain = ({}) => {
     };
 
     return (
-        <View style={Style.container}>
+        <View style={{backgroundColor : theme.white, flex : 1}}>
         <MapView
           initialRegion={{
             latitude: locations_public[citynum][0]["lat"] || locations[0][0]["lat"], 

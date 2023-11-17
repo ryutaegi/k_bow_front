@@ -196,7 +196,7 @@ const GroupAdd = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: theme.gray6, padding: 15 }}>
+    <View style={{ backgroundColor: theme.white, padding: 15 }}>
       <ScrollView>
       {inputData.map((group, index) => (
         <Container

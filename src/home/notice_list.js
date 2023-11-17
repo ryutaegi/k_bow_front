@@ -67,7 +67,7 @@ const Notice_list = ({route, navigation}) => {
     return (
         <>
         <ScrollView showsHorizontalScrollIndicator={false}>
-        <View style={{ padding: 15, backgroundColor : theme.gray6}}>
+        <View style={{ padding: 15, backgroundColor : theme.white}}>
             {inputData.map((notice, index) => (
                 <React.Fragment key={index}>
                     

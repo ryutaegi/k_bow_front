@@ -19,6 +19,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 const GroupDetail = ({ route, navigation }) => {
   const groupDetail_id = route.params.group_id;
+  const group_maker_id = route.params.group_maker_id;
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
@@ -134,7 +135,7 @@ const GroupDetail = ({ route, navigation }) => {
           nickname : rowData.nickname,
           // is_push : JSON.parse(response.is_push),
           // pushed_like_count : JSON.parse(response.pushed_like_count),
-          average : rowData.ratio,
+          average : rowData.ratio * 5,
           //shot_day : rowData.elementCount,
         }));
         const __inputData = response.data.sortedElementCountResults.map((rowData) => ({
@@ -228,8 +229,8 @@ const GroupDetail = ({ route, navigation }) => {
           
         >
           
-            <Title>{index+1}위 {group.nickname}</Title>
-            <Content>평 {group.average}중</Content>
+            <Title><Content>{index+1}   |</Content>   {group.nickname}</Title>
+            <Content>평 {group.average}중 </Content>
            
             
             {/* <AntDesign name="hearto" size={24} color="black" />
@@ -265,8 +266,8 @@ const GroupDetail = ({ route, navigation }) => {
           
         >
           
-            <Title>{index+1}위 {group.nickname}</Title>
-            <Content> {group.shot_day}일 습사</Content>
+            <Title><Content>{index+1}   |</Content>    {group.nickname}</Title>
+            <Content> {group.shot_day}일 습사 </Content>
             {/* <View>
             <AntDesign name="hearto" size={24} color="black" />
             <Text>
@@ -310,25 +311,7 @@ const GroupDetail = ({ route, navigation }) => {
             onOpen={() => setOpen(!open)}
             onClose={() => setOpen(!open)}
           >
-            <SpeedDial.Action
-            color='#254EDB'
-              icon={{ name: 'add', color: '#fff' }}
-              title="그룹 탈퇴하기"
-                onPress={() => Alert.alert(
-                  "그룹 탈퇴하기",
-                  "그룹에서 탈퇴하시겠습니까?",
-                  [
-                    {
-                      text: "아니오",
-                      onPress: () => console.log("Cancel Pressed"),
-                      style: "cancel",
-                    },
-                    { text: "예", onPress: () => withdraw() },
-                  ],
-                  { cancelable: false }
-                )}
-              
-            />
+            {group_maker_id == user.user_id ? (
             <SpeedDial.Action
             color='#254EDB'
               icon={{ name: 'add', color: '#fff' }}
@@ -348,6 +331,29 @@ const GroupDetail = ({ route, navigation }) => {
                 )}
               
             />
+            ):( 
+            <SpeedDial.Action
+            color='#254EDB'
+              icon={{ name: 'add', color: '#fff' }}
+              title="그룹 탈퇴하기"
+                onPress={() => Alert.alert(
+                  "그룹 탈퇴하기",
+                  "그룹에서 탈퇴하시겠습니까?",
+                  [
+                    {
+                      text: "아니오",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel",
+                    },
+                    { text: "예", onPress: () => withdraw() },
+                  ],
+                  { cancelable: false }
+                )}
+              
+            />)}
+            
+            
+            
            
           </SpeedDial>
     </>
@@ -466,7 +472,8 @@ const Title = styled.Text`
 
 `;
 const Content = styled.Text`
- font-size : 11px;
+ font-size : 13px;
+ font-weight : normal;
 `;
 
 const Footer = styled.Text`
