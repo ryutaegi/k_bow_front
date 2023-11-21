@@ -23,10 +23,8 @@ const MyPageContent = () => {
 
   return (
     <>
-      {user?.user_id ? 
-      (user.agree==1 ? <JoinPresenter/> : <MyPage />)
-      : <AuthStack />}
-      {inProgress && <Spinner />}
+      <MyPage />
+     
     </>
   );
 };

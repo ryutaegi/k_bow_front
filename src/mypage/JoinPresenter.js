@@ -38,7 +38,7 @@ const JoinPresenter = () => {
 
   const submitButtonStyle = {
     ...styles.submitButton,
-    backgroundColor: allCheck ? "#007bff" : "rgb(190, 190, 190)",
+    backgroundColor: allCheck ? theme.wiget22 : "rgb(190, 190, 190)",
   };
 
   const agreePress = () => {
@@ -111,28 +111,52 @@ const JoinPresenter = () => {
     <View style={styles.container}>
   
       
-      <View style={{marginTop : 50,alignItems : 'center', flexDirection : 'column'}}>
+      <View style={{marginTop : 100,alignItems : 'center', flexDirection : 'column'}}>
     <Logo source={require('../../images/logo1.png')} resizeMode="contain" />
-    <Text style={{fontSize : 20, margin : 10}}>환영합니다 !</Text>
+    <Text style={{fontSize : 18, marginTop : 20}}>회원가입</Text>
+    <Text style={{fontSize : 15, margin : 15, color : 'rgb(170,170,170)'}}>회원가입 전, 활로 약관을 확인해 주세요</Text>
     </View>
 
-      <View>
+      <View style={{marginBottom : 30}}>
       <View style={styles.switchContainer}>
-        <Switch value={allCheck} onValueChange={handleAllCheck} />
+        <View style={{flexDirection : 'row', alignItems : "center"}}>
+        <Switch thumbColor={allCheck ? theme.wiget22 : '#f4f3f4'}
+        trackColor={{ false: '#767577', true: theme.wiget2 }}
+         value={allCheck} onValueChange={handleAllCheck} />
         <Text style={styles.label}>전체 동의</Text>
+        </View>
+        
       </View>
+      <View style={{width : '100%', height : 1, backgroundColor : 'rgb(190,190,190)', marginBottom : 30}}>
+
+</View>
 
       <View style={styles.switchContainer}>
-        <Switch value={termsCheck} onValueChange={setTermsCheck} />
-        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+      <View style={{flexDirection : 'row', alignItems : "center"}}>
+        <Switch thumbColor={termsCheck ? theme.wiget22 : '#f4f3f4'}
+        trackColor={{ false: '#767577', true: theme.wiget2 }}
+        value={termsCheck} onValueChange={setTermsCheck} />
+        <TouchableOpacity onPress={() => (setTermsCheck(!termsCheck))}>
         <Text style={styles.label}>이용약관 동의 (필수)</Text>
         </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+        <Text style={{color : 'rgb(150,150,150)', fontWeight : 'bold'}}>{'>'}</Text>
+        </TouchableOpacity>
+      
       </View>
 
       <View style={styles.switchContainer}>
-        <Switch value={privacyCheck} onValueChange={setPrivacyCheck} />
-        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+      <View style={{flexDirection : 'row', alignItems : "center"}}>
+        <Switch thumbColor={privacyCheck ? theme.wiget22 : '#f4f3f4'}
+        trackColor={{ false: '#767577', true: theme.wiget2 }}
+        value={privacyCheck} onValueChange={setPrivacyCheck} />
+        <TouchableOpacity onPress={() => (setPrivacyCheck(!privacyCheck))}>
         <Text style={styles.label}>개인정보 처리방침 동의 (필수)</Text>
+        </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+        <Text style={{color : 'rgb(150,150,150)', fontWeight : 'bold'}}>{'>'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -160,14 +184,15 @@ const styles = StyleSheet.create({
     },
   switchContainer: {
     flexDirection: "row",
-    alignItems: "center",
+    justifyContent : 'space-between',
+    alignItems : 'center',
     marginBottom: 10,
   },
   label: {
     marginLeft: 8,
   },
   submitButton: {
-    backgroundColor: "blue",
+    backgroundColor: 'blue',
     padding: 15,
     borderRadius: 5,
     alignItems: "center",

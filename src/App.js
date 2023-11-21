@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useInsertionEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -28,6 +28,7 @@ import GroupMain from "./home/group/GroupMain.js";
 import GroupAdd from "./home/group/GroupAdd.js";
 import GroupDetail from "./home/group/GroupDetail.js";
 import GroupMake from "./home/group/GroupMake.js";
+import JoinPresenter from "./mypage/JoinPresenter.js";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { SafeAreaView } from "react-native";
 import { StatusBar } from "react-native";
@@ -189,7 +190,7 @@ function RecordTab() {
   ];
   return (
     <>
-      {user?.user_id ? (
+      
         <Stack.Navigator
           initialRouteName="RecordMain"
           screenOptions={{
@@ -252,16 +253,112 @@ function RecordTab() {
             }}
           />
         </Stack.Navigator>
-      ) : (
-        <AuthStack />
-      )}
       {inProgress && <Spinner />}
     </>
   );
 }
 
+const Auth = () => {
+  const { user } = useContext(UserContext);
+  return (user?.user_id ?
+      (user.agree==0 ? <JoinPresenter/> : 
+        <Tab.Navigator
+          initialRouteName="활로"
+          screenOptions={{
+            tabBarActiveTintColor: theme.wiget22,
+            tabBarInactiveTintColor: "gray",
+            tabBarStyle: { backgroundColor: "#fff", height: 55 },
+            tabBarShowLabel: false,
+            headerStyle: {
+              backgroundColor: theme.white,
+            },
+            headerTintColor: theme.black,
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        >
+          <Tab.Screen
+            name="활로"
+            component={HomeTab}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color }) => (
+                <Icon
+                  name="home"
+                  color={color}
+                  size={26}
+                  type="font-awesome"
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="시수 기록"
+            component={RecordTab}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color }) => (
+                <Icon
+                  name="pencil"
+                  color={color}
+                  size={26}
+                  type="font-awesome"
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="활터 정보"
+            component={MapMain}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Icon
+                  name="map"
+                  color={color}
+                  size={26}
+                  type="font-awesome"
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="장비"
+            component={EquipmentMain}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Icon
+                  name="cog"
+                  color={color}
+                  size={26}
+                  type="font-awesome"
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="내 정보"
+            component={MyPageMain}
+            options={{
+              tabBarIcon: ({ color }) => (
+                <Icon
+                  name="user"
+                  color={color}
+                  size={26}
+                  type="font-awesome"
+                />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+        ) : <AuthStack />)
+  
+}
+
 const App = () => {
   const { inProgress } = useContext(ProgressContext);
+  
+
   
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -269,95 +366,7 @@ const App = () => {
         <ProgressProvider>
           <ThemeProvider theme={theme}>
             <NavigationContainer style={{ paddingTop: StatusBar }}>
-              <Tab.Navigator
-                initialRouteName="활로"
-                screenOptions={{
-                  tabBarActiveTintColor: theme.wiget22,
-                  tabBarInactiveTintColor: "gray",
-                  tabBarStyle: { backgroundColor: "#fff", height: 55 },
-                  tabBarShowLabel: false,
-                  headerStyle: {
-                    backgroundColor: theme.white,
-                  },
-                  headerTintColor: theme.black,
-                  headerTitleStyle: {
-                    fontWeight: "bold",
-                  },
-                }}
-              >
-                <Tab.Screen
-                  name="활로"
-                  component={HomeTab}
-                  options={{
-                    headerShown: false,
-                    tabBarIcon: ({ color }) => (
-                      <Icon
-                        name="home"
-                        color={color}
-                        size={26}
-                        type="font-awesome"
-                      />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="시수 기록"
-                  component={RecordTab}
-                  options={{
-                    headerShown: false,
-                    tabBarIcon: ({ color }) => (
-                      <Icon
-                        name="pencil"
-                        color={color}
-                        size={26}
-                        type="font-awesome"
-                      />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="활터 정보"
-                  component={MapMain}
-                  options={{
-                    tabBarIcon: ({ color }) => (
-                      <Icon
-                        name="map"
-                        color={color}
-                        size={26}
-                        type="font-awesome"
-                      />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="장비"
-                  component={EquipmentMain}
-                  options={{
-                    tabBarIcon: ({ color }) => (
-                      <Icon
-                        name="cog"
-                        color={color}
-                        size={26}
-                        type="font-awesome"
-                      />
-                    ),
-                  }}
-                />
-                <Tab.Screen
-                  name="내 정보"
-                  component={MyPageMain}
-                  options={{
-                    tabBarIcon: ({ color }) => (
-                      <Icon
-                        name="user"
-                        color={color}
-                        size={26}
-                        type="font-awesome"
-                      />
-                    ),
-                  }}
-                />
-              </Tab.Navigator>
+            <Auth/>
             </NavigationContainer>
           </ThemeProvider>
         </ProgressProvider>

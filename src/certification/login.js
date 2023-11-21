@@ -21,14 +21,18 @@ const Login = ({ navigation }) => {
 
   return (
     <Container>
+      <View style={{alignItems : 'center', marginTop : 170}}>
       <Logo source={require('../../images/logo1.png')} resizeMode="contain" />
-      
      
-      <View style={{marginTop : 130, flexDirection : 'row', alignItems : 'center'}}>
+     </View>
+
+     <View style={{marginBottom : 100}}>
+      <View style={{marginTop : 0, flexDirection : 'row', justifyContent : 'space-between', alignItems : 'center'}}>
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       <Text style={{fontSize : 13, color : 'rgb(190,190,190)', lineHeight : 13}}>  로그인 / 회원가입  </Text>
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       </View>
+      
       <SocialLoginButton style={{backgroundColor : 'rgb(254, 229, 0)'}} onPress={() => navigation.navigate('KakaoLogin')}>
       <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/kakao_logo.png')} />
       <Text style={{color : 'black', fontSize : 16}}> 카카오로 시작하기</Text>
@@ -38,7 +42,7 @@ const Login = ({ navigation }) => {
       <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
       <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
       </SocialLoginButton>
-
+      </View>
       
     </Container>
   );
@@ -46,7 +50,7 @@ const Login = ({ navigation }) => {
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 20px;
   padding-top : 0px;
@@ -60,8 +64,8 @@ const Logo = styled.Image`
 `;
 
 const Title = styled.Text`
-  font-size: 30px;
-  margin-bottom: 40px;
+  font-size: 18px;
+  margin-top: 40px;
 `;
 
 const Input = styled.TextInput`
@@ -88,7 +92,6 @@ const LoginButton = styled.TouchableOpacity`
 `;
 
 const SocialLoginButton = styled.TouchableOpacity`
-width: 100%;
 height: 50px;
 flex-direction : row;
 justify-content: center;
