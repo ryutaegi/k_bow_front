@@ -38,7 +38,7 @@ const Login = ({ navigation }) => {
       <Text style={{color : 'black', fontSize : 16}}> 카카오로 시작하기</Text>
       </SocialLoginButton>
 
-      <SocialLoginButton style={{backgroundColor : '#03C75A'}} >
+      <SocialLoginButton style={{backgroundColor : '#03C75A'}} onPress={() => navigation.navigate('NaverLogin')}>
       <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
       <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
       </SocialLoginButton>

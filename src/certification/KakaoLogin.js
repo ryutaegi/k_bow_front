@@ -10,7 +10,7 @@ import getEnvVars from "../../environmant";
 
 
 const REST_API_KEY = '9fd6d6c300b1e8d443843c3301a50ac5';
-const REDIRECT_URI = 'https://exp.host/@taeyou/react-exam/index.exp?sdkVersion=48.0.0';
+const REDIRECT_URI = 'https://spinnerweb.netlify.app';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 

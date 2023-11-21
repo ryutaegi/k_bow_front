@@ -1,52 +1,65 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Alert } from 'react-native';
 import WebView from 'react-native-webview';
 import { useContext } from 'react';
 import { UserContext } from '../contexts';
+import getEnvVars from '../../environmant';
+import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 const CLIENT_ID = 'M0Z_vtlzGvZMv9VU2eFj';
-const REDIRECT_URL = 'https://exp.host/@taeyou/react-exam/index.exp?sdkVersion=48.0.0';
+const REDIRECT_URL = 'https://spinnerweb.netlify.app';
 
 const NaverLogin = () => {
 const { dispatch } = useContext(UserContext);
-  
-  const fetchNaverUserInfo = async (token) => {
-    const API_URL = 'https://openapi.naver.com/v1/nid/me';
+const {apiUrl} = getEnvVars();
+var tokenProcessed = 0;
 
-    try {
-      let response = await fetch(API_URL, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      let responseJson = await response.json();
-      
-      if (responseJson.resultcode === '00') {
-        return responseJson.response;
-      } else {
-        console.error('네이버 사용자 정보 요청 실패:', responseJson.message);
-        return null;
-      }
-    } catch (error) {
-      console.error('네이버 사용자 정보 요청 중 오류 발생:', error);
-      return null;
-    }
-  };
 
   const handleWebViewNavigationStateChange = async (webViewState) => {
+    if (tokenProcessed == 1) return;
     const { url } = webViewState;
-    console.log(url);
+    var AccessToken = "";
+    
+    
+
     if (url.includes('access_token=')) {
       const token = url.split('access_token=')[1].split('&')[0];
-      const userInfo = await fetchNaverUserInfo(token);
+      console.log("접근 토큰", url);
+      tokenProcessed = 1;
+
+
+      axios ({
+        method: 'post',
+        url: apiUrl+'/api/naver/login',
+        data: {
+          token: token,
+  
+        },
+      }).then((response) => {
+        AccessToken = response.data.token;
+        console.log(AccessToken);
+
+        const decodedToken = jwtDecode(AccessToken);
+       console.log('Decoded Token', decodedToken);
+        dispatch({name : decodedToken.nickname, 
+          imageURL : decodedToken.image_url, 
+          social_id : decodedToken.social_id,
+          user_id : decodedToken.user_id,
+          social_type : decodedToken.social_type,
+          jwtToken : AccessToken,
+          agree : decodedToken.agree});
+      })
       
-      if (userInfo) {
-        dispatch({LoginType : "naver", name : userInfo.name, email : userInfo.id, uid : token});
-        //Alert.alert('네이버 로그인 성공', `사용자 이름: ${userInfo.name}`);
-        console.log(userInfo);
-      }
+
+
+      //const userInfo = await fetchNaverUserInfo(token);
+      
+      // if (userInfo) {
+      //   dispatch({LoginType : "naver", name : userInfo.name, email : userInfo.id, uid : token});
+      //   //Alert.alert('네이버 로그인 성공', `사용자 이름: ${userInfo.name}`);
+      //   console.log(userInfo);
+      // }
     }
   };
 

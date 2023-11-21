@@ -11,6 +11,7 @@ import { Feather } from '@expo/vector-icons';
 import { UserContext } from './contexts';
 import getEnvVars from '../environmant';
 import { useFocusEffect } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
@@ -205,7 +206,7 @@ const HomeMain = ( {navigation} ) => {
         <Text style={{color:'gray'}}>추가하기 <Ionicons name="add" size={16} color="gray" /></Text>
         </TouchableOpacity>
         </CommunityText>
-      <HorizontalLine/>
+      <HorizontalLine style={{marginBottom : 15}}/>
       
       {inputData.length > 0 ?
       (
@@ -222,27 +223,20 @@ const HomeMain = ( {navigation} ) => {
             onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id, group_maker_id : group.group_maker_id})}}
           >
             <View style={{flexDirection : 'row', alignItems : 'center'}}>
-            {group.is_password==1 ? (<View
-            style={{
-              backgroundColor : theme.wiget32,
-              width : 6,
-              height : 90
-            }}>
-            </View>) : (
-              <View
-            style={{
-              backgroundColor : theme.wiget22,
-              width : 6,
-              height : 90
-            }}>
-            </View>
+            {group.is_password==1 ? (
+              <MaterialIcons style={{marginLeft : 15}} name="group" size={24} color={theme.wiget32} />
+            ) : (
+              <MaterialIcons style={{marginLeft : 15}} name="group" size={24} color={theme.wiget22} />
             )}
 
-            <View style={{marginLeft : 20}}>
+            <View style={{marginLeft : 15}}>
               <Title>{group.group_name}</Title>
               {/* <Content>{group.group_description}</Content> */}
             </View>
             </View>
+            <Text style={{marginRight : 15, color : 'rgb(170,170,170)'}}>
+              {'>'}
+            </Text>
             
           </Container>
         ))
@@ -308,9 +302,9 @@ const Container = styled.TouchableOpacity`
 `;
 const Title = styled.Text`
  
-  height: 40%;
+  
   font-size: 15px;
-  margin-bottom: 7px;
+  
 `;
 const Content = styled.Text`
  

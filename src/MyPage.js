@@ -28,6 +28,8 @@ const MyPage = () => {
  const [photoUrl, setPhotoUrl] = useState(user.imageURL);
 
  const _handleLogoutButtonPress = async () => {
+  if(user.social_type == 1)
+  {
   console.log(user.social_id);
   axios({
     method : 'post',
@@ -47,6 +49,19 @@ const MyPage = () => {
   }).catch(function (error) {
     console.log('error', error);
   })
+}
+
+if(user.social_type == 2)
+{
+  dispatch({name : null, 
+    imageURL : null, 
+    social_id : null,
+    user_id : null,
+    agree : null,
+    social_type : null,
+    jwtToken : null});
+  console.log('로그아웃 완료');
+}
 
 //   if(user.LoginType=="kakao")
 //   {
@@ -155,7 +170,7 @@ const MyPage = () => {
 const LoginButton = styled.TouchableOpacity`
   width: 100%;
   height: 40px;
-  background-color: rgb(2,126,229); /* 배경 색상을 원하는 대로 변경하세요 */
+  background-color: ${({ theme }) => theme.wiget22}; /* 배경 색상을 원하는 대로 변경하세요 */
   justify-content: center;
   border-radius : 10px;
   align-items: center;

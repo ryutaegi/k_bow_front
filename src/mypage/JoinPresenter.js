@@ -123,7 +123,7 @@ const JoinPresenter = () => {
         <Switch thumbColor={allCheck ? theme.wiget22 : '#f4f3f4'}
         trackColor={{ false: '#767577', true: theme.wiget2 }}
          value={allCheck} onValueChange={handleAllCheck} />
-        <Text style={styles.label}>전체 동의</Text>
+        <Text style={[styles.label, {fontSize : 15}]}>전체 동의</Text>
         </View>
         
       </View>
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     padding: 15,
     borderRadius: 5,
+    marginTop : 30,
     alignItems: "center",
   },
   submitButtonText: {
