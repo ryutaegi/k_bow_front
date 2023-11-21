@@ -67,7 +67,8 @@ const KaKaoLogin = ({navigation}) => {
           social_id : decodedToken.social_id,
           user_id : decodedToken.user_id,
           social_type : decodedToken.social_type,
-          jwtToken : response1.data.token});
+          jwtToken : response1.data.token,
+          agree : decodedToken.agree});
 
 
       }).catch(function (error) {

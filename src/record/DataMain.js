@@ -82,8 +82,8 @@ const DataMain = ({navigation}) => {
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
             console.log("item",item);
-            const date = item.shot_date_korean.slice(0,10);
-            console.log("date는",item.shot_date_korean);
+            const date = item.shot_date.slice(0,10); //korean시간변경가능
+            console.log("date는",item.shot_date); //korean시간변경가능
 
             let shotArray = [];
 
@@ -183,7 +183,7 @@ const DataMain = ({navigation}) => {
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
                 console.log("item",item);
-                const date = item.shot_date_korean.slice(0,10);
+                const date = item.shot_date.slice(0,10); //korean시간변경가능
 
                 let shotArray = [];
 

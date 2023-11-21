@@ -7,6 +7,7 @@ import { Input } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
 import axios from 'axios';
 import getEnvVars from '../environmant';
+import JoinPresenter from './mypage/JoinPresenter';
 
 
 const Container = styled.View`
@@ -39,6 +40,7 @@ const MyPage = () => {
       imageURL : null, 
       social_id : null,
       user_id : null,
+      agree : null,
       social_type : null,
       jwtToken : null});
     console.log('로그아웃 완료',response1.data);
@@ -130,6 +132,9 @@ const MyPage = () => {
     <LoginButton onPress={_handleLogoutButtonPress}>
     <LoginButtonText>로그아웃</LoginButtonText>
     </LoginButton>
+
+
+
     
 
     {/* <Button

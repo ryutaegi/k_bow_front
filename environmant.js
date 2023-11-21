@@ -6,20 +6,22 @@
 import Constants from "expo-constants";
 import { Platform } from "react-native";
 
+const url = "http://3.37.213.77:3000";
+const url_loadbalance = "http://kbowLoadBalancer-1489709171.ap-northeast-2.elb.amazonaws.com";
+
 const localhost =
  Platform.OS === "ios" ? "localhost:8080" : "10.0.2.2:8080";
 
 const ENV = {
  dev: {
-   apiUrl: "http://3.37.213.77:3000"
+   apiUrl: url
  },
  staging: {
-   apiUrl: "http://3.37.213.77:3000"
+   apiUrl: url
    // Add other keys you want here
  },
  prod: {
-   apiUrl: "http://3.37.213.77:3000"
-   // Add other keys you want here
+   apiUrl:url
  }
 };
 

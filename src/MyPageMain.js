@@ -4,6 +4,7 @@ import AuthStack from './stack/AuthStack';
 import { Spinner } from './components';
 import { ProgressProvider, ProgressContext, UserProvider, UserContext } from './contexts';
 import MyPage from './MyPage';
+import JoinPresenter from './mypage/JoinPresenter';
 
 const MyPageMain = () => {
   return (
@@ -22,7 +23,9 @@ const MyPageContent = () => {
 
   return (
     <>
-      {user?.user_id ? <MyPage /> : <AuthStack />}
+      {user?.user_id ? 
+      (user.agree==1 ? <JoinPresenter/> : <MyPage />)
+      : <AuthStack />}
       {inProgress && <Spinner />}
     </>
   );

@@ -21,18 +21,22 @@ const Login = ({ navigation }) => {
 
   return (
     <Container>
-      <Logo source={{ uri: images.logo }} />
-      <Title></Title>
+      <Logo source={require('../../images/logo1.png')} resizeMode="contain" />
+      
      
-
-      
-      
-      <SocialLoginButton style={{marginTop : '5%'}} onPress={() => navigation.navigate('KakaoLogin')}>
-      <Image style={{width : '100%', height : '100%', resizeMode : 'cover', borderRadius : 50}} source={require('../../images/login/kakao_login_large_wide.png')} />
+      <View style={{marginTop : 130, flexDirection : 'row', alignItems : 'center'}}>
+      <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
+      <Text style={{fontSize : 13, color : 'rgb(190,190,190)', lineHeight : 13}}>  로그인 / 회원가입  </Text>
+      <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
+      </View>
+      <SocialLoginButton style={{backgroundColor : 'rgb(254, 229, 0)'}} onPress={() => navigation.navigate('KakaoLogin')}>
+      <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/kakao_logo.png')} />
+      <Text style={{color : 'black', fontSize : 16}}> 카카오로 시작하기</Text>
       </SocialLoginButton>
 
       <SocialLoginButton style={{backgroundColor : '#03C75A'}} >
-      <Image style={{width : '65%', height : '100%', resizeMode : 'cover'}} source={require('../../images/login/btnG_완성형.png')} />
+      <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
+      <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
       </SocialLoginButton>
 
       
@@ -50,9 +54,9 @@ const Container = styled.View`
 `;
 
 const Logo = styled.Image`
-  width: 50%;
-  height: 23%;
-  
+  width: 200px;
+  height: 200px;
+  border-radius : 100px;
 `;
 
 const Title = styled.Text`
@@ -86,8 +90,9 @@ const LoginButton = styled.TouchableOpacity`
 const SocialLoginButton = styled.TouchableOpacity`
 width: 100%;
 height: 50px;
+flex-direction : row;
 justify-content: center;
-border-radius : 50px;
+border-radius : 15px;
 align-items: center;
 margin-top : 10px;
 

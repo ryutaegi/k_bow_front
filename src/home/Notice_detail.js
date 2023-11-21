@@ -70,7 +70,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
                 }
             });
             setUser_name(response.data[0].nickname);
-            setBoard_time(response.data[0].created_at_korean);
+            setBoard_time(response.data[0].created_at);
             setTitle(response.data[0].title);
             setContent(response.data[0].content);
             
