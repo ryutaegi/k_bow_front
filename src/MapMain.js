@@ -10,6 +10,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as Linking from 'expo-linking';
 import { BottomSheet, ListItem } from 'react-native-elements';
 import { locations, locations_public } from "./LocationData";
+import { CardRowSimple, CardRowTwoChoice } from "./equipment/card";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -177,63 +178,20 @@ const MapMain = ({}) => {
         <View style={{
           width : "100%",
           paddingTop : 10,
-          flexDirection : 'row',
-          flexWrap : 'wrap',
+         
           //backgroundColor : 'white',
         }}>
           
          { place_name.map((_, index) => (
-          <TopBoardButton 
-          key = {index}
-          onPress={() => {moveMap(index)}}>
-          
-        <Image 
-        source={{uri: place_url[index]}} 
-        style={Style.image} 
-      />
-    
-        <View style={{
-          marginTop : -3,
-          paddingLeft : 8,
-          paddingRight : 8,
-          paddingBottom : 10,
-        }}>
-        <View style={{
-          flexDirection: 'row',          // 행 방향으로 요소를 배치합니다.
-          justifyContent: 'space-between', // 요소 사이에 가능한 한 많은 공간을 두어 요소를 양 끝에 정렬합니다.
-          alignItems: 'center',          // 요소를 수직 중앙에 정렬합니다. (선택 사항)
-      
-        }}>
-        <Text style={Style.title}>
-          {place_name[index]}
-          </Text>
-
-          {/* <View style={{
-            width : 12,
-            height : 12,
-            borderRadius : 10,
-            marginTop : 7,
-            marginRight : 0,
-            backgroundColor : 'rgb(50,200,50)',
-          }}>
-
-          </View> */}
-          
-          </View>
-          <View style={{
-            width : "30%",
-            height : 2.5,
-            marginBottom : 5,
-            backgroundColor : theme.wiget22
-          }}>
-
-          </View>
-          <Text style={Style.text}>
-          {place_address[index]}
-          </Text>
-          </View>
-          
-          </TopBoardButton>
+          <CardRowTwoChoice
+          key={index}
+        label="실내 활터"
+        heading={place_name[index]}
+        description={place_address[index]}
+        imageUrl={place_url[index]}
+        onActionPress={() => {moveMap(index)}}
+        onActionPress2={() => {link(place_link[index])}}
+          />
           ))}
           
           </View>
@@ -313,15 +271,14 @@ const MapMain = ({}) => {
 
         <ScrollView>
         {locations[citynum]?.map((_,index) => (
-          <BoardButton key={index} onPress={() => {moveMap_local(index)}}>
-          <Text style={{width : '20%'}}>{"  "}{locations[citynum][index]["name"]}</Text>
-          <Text style={{width : '66%'}}>{locations[citynum][index]["address"]}</Text>
-          <TouchableOpacity style={{
-            backgroundColor : theme.wiget2, width : 40, height : 50, alignItems : 'center', justifyContent : 'center'
-            }} onPress={() => {Linking.openURL(`tel:${locations[citynum][index]["phone"]}`)}}>
-      <Text style={{color : 'black'}}>{">"}</Text>
-      </TouchableOpacity>
-        </BoardButton>
+          <CardRowSimple
+          key={index}
+        label="지역 활터"
+        heading={locations[citynum][index]["name"]}
+        description={locations[citynum][index]["address"]}
+        onActionPress={() => {moveMap_local(index)}}
+        onActionPress2={() => {Linking.openURL(`tel:${locations[citynum][index]["phone"]}`)}}
+          />
         )
           
         )}
@@ -404,15 +361,15 @@ const MapMain = ({}) => {
 
         <ScrollView>
         {locations_public[citynum]?.map((_,index) => (
-          <BoardButton key={index} onPress={() => {moveMap_local(index)}}>
-          <Text style={{width : '20%'}}>{"  "}{locations_public[citynum][index]["name"]}</Text>
-          <Text style={{width : '66%'}}>{locations_public[citynum][index]["address"]}</Text>
-          <TouchableOpacity style={{
-            backgroundColor : theme.wiget2, width : 40, height : 50, alignItems : 'center', justifyContent : 'center'
-            }} onPress={() => {Linking.openURL(`tel:${locations_public[citynum][index]["phone"]}`)}}>
-      <Text style={{color : 'black'}}>{">"}</Text>
-      </TouchableOpacity>
-        </BoardButton>
+          <CardRowSimple
+          key={index}
+        label="공공 활터"
+        heading={locations_public[citynum][index]["name"]}
+        description={locations_public[citynum][index]["address"]}
+        onActionPress={() => {moveMap_local(index)}}
+        onActionPress2={() => {Linking.openURL(`tel:${locations_public[citynum][index]["phone"]}`)}}
+          />
+          
         )
           
         )}

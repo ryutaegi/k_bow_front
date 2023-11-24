@@ -26,6 +26,11 @@ export const locations_public = [[
         
 ];
 
-
+export const equipment_data = [
+    {id : 1, label : '중고거래', heading : '국궁신문', description : '국궁신문 벼룩시장', imageUrl : 'https://firebasestorage.googleapis.com/v0/b/kbow-d7676.appspot.com/o/logo%2Flogo1_20220624090008.jpg?alt=media&token=ba36a4dc-5518-4dfb-ad73-e5204314ab2b', pageUrl : 'http://www.archerynews.net/news_cs/cboard.asp?gu=3'},
+    {id : 2, label : '종합쇼핑몰', heading : '궁시백화점', description : '활, 화살, 완대, 암가드, 개량궁, 각궁, 활 관련 종합쇼핑몰', imageUrl : 'https://firebasestorage.googleapis.com/v0/b/kbow-d7676.appspot.com/o/logo%2F294420918_381459874108752_178256563885794672_n.png?alt=media&token=84b15922-0d82-47f6-b718-a063d957795d', pageUrl : 'http://bowfactory.co.kr/'},
+    {id : 3, label : '종합쇼핑몰', heading : '에이스아처리', description : '가야궁 온라인 쇼핑몰', imageUrl : 'https://firebasestorage.googleapis.com/v0/b/kbow-d7676.appspot.com/o/logo%2F195ef34a8d9933b21c6212b741f25645.jpg?alt=media&token=77f1673c-41c1-47c5-8cc1-456e4cddca1c', pageUrl : 'https://acea.kr/'},
+    {id : 4, label : '종합쇼핑몰', heading : '가야스포츠', description : '가야궁 홈페이지', imageUrl : 'https://firebasestorage.googleapis.com/v0/b/kbow-d7676.appspot.com/o/logo%2Fkaya.png?alt=media&token=9b7decf2-e3c4-4e53-bb6b-a84fdc057509', pageUrl : 'http://www.kayaarchery.co.kr/shop/list.php?ca_id=10&sort=it_sum_qty&sortodr=desc'},
+];
 
 

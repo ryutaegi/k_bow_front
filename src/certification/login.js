@@ -46,8 +46,8 @@ const Login = ({ navigation }) => {
         position: 'absolute',
         top: 0,
         left: 0,
-        borderBottomLeftRadius : 100,
-        borderBottomRightRadius : 100,
+        borderBottomLeftRadius : 70,
+        borderBottomRightRadius : 70,
         zIndex : 10,
       }} >
 <Animated.View style={{alignItems : 'center', marginTop : logomargin}}>
