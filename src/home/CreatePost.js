@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, Alert } from 'react-native';
 import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
@@ -46,7 +46,7 @@ const CreatePost = ({ route, navigation }) => {
           }).catch(function (error) {
             console.error('게시글 작성 중 에러 발생:', error);
             if (error.response && error.response.data && error.response.data.error) {
-                alert(error.response.data.error); // 서버로부터 받은 오류 메시지를 알림으로 표시
+                Alert.alert("안내",error.response.data.error); // 서버로부터 받은 오류 메시지를 알림으로 표시
             } else {
                 alert('Unknown error occurred'); // 알 수 없는 오류
             }
@@ -88,7 +88,7 @@ const StyledInput = styled.TextInput`
 `;
 
 const SubmitButton = styled.TouchableOpacity`
-  background-color: ${({ theme }) => theme.mainColor4};
+  background-color: ${({ theme }) => theme.wiget22};
   padding: 10px;
   align-items: center;
   border-radius: 5px;

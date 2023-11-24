@@ -118,7 +118,7 @@ const StyledInput = styled.TextInput`
 `;
 
 const SubmitButton = styled.TouchableOpacity`
-  background-color: ${({ theme }) => theme.mainColor4};
+  background-color: ${({ theme }) => theme.wiget22};
   padding: 10px;
   align-items: center;
   border-radius: 5px;

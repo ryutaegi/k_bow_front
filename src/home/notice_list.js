@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Button, FlatList, Alert } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, Alert, TOuchablele } from 'react-native';
 import axios from 'axios';
 import { UserContext } from '../contexts';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -91,16 +91,18 @@ const Notice_list = ({route, navigation}) => {
         </ScrollView>
         {
         board_type !== 1 && (
+          
             <SpeedDial
-            color='#254EDB'
+            color={theme.wiget22}
             isOpen={open}
             icon={{ name: 'edit', color: '#fff' }}
             openIcon={{ name: 'close', color: '#fff' }}
-            onOpen={() => setOpen(!open)}
-            onClose={() => setOpen(!open)}
+            onOpen={() => navigation.navigate("create_post", {board_type : board_type})}
+            onClose={() => setOpen(false)}
+            
           >
             <SpeedDial.Action
-            color='#254EDB'
+            color={theme.wiget22}
               icon={{ name: 'add', color: '#fff' }}
               title="글쓰기"
                 onPress={() => navigation.navigate("create_post", {board_type : board_type})}

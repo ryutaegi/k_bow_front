@@ -12,6 +12,7 @@ import { Linking } from 'react-native';
 import axios from 'axios';
 import getEnvVars from "../../environmant";
 import styled, {ThemeContext} from 'styled-components/native';
+import { Dimensions } from 'react-native';
 
 
 const JoinPresenter = () => {
@@ -23,6 +24,8 @@ const JoinPresenter = () => {
   const { dispatch } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
   const theme = useContext(ThemeContext);
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
 
   const openURL = (url) => {
     Linking.canOpenURL(url)
@@ -111,13 +114,15 @@ const JoinPresenter = () => {
     <View style={styles.container}>
   
       
-      <View style={{marginTop : 100,alignItems : 'center', flexDirection : 'column'}}>
-    <Logo source={require('../../images/logo1.png')} resizeMode="contain" />
-    <Text style={{fontSize : 18, marginTop : 20}}>회원가입</Text>
-    <Text style={{fontSize : 15, margin : 15, color : 'rgb(170,170,170)'}}>회원가입 전, 활로 약관을 확인해 주세요</Text>
+      <View style={{alignItems : 'center', flexDirection : 'column',backgroundColor : theme.wiget22,
+    borderBottomLeftRadius : 100,
+    borderBottomRightRadius : 100}}>
+    <Logo style={{marginTop : windowHeight*0.2}} source={require('../../images/logo.png')} resizeMode="contain" />
+    <Text style={{fontSize : 18, marginTop : 20, color : 'white'}}>회원가입</Text>
+    <Text style={{fontSize : 15, margin : 15, color : 'rgb(210,210,210)'}}>회원가입 전, 활로 약관을 확인해 주세요</Text>
     </View>
 
-      <View style={{marginBottom : 30}}>
+      <View style={{marginBottom : 30, padding : 20}}>
       <View style={styles.switchContainer}>
         <View style={{flexDirection : 'row', alignItems : "center"}}>
         <Switch thumbColor={allCheck ? theme.wiget22 : '#f4f3f4'}
@@ -178,7 +183,6 @@ const JoinPresenter = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor : 'white',
     justifyContent : 'space-between'
     },

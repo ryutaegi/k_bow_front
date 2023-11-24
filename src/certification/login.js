@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { images } from '../utils/images';
+import { Dimensions, Animated } from 'react-native';
 
-import styled from 'styled-components/native';
+import styled, {ThemeContext} from 'styled-components/native';
 
 
 const Login = ({ navigation }) => {
@@ -11,20 +12,53 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const { spinner } = useContext(ProgressContext);
   const { dispatch } = useContext(UserContext);
-
+  const theme = useContext(ThemeContext);
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+  const initialWidth = new Animated.Value(windowWidth);
+  const initialHeight = new Animated.Value(windowHeight+100);
+  const logomargin = Animated.subtract(initialHeight, new Animated.Value(300));
  
 
+  useEffect(() => {
+    // 1초 후에 애니메이션 시작
+    setTimeout(() => {
+     
 
+      Animated.timing(initialHeight, {
+        toValue: windowHeight*0.6, // 최종 높이
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }, 1000);
+  }, []);
  
  
   
 
   return (
     <Container>
-      <View style={{alignItems : 'center', marginTop : 170}}>
-      <Logo source={require('../../images/logo1.png')} resizeMode="contain" />
-     
-     </View>
+      
+      <Animated.View style={{
+        backgroundColor: theme.wiget22,
+        width: '100%',
+        height: initialHeight,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        borderBottomLeftRadius : 100,
+        borderBottomRightRadius : 100,
+        zIndex : 10,
+      }} >
+<Animated.View style={{alignItems : 'center', marginTop : logomargin}}>
+      <Logo source={require('../../images/logo.png')} resizeMode="contain" />
+      
+     </Animated.View>
+      </Animated.View>
+      
+      {/* <View style={{backgroundColor : theme.wiget22, width : '100%', borderBottomEndRadius : 100, borderBottomLeftRadius : 100}}>
+      
+     </View> */}
 
      <View style={{marginBottom : 100}}>
       <View style={{marginTop : 0, flexDirection : 'row', justifyContent : 'space-between', alignItems : 'center'}}>
@@ -50,9 +84,9 @@ const Login = ({ navigation }) => {
 
 const Container = styled.View`
   flex: 1;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 20px;
+
   padding-top : 0px;
   background-color : white;
 `;

@@ -14,14 +14,14 @@ const localhost =
 
 const ENV = {
  dev: {
-   apiUrl: url
+   apiUrl: url_loadbalance
  },
  staging: {
-   apiUrl: url
+   apiUrl: url_loadbalance
    // Add other keys you want here
  },
  prod: {
-   apiUrl:url
+   apiUrl:url_loadbalance
  }
 };
 

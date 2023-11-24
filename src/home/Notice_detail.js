@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import {Modal, View, Text, TouchableOpacity, TextInput, Button } from 'react-native';
+import {Modal, View, Text, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
 import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
@@ -14,15 +14,14 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
   const [content, setContent] = useState('');
   const [user_name, setUser_name] = useState('');
   const [board_time, setBoard_time] = useState('');
+  const [maker_id, setMaker_id] = useState(0);
   const { user }  = useContext(UserContext);
   const board_type = route.params.board_type;
   const board_id = route.params.board_id;
   const [open, setOpen] = useState(false);
     
 
-  const toggleOverlay = () => {
-    setModalVisible(!modalVisible);
-  };
+ 
 
   const delete_post = async () => {
     try {
@@ -73,6 +72,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
             setBoard_time(response.data[0].created_at);
             setTitle(response.data[0].title);
             setContent(response.data[0].content);
+            setMaker_id(response.data[0].user_id);
             
         }catch(e)
         {console.log(e);}
@@ -101,7 +101,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
       
     </View>
     <SpeedDial
-    color='#254EDB'
+    color={theme.wiget22}
     isOpen={open}
     icon={{ name: 'edit', color: '#fff' }}
     openIcon={{ name: 'close', color: '#fff' }}
@@ -109,19 +109,29 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
     onClose={() => setOpen(!open)}
   >
     <SpeedDial.Action
-    color='#254EDB'
-      icon={{ name: 'add', color: '#fff' }}
-      title="수정"
-      onPress={() => {
-        navigation.navigate("update_post", {board_type : board_type, board_id : board_id, title : title, content : content} )
-      }}
-    />
-    <SpeedDial.Action
-    color='#254EDB'
-      icon={{ name: 'delete', color: '#fff' }}
-      title="삭제"
-      onPress={() => {delete_post()}}
-    />
+      color={theme.wiget22}
+        icon={{ name: 'delete', color: '#fff' }}
+        title="신고"
+        onPress={() => {setOpen(!open); Alert.alert("신고","신고하기")}}
+      />
+    {user.user_id == maker_id ? 
+    (<><SpeedDial.Action
+      color={theme.wiget22}
+        icon={{ name: 'add', color: '#fff' }}
+        title="수정"
+        onPress={() => {
+          setOpen(!open);
+          navigation.navigate("update_post", {board_type : board_type, board_id : board_id, title : title, content : content} )
+        }}
+      />
+      <SpeedDial.Action
+      color={theme.wiget22}
+        icon={{ name: 'delete', color: '#fff' }}
+        title="삭제"
+        onPress={() => {setOpen(!open); delete_post()}}
+      /></>):null}
+      
+    
   </SpeedDial>
   </>
   );
