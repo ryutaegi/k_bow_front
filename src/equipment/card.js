@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import styled, { ThemeContext } from "styled-components/native";
+import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 
 export const CardRow = ({
   label,
@@ -75,6 +77,112 @@ export const CardRowSimple = ({
   );
 };
 
+export const CardRowTitleContent = ({
+  heading,
+  description,
+  ispublic,
+  onPress,
+  keys,
+}) => {
+  const theme = useContext(ThemeContext);
+  return (
+    <TouchableOpacity key={keys} onPress={onPress} style={[styles.cardContainer, {marginTop : 10, marginBottom : 5,}]}>
+      
+        
+      
+          {/* {label && (
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>{label}</Text>
+            </View>
+          )} */}
+          <View style={{flexDirection : 'row', alignItems : 'center'}}>
+            {ispublic == 0 ? 
+            <MaterialIcons style={styles.iconStyle} name="group" size={30} color={theme.wiget22} />
+            :
+            <MaterialIcons style={styles.iconStyle} name="group" size={30} color={theme.wiget32} />
+          }
+          
+          <View>
+          <Text style={styles.cardHeading}>{heading}</Text>
+          <Text style={styles.cardDescription}>{description}</Text>
+          </View>
+          </View>
+        
+      
+    </TouchableOpacity>
+  );
+};
+
+export const CardRowTitleContent2 = ({
+  heading,
+  description,
+  ispublic,
+  onPress,
+  keys,
+}) => {
+  const theme = useContext(ThemeContext);
+  return (
+    <TouchableOpacity key={keys} onPress={onPress} style={[styles.cardContainer, {margin : 10, marginTop : 5, marginBottom : 5,}]}>
+      
+        
+      
+          {/* {label && (
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>{label}</Text>
+            </View>
+          )} */}
+          <View style={{flexDirection : 'row', alignItems : 'center', justifyContent : 'space-between'}}>
+            
+          
+          <View>
+          <Text style={styles.cardHeading}>{heading}</Text>
+          <Text style={styles.cardDescription}>{description}</Text>
+          </View>
+          {ispublic == 0 ? 
+             <AntDesign name="unlock" size={24} color={theme.wiget22} />
+            :
+            <AntDesign name="lock" size={24} color={theme.wiget32} />
+          }
+          </View>
+        
+      
+    </TouchableOpacity>
+  );
+};
+
+export const BoardCard = ({
+  heading,
+  description,
+  ispublic,
+  onPress,
+  key,
+}) => {
+  const theme = useContext(ThemeContext);
+  return (
+    <TouchableOpacity key={key} onPress={onPress} style={[styles.cardContainer, {margin : 0, marginTop : 5, marginBottom : 5,}]}>
+      
+        
+      
+          {/* {label && (
+            <View style={styles.labelContainer}>
+              <Text style={styles.labelText}>{label}</Text>
+            </View>
+          )} */}
+          <View style={{flexDirection : 'row', alignItems : 'center', justifyContent : 'space-between'}}>
+            
+          
+          <View>
+          <Text style={styles.cardHeading}>{heading}</Text>
+          <Text style={[styles.cardDescription, {marginTop : 20}]}>{description}</Text>
+          </View>
+          
+          </View>
+        
+      
+    </TouchableOpacity>
+  );
+};
+
 export const CardRowTwoChoice = ({
   label,
   heading,
@@ -116,6 +224,39 @@ export const CardRowTwoChoice = ({
   );
 };
 
+
+
+export const CustomCard = ({
+  title,
+  children,
+  onPress,
+  iscard,
+}) => {
+  const theme = useContext(ThemeContext);
+  return (
+    <View style={[styles.cardContainer, { marginHorizontal: 16, marginTop: 16, flexDirection : 'column' }]}>
+      <View style={[styles.contentContainer, { justifyContent: 'space-between', alignItems: 'center' }]}>
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+          {/* <Image source={require('path-to-your-icon.png')} style={styles.iconStyle} /> */}
+          <View style={styles.textContainer}>
+            <Text style={styles.cardHeading}>{title}</Text>
+          </View>
+        </View>
+        {iscard !== 0 ?
+        <TouchableOpacity
+          style={[styles.actionButton,{backgroundColor : theme.wiget22}]}
+          onPress={onPress}
+        >
+          <Text style={styles.buttonText}>추가하기</Text>
+        </TouchableOpacity>
+        : <Text style={{fontSize : 26}}>{' '}</Text> }
+      </View>
+      <View>
+        {children}
+      </View>
+    </View>
+  );
+};
 
 
 const styles = StyleSheet.create({
@@ -178,5 +319,17 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 14,
     color: "#fff",
+  },
+  actionButton: {
+    backgroundColor: 'blue',
+    borderRadius: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignSelf: 'flex-end',
+  },
+  iconStyle: {
+    width: 30, // Adjust your icon size
+    height: 30, // Adjust your icon size
+    marginRight: 15,
   },
 });

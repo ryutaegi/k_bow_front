@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
   const windowHeight = Dimensions.get('window').height;
   const initialWidth = new Animated.Value(windowWidth);
   const initialHeight = new Animated.Value(windowHeight+100);
-  const logomargin = Animated.subtract(initialHeight, new Animated.Value(300));
+  const logomargin = Animated.subtract(initialHeight, new Animated.Value(320));
  
 
   useEffect(() => {
@@ -51,8 +51,8 @@ const Login = ({ navigation }) => {
         zIndex : 10,
       }} >
 <Animated.View style={{alignItems : 'center', marginTop : logomargin}}>
-      <Logo source={require('../../images/logo.png')} resizeMode="contain" />
-      
+      <Logo source={require('../../images/logo3.png')} resizeMode="contain" />
+      <Title>활 로</Title>
      </Animated.View>
       </Animated.View>
       
@@ -94,12 +94,14 @@ const Container = styled.View`
 const Logo = styled.Image`
   width: 200px;
   height: 200px;
-  border-radius : 100px;
+  border-radius : 0px;
 `;
 
 const Title = styled.Text`
-  font-size: 18px;
-  margin-top: 40px;
+  font-size: 35px;
+  font-weight : bold;
+  color : white;
+  margin-top: 30px;
 `;
 
 const Input = styled.TextInput`

@@ -113,22 +113,7 @@ function HomeTab() {
         options={{
           title: "게시글 상세",
           headerShown: true,
-          headerRight: () => (
-            <MenuProvider>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                <Icon
-                  name="menu"
-                  size={30}
-                  color="#000"
-                  style={{ marginRight: 10, marginTop: 10 }}
-                />
-              </TouchableOpacity>
-            </MenuProvider>
-          ),
+          
         }}
       >
         {(props) => (

@@ -6,6 +6,7 @@ import axios from 'axios';
 import UpdatePost from './UpdatePost';
 import { SpeedDial } from '@rneui/themed';
 import getEnvVars from '../../environmant';
+import { BoardCard } from '../equipment/card';
 
 const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => {
   const { apiUrl } = getEnvVars();
@@ -85,15 +86,19 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
   return (
     <>
     <View style={{ padding: 20, }}>
-
+      
 
        
 
       <UserView>{user_name}</UserView>
-      <UserTime>{board_time.slice(0, 10)} {board_time.slice(11, 16)}</UserTime>
-      <TitleText>{title}</TitleText>
-      <ContentText>{content}</ContentText>
+      <UserTime>게시일시 : {board_time.slice(0, 10)} {board_time.slice(11, 16)}</UserTime>
       <HorizontalLine/>
+      <BoardCard
+        heading={title}
+        description={content}
+      />
+      
+      
 
 
       
@@ -173,6 +178,8 @@ const HorizontalLine = styled.View`
 border-bottom-width: 0.85px;
 border-bottom-color: gray;
 width : 100%;
+margin-top : 20px;
+margin-bottom : 20px;
 
 `;
 const SubmitButton = styled.TouchableOpacity`

@@ -14,8 +14,9 @@ import { UserContext } from "../../contexts";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
-import { SpeedDial } from '@rneui/themed';
+import { SpeedDial } from "@rneui/themed";
 import { ScrollView } from "react-native-gesture-handler";
+import { CustomCard } from "../../equipment/card";
 
 const GroupDetail = ({ route, navigation }) => {
   const groupDetail_id = route.params.group_id;
@@ -29,7 +30,6 @@ const GroupDetail = ({ route, navigation }) => {
   const [countList, setCountList] = useState([]);
   const [open, setOpen] = useState(false);
 
-
   const withdraw = () => {
     axios({
       method: "post",
@@ -37,11 +37,11 @@ const GroupDetail = ({ route, navigation }) => {
       headers: {
         Authorization: `${user.jwtToken}`,
       },
-      data: { group_id:  groupDetail_id},
+      data: { group_id: groupDetail_id },
     })
       .then((response) => {
         console.log(response);
-        navigation.navigate('board1');
+        navigation.navigate("board1");
       })
       .catch(function (e) {
         // console.log(e);
@@ -71,7 +71,7 @@ const GroupDetail = ({ route, navigation }) => {
           alert("안내", "요청 생성 중에 오류가 발생했습니다.");
         }
       });
-  }
+  };
 
   const groupdelete = () => {
     axios({
@@ -80,11 +80,11 @@ const GroupDetail = ({ route, navigation }) => {
       headers: {
         Authorization: `${user.jwtToken}`,
       },
-      data: { group_id:  groupDetail_id},
+      data: { group_id: groupDetail_id },
     })
       .then((response) => {
         console.log(response);
-        navigation.navigate('board1');
+        navigation.navigate("board1");
       })
       .catch(function (e) {
         // console.log(e);
@@ -114,44 +114,43 @@ const GroupDetail = ({ route, navigation }) => {
           alert("안내", "요청 생성 중에 오류가 발생했습니다.");
         }
       });
-  }
-  
-  
-
-
-
+  };
 
   useEffect(() => {
     const gets = async () => {
       try {
-        const response = await axios.get(apiUrl + "/api/group/rank/"+groupDetail_id, {
-          headers: {
-            Authorization: `${user.jwtToken}`,
-          },
-        });
-       console.log(response.data)
+        const response = await axios.get(
+          apiUrl + "/api/group/rank/" + groupDetail_id,
+          {
+            headers: {
+              Authorization: `${user.jwtToken}`,
+            },
+          }
+        );
+        console.log(response.data);
         const _inputData = response.data.sortedRatioResults.map((rowData) => ({
-          user_id : rowData.user_id,
-          nickname : rowData.nickname,
+          user_id: rowData.user_id,
+          nickname: rowData.nickname,
           // is_push : JSON.parse(response.is_push),
           // pushed_like_count : JSON.parse(response.pushed_like_count),
-          average : rowData.ratio * 5,
+          average: rowData.ratio * 5,
           //shot_day : rowData.elementCount,
         }));
-        const __inputData = response.data.sortedElementCountResults.map((rowData) => ({
-          user_id : rowData.user_id,
-          nickname : rowData.nickname,
-          // is_push : JSON.parse(response.is_push),
-          // pushed_like_count : JSON.parse(response.pushed_like_count),
-          
-          shot_day : parseInt(rowData.elementCount),
-        }));
+        const __inputData = response.data.sortedElementCountResults.map(
+          (rowData) => ({
+            user_id: rowData.user_id,
+            nickname: rowData.nickname,
+            // is_push : JSON.parse(response.is_push),
+            // pushed_like_count : JSON.parse(response.pushed_like_count),
+
+            shot_day: parseInt(rowData.elementCount),
+          })
+        );
 
         setUserList(_inputData);
-       setCountList(__inputData);
+        setCountList(__inputData);
         console.log(_inputData);
         console.log(__inputData);
-
       } catch (e) {
         console.log("에러가 발생했습니다.", e);
       }
@@ -166,13 +165,13 @@ const GroupDetail = ({ route, navigation }) => {
       headers: {
         Authorization: `${user.jwtToken}`,
       },
-      data: { group_id:  groupDetail_id},
+      data: { group_id: groupDetail_id },
     })
       .then((response) => {
         const _inputData = response.data.map((rowData) => ({
-          user_id : rowData.user_id,
-          image_URL : rowData.image_url,
-          user_name : rowData.nickname,
+          user_id: rowData.user_id,
+          image_URL: rowData.image_url,
+          user_name: rowData.nickname,
         }));
         SetMemberlist(_inputData);
       })
@@ -208,65 +207,51 @@ const GroupDetail = ({ route, navigation }) => {
 
   return (
     <>
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
-    <RankingText>
-        <RankingText1>  시수 순위</RankingText1>
-        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
-       
-        </TouchableOpacity>
-        </RankingText>
-      <HorizontalLine/>
-      </View>
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
-      {userList.slice(0,3).map((group, index) => (
-        <Container
+      <CustomCard title="시수 순위" iscard={0}>
+        <HorizontalLine />
+
+        {userList.slice(0, 3).map((group, index) => (
+          <View 
           key={group.nickname}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          
-        >
-          
-            <Title><Content>{index+1}   |</Content>   {group.nickname}</Title>
+          style={styles.cardContainer}>
+          <View
+            key={group.nickname}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Title>
+              <Content>{index + 1} |</Content> {group.nickname}
+            </Title>
             <Content>평 {group.average}중 </Content>
-           
-            
             {/* <AntDesign name="hearto" size={24} color="black" />
             <Text>
               {group.pushed_like_count}
             </Text> */}
-            
-            
-          
-        
-        </Container>
-      ))}
-    
-    </View>
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
-    <RankingText>
-        <RankingText1>  습사 순위</RankingText1>
-        <TouchableOpacity onPress={() => {navigation.navigate('GroupAdd')}}>
-       
-        </TouchableOpacity>
-        </RankingText>
-      <HorizontalLine/>
-      </View>
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
-    {countList.slice(0,3).map((group, index) => (
-        <Container
+          </View>
+          </View>
+        ))}
+      </CustomCard>
+
+      <CustomCard title="습사 순위" iscard={0}>
+        <HorizontalLine />
+        {countList.slice(0, 3).map((group, index) => (
+          <View 
           key={group.nickname}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          
-        >
-          
-            <Title><Content>{index+1}   |</Content>    {group.nickname}</Title>
+          style={styles.cardContainer}>
+          <View
+            key={group.nickname}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Title>
+              <Content>{index + 1} |</Content> {group.nickname}
+            </Title>
             <Content> {group.shot_day}일 습사 </Content>
             {/* <View>
             <AntDesign name="hearto" size={24} color="black" />
@@ -274,94 +259,153 @@ const GroupDetail = ({ route, navigation }) => {
               {group.pushed_like_count}
             </Text>
             </View> */}
-          
-        
-        </Container>
-      ))}
-    
-    </View>
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
-    <CommunityText>
-        <CommunityText1>  그룹원</CommunityText1>
-        </CommunityText>
-      <HorizontalLine/>
-      </View>
-            <ScrollView>
-    <View style={{ backgroundColor: theme.white, padding: 15, 
-      flexDirection : "row", justifyContent : "space-around",
-      flexWrap : 'wrap',
-      }}>
-        {memberlist.map((member, index) => (
-          <View 
-          key={member.user_id}
-          style={{flexDirection : "column", alignItems : "center",
-        marginLeft : 10,
-        marginRight : 10,}}>
-          <MemberPrifile source={{uri : member.image_URL}}></MemberPrifile>
-          <Text style={{marginTop : 5, fontWeight : 'bold'}}>{member.user_name}</Text>
+          </View>
           </View>
         ))}
-    </View>
-    </ScrollView>
-    <SpeedDial
-            color={theme.wiget22}
-            isOpen={open}
-            icon={{ name: 'info', color: '#fff' }}
-            openIcon={{ name: 'close', color: '#fff' }}
-            onOpen={() => setOpen(!open)}
-            onClose={() => setOpen(!open)}
+      </CustomCard>
+
+      <CustomCard title="그룹원" iscard={0}>
+        <HorizontalLine />
+        <ScrollView>
+          <View
+            style={{
+              backgroundColor: theme.white,
+              padding: 10,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              flexWrap: "wrap",
+            }}
           >
-            {group_maker_id == user.user_id ? (
-            <SpeedDial.Action
-            color='#254EDB'
-              icon={{ name: 'add', color: '#fff' }}
-              title="그룹 삭제하기"
-                onPress={() => Alert.alert(
-                  "그룹 삭제하기",
-                  "그룹을 삭제하시겠습니까?",
-                  [
-                    {
-                      text: "아니오",
-                      onPress: () => console.log("Cancel Pressed"),
-                      style: "cancel",
-                    },
-                    { text: "예", onPress: () => groupdelete() },
-                  ],
-                  { cancelable: false }
-                )}
-              
-            />
-            ):( 
-            <SpeedDial.Action
-            color='#254EDB'
-              icon={{ name: 'add', color: '#fff' }}
-              title="그룹 탈퇴하기"
-                onPress={() => Alert.alert(
-                  "그룹 탈퇴하기",
-                  "그룹에서 탈퇴하시겠습니까?",
-                  [
-                    {
-                      text: "아니오",
-                      onPress: () => console.log("Cancel Pressed"),
-                      style: "cancel",
-                    },
-                    { text: "예", onPress: () => withdraw() },
-                  ],
-                  { cancelable: false }
-                )}
-              
-            />)}
-            
-            
-            
-           
-          </SpeedDial>
+            {memberlist.map((member, index) => (
+              <View
+                key={member.user_id}
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginLeft: 10,
+                  marginRight: 10,
+                  marginBottom : 20,
+                }}
+              >
+                <MemberProfile
+                  source={{ uri: member.image_URL }}
+                ></MemberProfile>
+                <Text style={{ marginTop: 5, fontWeight: "bold" }}>
+                  {member.user_name}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </CustomCard>
+
+      <SpeedDial
+        color={theme.wiget22}
+        isOpen={open}
+        icon={{ name: "info", color: "#fff" }}
+        openIcon={{ name: "close", color: "#fff" }}
+        onOpen={() => setOpen(!open)}
+        onClose={() => setOpen(!open)}
+      >
+        {group_maker_id == user.user_id ? (
+          <SpeedDial.Action
+            color="#254EDB"
+            icon={{ name: "add", color: "#fff" }}
+            title="그룹 삭제하기"
+            onPress={() =>
+              Alert.alert(
+                "그룹 삭제하기",
+                "그룹을 삭제하시겠습니까?",
+                [
+                  {
+                    text: "아니오",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "예", onPress: () => groupdelete() },
+                ],
+                { cancelable: false }
+              )
+            }
+          />
+        ) : (
+          <SpeedDial.Action
+            color="#254EDB"
+            icon={{ name: "add", color: "#fff" }}
+            title="그룹 탈퇴하기"
+            onPress={() =>
+              Alert.alert(
+                "그룹 탈퇴하기",
+                "그룹에서 탈퇴하시겠습니까?",
+                [
+                  {
+                    text: "아니오",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "예", onPress: () => withdraw() },
+                ],
+                { cancelable: false }
+              )
+            }
+          />
+        )}
+      </SpeedDial>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... other styles remain the same
+    cardContainer: {
+      backgroundColor: "#ffffff",
+      borderRadius: 8,
+      padding: 16,
+      paddingTop : 10,
+      paddingBottom : 10,
+      elevation: 3,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      marginBottom: 0,
+    },
+    contentContainer: {
+      flexDirection: "row",
+      marginBottom: 0, // Add some space above the button
+    },
+    cardImage: {
+      width: 150, // Adjust the size accordingly
+      height: 150, // Adjust the size accordingly
+      //borderRadius: 25, // Make it round
+      marginRight: 16, // Add space between the image and the text
+      resizeMode: "contain",
+    },
+    labelContainer: {
+      alignSelf: "flex-start", // This will align the label to the left
+      marginBottom: 8, // Add some margin below the label if needed
+      backgroundColor: "rgb(210,210,210)",
+      borderRadius: 7,
+      padding: 3,
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+    textContainer: {
+      flex: 1, // Take up all available space
+      justifyContent: "center", // Center the text vertically
+    },
+    labelText: {
+      fontSize: 12,
+      color: "#000",
+    },
+    cardHeading: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "#000",
+    },
+    cardDescription: {
+      fontSize: 14,
+      color: "#000",
+    },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -404,51 +448,49 @@ const styles = StyleSheet.create({
   // ... other styles remain the same
 });
 
-const MemberPrifile = styled.Image`
-width : 70px;
-height : 70px;
-border-radius : 50px;
-background-color : ${({theme}) => theme.wiget22}
+const MemberProfile = styled.Image`
+  width: 70px;
+  height: 70px;
+  border-radius: 50px;
+  background-color: ${({ theme }) => theme.wiget22};
 `;
 
 const HorizontalLine = styled.View`
-width : 100%;
-border-bottom-width: 0.85px;
-border-bottom-color: ${({ theme }) => theme.gray2};
-margin-vertical: 3px; 
+  width: 100%;
+  border-bottom-width: 0.85px;
+  border-bottom-color: ${({ theme }) => theme.gray2};
+  margin-vertical: 3px;
+  margin-bottom: 10px;
 `;
 
 const RankingText = styled.View`
-flex-direction: row;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  top : 0px;
-  margin-bottom : 3px;
-  
+  top: 0px;
+  margin-bottom: 3px;
 `;
 
 const RankingText1 = styled.Text`
-color : ${({ theme }) => theme.black};
-  font-size : 16px;
-
-  `;
+  color: ${({ theme }) => theme.black};
+  font-size: 16px;
+`;
 
 const CommunityText = styled.View`
-flex-direction: row;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  top : 0px;
-  margin-bottom : 3px;
-  
+  top: 0px;
+  margin-bottom: 3px;
 `;
 
 const CommunityText1 = styled.Text`
-color : ${({ theme }) => theme.black};
-  font-size : 18px;
-  font-weight : bold;
-  `;
+  color: ${({ theme }) => theme.black};
+  font-size: 18px;
+  font-weight: bold;
+`;
 
 const Container = styled.TouchableOpacity`
   align-content: center;
@@ -460,24 +502,20 @@ const Container = styled.TouchableOpacity`
   margin-bottom: 10px;
   flex-direction: column;
   padding-left: 10px;
-  padding-right : 10px;
+  padding-right: 10px;
   elevation: 5;
 `;
 
 const Title = styled.Text`
-
-  
   font-size: 13px;
   font-weight: bold;
-
 `;
 const Content = styled.Text`
- font-size : 13px;
- font-weight : normal;
+  font-size: 13px;
+  font-weight: normal;
 `;
 
 const Footer = styled.Text`
-
   font-size: 12px;
   margin-top: 10px;
   color: ${({ theme }) => theme.gray1};

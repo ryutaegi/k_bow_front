@@ -15,6 +15,7 @@ import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { CardRowTitleContent2 } from "../../equipment/card";
 
 const GroupAdd = ({ navigation }) => {
   const theme = useContext(ThemeContext);
@@ -196,36 +197,26 @@ const GroupAdd = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: theme.white, padding: 15 }}>
+    <View style={{ backgroundColor: theme.white, padding: 0 }}>
       <ScrollView>
       {inputData.map((group, index) => (
-        <Container
-          key={index}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            if (group.is_password == 0)
-              createTwoButtonAlert(group.group_name, group.group_id);
-            else
-            {
-               setPromptVisible(true);
-               setPress_group_id(group.group_id);
-            }
-          }}
-        >
-          <View>
-            <Title>{group.group_name}</Title>
-            <Content>{group.group_description}</Content>
-          </View>
-          {group.is_password == 1 ? (
-            <AntDesign name="lock" size={24} color={theme.wiget32} />
-          ) : (
-            <AntDesign name="unlock" size={24} color={theme.wiget22} />
-          )}
-        </Container>
+        <CardRowTitleContent2
+        keys={index}
+        onPress={() => {
+          if (group.is_password == 0)
+            createTwoButtonAlert(group.group_name, group.group_id);
+          else
+          {
+             setPromptVisible(true);
+             setPress_group_id(group.group_id);
+          }
+        }}
+        heading={group.group_name}
+        description={group.group_description}
+        ispublic={group.is_password}
+        />
+
+        
       ))}
       <PasswordPrompt
         isVisible={promptVisible}

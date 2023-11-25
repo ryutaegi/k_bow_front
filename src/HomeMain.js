@@ -12,6 +12,7 @@ import { UserContext } from './contexts';
 import getEnvVars from '../environmant';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { CustomCard, CardRowSimple, CardRowTitleContent } from './equipment/card';
 
 const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
@@ -192,53 +193,29 @@ const HomeMain = ( {navigation} ) => {
 
       </__communityButton>
       
-      <__communityButton1>
-      <CommunityText>
-        <CommunityText1>  그룹</CommunityText1>
-        <TouchableOpacity onPress={() => 
+      
+       <CustomCard
+       title="그룹"
+       onPress={() => 
         {
           if(user.user_id == null)
           {Alert.alert("안내", "로그인이 필요합니다");}
           else
           {navigation.navigate('GroupAdd')}
         }
-          }>
-        <Text style={{color:'gray'}}>추가하기 <Ionicons name="add" size={16} color="gray" /></Text>
-        </TouchableOpacity>
-        </CommunityText>
-      <HorizontalLine style={{marginBottom : 15}}/>
-      
-      {inputData.length > 0 ?
+          }
+        iscard={inputData.length}
+       >
+        {inputData.length > 0 ?
       (
         inputData.map((group, index) => (
-          <Container
-            key={index}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              overflow : 'hidden',
-              backgroundColor : theme.white
-            }}
-            onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id, group_maker_id : group.group_maker_id})}}
-          >
-            <View style={{flexDirection : 'row', alignItems : 'center'}}>
-            {group.is_password==1 ? (
-              <MaterialIcons style={{marginLeft : 15}} name="group" size={24} color={theme.wiget32} />
-            ) : (
-              <MaterialIcons style={{marginLeft : 15}} name="group" size={24} color={theme.wiget22} />
-            )}
-
-            <View style={{marginLeft : 15}}>
-              <Title>{group.group_name}</Title>
-              {/* <Content>{group.group_description}</Content> */}
-            </View>
-            </View>
-            <Text style={{marginRight : 15, color : 'rgb(170,170,170)'}}>
-              {'>'}
-            </Text>
-            
-          </Container>
+          <CardRowTitleContent
+          keys={group.id}
+        heading={group.group_name}
+        description={group.group_description}
+        ispublic={group.is_password}
+        onPress={() => {navigation.navigate('GroupDetail', {group_id : group.group_id, group_maker_id : group.group_maker_id})}}
+        />
         ))
       ) : (
       <GroupAdd onPress={() => {
@@ -255,15 +232,9 @@ const HomeMain = ( {navigation} ) => {
       </GroupAdd>
       )
       }
-      
-      
-      
-       
-       
-       
-       
-      </__communityButton1>
-       
+        
+
+       </CustomCard>
       </ScrollView>
     );
 };
@@ -443,7 +414,7 @@ width: 100%;
   justify-content: center;
   flex : 1;
   border-radius : 10px;
-  margin-top : 5px;
+  margin-top : 20px;
   flex-direction : row;
  align-item : center;
   padding-top : 30px;
