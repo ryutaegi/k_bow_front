@@ -29,7 +29,10 @@
       ]
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7870001402351690~3123151500"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,8 +45,10 @@
       ],
       "package": "com.taeyou.reactexam",
       "config" :  {
-        "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" }
+        "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" },
+        "googleMobileAdsAppId": "ca-app-pub-7870001402351690~6675399614"
       }
+     
     },
     "web": {
       "favicon": "./assets/favicon.png"

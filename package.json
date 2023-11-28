@@ -28,6 +28,7 @@
     "axios": "^1.4.0",
     "d3": "^7.8.5",
     "expo": "~48.0.18",
+    "expo-ads-admob": "^13.0.0",
     "expo-camera": "~13.2.1",
     "expo-google-app-auth": "~8.3.0",
     "expo-google-sign-in": "^11.0.0",

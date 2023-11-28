@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  FlatList,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 //import Container from "../../components/Container";
@@ -24,26 +25,27 @@ const GroupAdd = ({ navigation }) => {
   const [inputData, SetInput] = useState([]);
   const [promptVisible, setPromptVisible] = useState(false);
   const [press_group_id, setPress_group_id] = useState(-1);
+  const [page, setPage] = useState(1); // 현재 페이지 번호
 
   const handlePasswordSubmit = (password) => {
     // 비밀번호를 처리합니다.
     console.log("Entered password:", password);
     console.log("group_id", press_group_id);
-    
+
     axios({
       method: "post",
       url: `${apiUrl}/api/group/join/private`,
       headers: {
         Authorization: `${user.jwtToken}`,
       },
-      data: { group_id: press_group_id, group_password : password },
+      data: { group_id: press_group_id, group_password: password },
     })
       .then((response) => {
         console.log(response);
         Alert.alert("안내", "가입 완료되었습니다", [{ text: "확인" }], {
           cancelable: false,
         });
-        navigation.navigate("board1"); // 성공하면 이전 화면으로 돌아갑니다.
+        navigation.navigate("홈"); // 성공하면 이전 화면으로 돌아갑니다.
       })
       .catch(function (e) {
         // console.log(e);
@@ -129,7 +131,7 @@ const GroupAdd = ({ navigation }) => {
         Alert.alert("안내", "가입 완료되었습니다", [{ text: "확인" }], {
           cancelable: false,
         });
-        navigation.navigate("board1"); // 성공하면 이전 화면으로 돌아갑니다.
+        navigation.navigate("홈"); // 성공하면 이전 화면으로 돌아갑니다.
       })
       .catch(function (e) {
         // console.log(e);
@@ -173,58 +175,116 @@ const GroupAdd = ({ navigation }) => {
       { cancelable: false }
     );
 
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(apiUrl + "/api/group/list", {
+        headers: {
+          Authorization: `${user.jwtToken}`,
+        },
+        params: { page: page }, // 페이지 번호를 파라미터로 전달
+      });
+      const newInputData = response.data.map((rowData) => ({
+        group_id: rowData.group_id,
+        group_name: rowData.group_name,
+        group_description: rowData.group_description,
+        is_password: rowData.is_password,
+      }));
+      SetInput((prevInputData) => [...prevInputData, ...newInputData]); // 기존 데이터에 새로운 데이터 추가
+      console.log(inputData);
+    } catch (e) {
+      console.log("에러가 발생했습니다.", e);
+    }
+  };
+
+  // useEffect(() => {
+  //   const gets = async () => {
+  //     try {
+  //       const response = await axios.get(apiUrl + "/api/group/list", {
+  //         headers: {
+  //           Authorization: `${user.jwtToken}`,
+  //         },
+  //       });
+  //       const _inputData = response.data.map((rowData) => ({
+  //         group_id: rowData.group_id,
+  //         group_name: rowData.group_name,
+  //         group_description: rowData.group_description,
+  //         is_password: rowData.is_password,
+  //       }));
+  //       SetInput(_inputData);
+  //       console.log(inputData);
+  //     } catch (e) {
+  //       console.log("에러가 발생했습니다.", e);
+  //     }
+  //   };
+  //   gets();
+  // }, []);
+
   useEffect(() => {
-    const gets = async () => {
-      try {
-        const response = await axios.get(apiUrl + "/api/group/list", {
-          headers: {
-            Authorization: `${user.jwtToken}`,
-          },
-        });
-        const _inputData = response.data.map((rowData) => ({
-          group_id: rowData.group_id,
-          group_name: rowData.group_name,
-          group_description: rowData.group_description,
-          is_password: rowData.is_password,
-        }));
-        SetInput(_inputData);
-        console.log(inputData);
-      } catch (e) {
-        console.log("에러가 발생했습니다.", e);
-      }
-    };
-    gets();
-  }, []);
+    fetchGroups();
+  }, [page]);
+
+  const loadMoreGroups = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
 
   return (
     <View style={{ backgroundColor: theme.white, padding: 0 }}>
-      <ScrollView>
-      {inputData.map((group, index) => (
-        <CardRowTitleContent2
-        keys={index}
+  <FlatList
+    data={inputData}
+    renderItem={({ item, index }) => (
+      <CardRowTitleContent2
         onPress={() => {
-          if (group.is_password == 0)
-            createTwoButtonAlert(group.group_name, group.group_id);
-          else
-          {
-             setPromptVisible(true);
-             setPress_group_id(group.group_id);
+          if (item.is_password == 0)
+            createTwoButtonAlert(item.group_name, item.group_id);
+          else {
+            setPromptVisible(true);
+            setPress_group_id(item.group_id);
           }
         }}
-        heading={group.group_name}
-        description={group.group_description}
-        ispublic={group.is_password}
-        />
-
-        
-      ))}
-      <PasswordPrompt
-        isVisible={promptVisible}
-        onClose={() => setPromptVisible(false)}
-        onSubmit={handlePasswordSubmit}
+        heading={item.group_name}
+        description={item.group_description}
+        ispublic={item.is_password}
       />
-      </ScrollView>
-    </View>
+    )}
+    keyExtractor={(item, index) => index.toString()}
+    onEndReached={loadMoreGroups}
+    onEndReachedThreshold={0.5}
+  />
+  <PasswordPrompt
+    isVisible={promptVisible}
+    onClose={() => setPromptVisible(false)}
+    onSubmit={handlePasswordSubmit}
+  />
+</View>
+
+
+    // <View style={{ backgroundColor: theme.white, padding: 0 }}>
+    //   <ScrollView>
+    //   {inputData.map((group, index) => (
+    //     <CardRowTitleContent2
+    //     keys={index}
+    //     onPress={() => {
+    //       if (group.is_password == 0)
+    //         createTwoButtonAlert(group.group_name, group.group_id);
+    //       else
+    //       {
+    //          setPromptVisible(true);
+    //          setPress_group_id(group.group_id);
+    //       }
+    //     }}
+    //     heading={group.group_name}
+    //     description={group.group_description}
+    //     ispublic={group.is_password}
+    //     />
+
+    //   ))}
+    // <PasswordPrompt
+    //   isVisible={promptVisible}
+    //   onClose={() => setPromptVisible(false)}
+    //   onSubmit={handlePasswordSubmit}
+    // />
+    //   </ScrollView>
+    // </View>
   );
 };
 

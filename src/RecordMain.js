@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  KeyboardAvoidingView
 } from 'react-native';
 import axios from 'axios';
 import { UserContext } from './contexts';
@@ -298,7 +299,8 @@ useEffect(() => {
 
 
   return (
-    
+    <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} style={{ flex: 1 }}>
     <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         
@@ -504,13 +506,16 @@ useEffect(() => {
     value={feedback}
     onChangeText={setFeedback}
     inputContainerStyle={{ 
-        height: Math.min(feedbackHeight, 100), // 최대 높이 적용
+        //height: 100,//Math.min(feedbackHeight, 100), // 최대 높이 적용
+        maxHeight : 100,
         overflow: 'scroll' // 스크롤 설정
     }}
     onContentSizeChange={(e) => setFeedbackHeight(e.nativeEvent.contentSize.height)}
 />
+
          </View>
     </View>
+    </KeyboardAvoidingView>
   );
 };
 

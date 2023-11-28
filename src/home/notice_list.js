@@ -30,15 +30,17 @@ const Notice_list = ({ route, navigation }) => {
   const isFocused = useIsFocused(); // 현재 화면의 포커스 상태를 확인
   const [open, setOpen] = useState(false);
   const { apiUrl } = getEnvVars();
+  const [page, setPage] = useState(1); // 현재 페이지 번호
 
-  useEffect(() => {
-    if (isFocused) {
-      const fetchPosts = async () => {
-        console.log(user);
+  const fetchPosts = async () => {
+    // ...
+    // 페이지에 따라 데이터를 로드하는 로직을 추가합니다.
+    console.log("page",page);
+    console.log(user);
 
         try {
           const response = await axios.get(
-            apiUrl + "/api/board/list/" + board_type,
+            apiUrl + "/api/board/list/" + board_type + '/' + page,
             {
               headers: {
                 Authorization: `${user.jwtToken}`,
@@ -52,62 +54,110 @@ const Notice_list = ({ route, navigation }) => {
             content: rowData.content,
             date: rowData.created_at,
           }));
-          SetInput(_inputData);
+          SetInput((prevPost) => [...prevPost, ..._inputData]);
           console.log(inputData);
         } catch (error) {
           if (error.response && error.response.status === 401) {
             console.error("권한 없음", error);
             Alert.alert("안내", "로그인이 필요합니다");
 
-            navigation.navigate("board1");
+            navigation.navigate("홈");
             // 여기에 추가적인 동작(예: 알림 또는 리다이렉션)을 넣을 수 있습니다.
           } else {
             console.error("API 요청 중 에러 발생:", error);
           }
         }
-      };
+  };
+
+  const loadMorePosts = () => {
+    setPage(prevPage => prevPage + 1); // 페이지 번호 증가
+  };
+
+  useEffect(() => {
+    if (isFocused) {
       fetchPosts();
     }
-  }, [isFocused]);
+  }, [isFocused, page]); // 페이지가 변경될 때마다 fetchPosts를 호출
+
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     const fetchPosts = async () => {
+  //       console.log(user);
+
+  //       try {
+  //         const response = await axios.get(
+  //           apiUrl + "/api/board/list/" + board_type,
+  //           {
+  //             headers: {
+  //               Authorization: `${user.jwtToken}`,
+  //             },
+  //           }
+  //         );
+  //         const _inputData = response.data.map((rowData) => ({
+  //           writer: rowData.nickname,
+  //           board_id: rowData.board_id,
+  //           title: rowData.title,
+  //           content: rowData.content,
+  //           date: rowData.created_at,
+  //         }));
+  //         SetInput(_inputData);
+  //         console.log(inputData);
+  //       } catch (error) {
+  //         if (error.response && error.response.status === 401) {
+  //           console.error("권한 없음", error);
+  //           Alert.alert("안내", "로그인이 필요합니다");
+
+  //           navigation.navigate("홈");
+  //           // 여기에 추가적인 동작(예: 알림 또는 리다이렉션)을 넣을 수 있습니다.
+  //         } else {
+  //           console.error("API 요청 중 에러 발생:", error);
+  //         }
+  //       }
+  //     };
+  //     fetchPosts();
+  //   }
+  // }, [isFocused]);
 
   return (
     <>
-      <ScrollView showsHorizontalScrollIndicator={false}>
-        <View style={{ padding: 15, backgroundColor: theme.white }}>
-          {inputData.map((notice, index) => (
-            <React.Fragment key={index}>
-              <TouchableOpacity
-                style={styles.cardContainer}
-                onPress={() =>
-                  navigation.navigate("notice_detail", {
-                    board_type: board_type,
-                    board_id: notice.board_id,
-                  })
-                }
-              >
-                <View style={styles.contentContainer}>
-                  <View
-                    style={{ flexDirection: "column", alignItems: "center" }}
-                  >
-                    <View style={styles.textContainer}>
-                      <Title numberOfLines={2} ellipsizeMode="tail">{notice.title}</Title>
-                  <Content numberOfLines={2} ellipsizeMode="tail">{notice.content}</Content>
-                  <View style={{ flexDirection: "row" }}>
-                    <Footer>{notice.writer} |</Footer>
-                    <Footer>
-                      {" "}
-                      {notice.date.slice(0, 10)} {notice.date.slice(11, 16)}
-                    </Footer>
-                  </View>
-                    </View>
-                  </View>
-                  
-                </View>
-              </TouchableOpacity>
-            </React.Fragment>
-          ))}
+    <View style={{ padding: 7.5, backgroundColor: theme.white }}>
+    <FlatList
+  data={inputData}
+  renderItem={({ item, index }) => (
+    <TouchableOpacity
+      style={styles.cardContainer}
+      onPress={() =>
+        navigation.navigate("notice_detail", {
+          board_type: board_type,
+          board_id: item.board_id,
+        })
+      }
+    >
+      <View style={styles.contentContainer}>
+        <View style={{ flexDirection: "column", alignItems: "center" }}>
+          <View style={styles.textContainer}>
+            <Title numberOfLines={2} ellipsizeMode="tail">{item.title}</Title>
+            <Content numberOfLines={2} ellipsizeMode="tail">{item.content}</Content>
+            <View style={{ flexDirection: "row" }}>
+              <Footer>{item.writer} |</Footer>
+              <Footer>
+                {" "}
+                {item.date.slice(0, 10)} {item.date.slice(11, 16)}
+              </Footer>
+            </View>
+          </View>
         </View>
-      </ScrollView>
+      </View>
+    </TouchableOpacity>
+  )}
+  keyExtractor={(item, index) => index.toString()}
+  onEndReached={loadMorePosts}
+  onEndReachedThreshold={0.5}
+/>
+</View>
+
+
+      
       {board_type !== 1 && (
         <SpeedDial
           color={theme.wiget22}
@@ -143,6 +193,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     marginBottom: 10,
+    marginLeft : 5,
+    marginRight : 5,
   },
   contentContainer: {
     flexDirection: "row",

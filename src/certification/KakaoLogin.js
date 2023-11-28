@@ -31,57 +31,62 @@ const KaKaoLogin = ({navigation}) => {
   }
 
   const requestToken = async (authorize_code) => {
-    var AccessToken = "none";
-    
-    axios ({
-      method: 'post',
-      url: 'https://kauth.kakao.com/oauth/token',
-      params: {
-        grant_type: 'authorization_code',
-        client_id: REST_API_KEY,
-        redirect_uri: REDIRECT_URI,
-        code: authorize_code,
-
-      },
-    }).then((response) => {
-      AccessToken = response.data.access_token;
-      console.log(AccessToken);
-      //console.log(response);
-      
-      
-
-      
-
-      return axios({
-        method : 'post',
-        url: apiUrl+'/api/kakao/login',
-        data: {
-          token : AccessToken,
+    try {
+      const tokenResponse = await axios({
+        method: 'post',
+        url: 'https://kauth.kakao.com/oauth/token',
+        params: {
+          grant_type: 'authorization_code',
+          client_id: REST_API_KEY,
+          redirect_uri: REDIRECT_URI,
+          code: authorize_code,
         },
-      }).then((response1) => {
-        console.log('response1',response1.data);
-        const decodedToken = jwtDecode(response1.data.token);
-       console.log('Decoded Token', decodedToken);
-        dispatch({name : decodedToken.nickname, 
-          imageURL : decodedToken.image_url, 
-          social_id : decodedToken.social_id,
-          user_id : decodedToken.user_id,
-          social_type : decodedToken.social_type,
-          jwtToken : response1.data.token,
-          agree : decodedToken.agree});
-
-
-      }).catch(function (error) {
-        console.log('error', error);
-      })
-      
-    }).catch(function (error) {
+      });
+  
+      const AccessToken = tokenResponse.data.access_token;
+      console.log(AccessToken);
+  
+      const loginResponse = await axios({
+        method: 'post',
+        url: apiUrl + '/api/kakao/login',
+        data: {
+          token: AccessToken,
+        },
+      });
+  
+      console.log('response1', loginResponse.data);
+      const decodedToken = jwtDecode(loginResponse.data.token);
+      console.log('Decoded Token', decodedToken);
+  
+      await AsyncStorage.setItem('userToken', loginResponse.data.token);
+      await AsyncStorage.setItem('userInfo', JSON.stringify({
+        name: decodedToken.nickname,
+        imageURL: decodedToken.image_url,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        agree: decodedToken.agree,
+      }));
+  
+      dispatch({
+        name: decodedToken.nickname,
+        imageURL: decodedToken.image_url,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        jwtToken: loginResponse.data.token,
+        agree: decodedToken.agree,
+      });
+  
+    } catch (error) {
       console.log('error', error);
-    })
+    }
+  };
+  
 
    
    
-  };
+  
 
   // function requestUserInfo(AccessToken)  { 이건 백에서 처리할거
   //   axios ({

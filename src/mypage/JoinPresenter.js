@@ -117,12 +117,12 @@ const JoinPresenter = () => {
       <View style={{alignItems : 'center', flexDirection : 'column',backgroundColor : theme.wiget22,
     borderBottomLeftRadius : 100,
     borderBottomRightRadius : 100}}>
-    <Logo style={{marginTop : windowHeight*0.2}} source={require('../../images/logo.png')} resizeMode="contain" />
+    <Logo style={{marginTop : windowHeight*0.1}} source={require('../../images/logo3.png')} resizeMode="contain" />
     <Text style={{fontSize : 18, marginTop : 20, color : 'white'}}>회원가입</Text>
     <Text style={{fontSize : 15, margin : 15, color : 'rgb(210,210,210)'}}>회원가입 전, 활로 약관을 확인해 주세요</Text>
     </View>
 
-      <View style={{marginBottom : 30, padding : 20}}>
+      <View style={{marginBottom : 20, padding : 20}}>
       <View style={styles.switchContainer}>
         <View style={{flexDirection : 'row', alignItems : "center"}}>
         <Switch thumbColor={allCheck ? theme.wiget22 : '#f4f3f4'}
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
 const Logo = styled.Image`
   width: 200px;
   height: 200px;
-  border-radius : 100px;
+  border-radius : 0px;
 `;
 
 export default JoinPresenter;

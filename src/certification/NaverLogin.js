@@ -6,6 +6,7 @@ import { UserContext } from '../contexts';
 import getEnvVars from '../../environmant';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CLIENT_ID = 'M0Z_vtlzGvZMv9VU2eFj';
 const REDIRECT_URL = 'https://spinnerweb.netlify.app';
@@ -29,19 +30,30 @@ var tokenProcessed = 0;
       tokenProcessed = 1;
 
 
-      axios ({
+      const loginResponse = await axios ({
         method: 'post',
         url: apiUrl+'/api/naver/login',
         data: {
           token: token,
   
         },
-      }).then((response) => {
-        AccessToken = response.data.token;
+      })
+
+        AccessToken = loginResponse.data.token;
         console.log(AccessToken);
 
         const decodedToken = jwtDecode(AccessToken);
        console.log('Decoded Token', decodedToken);
+
+       await AsyncStorage.setItem('userToken', loginResponse.data.token);
+       await AsyncStorage.setItem('userInfo', JSON.stringify({
+         name: decodedToken.nickname,
+         imageURL: decodedToken.image_url,
+         social_id: decodedToken.social_id,
+         user_id: decodedToken.user_id,
+         social_type: decodedToken.social_type,
+         agree: decodedToken.agree,
+       }));
         dispatch({name : decodedToken.nickname, 
           imageURL : decodedToken.image_url, 
           social_id : decodedToken.social_id,
@@ -49,7 +61,7 @@ var tokenProcessed = 0;
           social_type : decodedToken.social_type,
           jwtToken : AccessToken,
           agree : decodedToken.agree});
-      })
+      
       
 
 

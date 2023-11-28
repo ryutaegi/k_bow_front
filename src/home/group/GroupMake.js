@@ -64,7 +64,7 @@ const [selectedIndexes, setSelectedIndexes] = useState([0]);
           },
           data: { group_name : title, group_description : content, group_password : password, is_password : selectedIndex},
           }).then((response) => {
-            navigation.navigate('board1'); // 성공하면 이전 화면으로 돌아갑니다.
+            navigation.navigate('홈'); // 성공하면 이전 화면으로 돌아갑니다.
           }).catch(function (error) {
             console.error('게시글 작성 중 에러 발생:', error);
             if (error.response && error.response.data && error.response.data.error) {

@@ -142,7 +142,9 @@ if(user.social_type == 2)
       rounded
       />
 
-      <Input label="닉네임" value={user.name}/>
+      <Input label="닉네임" value={user.name} disabled/>
+
+      <Input label="로그인 유형" value={user.social_type==1 ? "카카오톡" : "네이버"} disabled/>
       
     <LoginButton onPress={_handleLogoutButtonPress}>
     <LoginButtonText>로그아웃</LoginButtonText>

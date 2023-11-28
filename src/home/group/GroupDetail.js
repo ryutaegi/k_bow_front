@@ -41,7 +41,7 @@ const GroupDetail = ({ route, navigation }) => {
     })
       .then((response) => {
         console.log(response);
-        navigation.navigate("board1");
+        navigation.navigate("홈");
       })
       .catch(function (e) {
         // console.log(e);
@@ -84,7 +84,7 @@ const GroupDetail = ({ route, navigation }) => {
     })
       .then((response) => {
         console.log(response);
-        navigation.navigate("board1");
+        navigation.navigate("홈");
       })
       .catch(function (e) {
         // console.log(e);
@@ -207,6 +207,7 @@ const GroupDetail = ({ route, navigation }) => {
 
   return (
     <>
+    <ScrollView>
       <CustomCard title="시수 순위" iscard={0}>
         <HorizontalLine />
 
@@ -266,7 +267,7 @@ const GroupDetail = ({ route, navigation }) => {
 
       <CustomCard title="그룹원" iscard={0}>
         <HorizontalLine />
-        <ScrollView>
+        
           <View
             style={{
               backgroundColor: theme.white,
@@ -296,21 +297,22 @@ const GroupDetail = ({ route, navigation }) => {
               </View>
             ))}
           </View>
-        </ScrollView>
+       
       </CustomCard>
+      </ScrollView>
 
       <SpeedDial
         color={theme.wiget22}
         isOpen={open}
-        icon={{ name: "info", color: "#fff" }}
+        icon={{ name: "menu", color: "#fff" }}
         openIcon={{ name: "close", color: "#fff" }}
         onOpen={() => setOpen(!open)}
         onClose={() => setOpen(!open)}
       >
         {group_maker_id == user.user_id ? (
           <SpeedDial.Action
-            color="#254EDB"
-            icon={{ name: "add", color: "#fff" }}
+            color={theme.wiget22}
+            icon={{ name: "delete", color: "#fff" }}
             title="그룹 삭제하기"
             onPress={() =>
               Alert.alert(
@@ -351,6 +353,7 @@ const GroupDetail = ({ route, navigation }) => {
           />
         )}
       </SpeedDial>
+      
     </>
   );
 };

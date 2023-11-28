@@ -5,7 +5,8 @@ import { UserContext, ProgressContext } from '../contexts';
 import { Text } from 'react-native-elements';
 import axios from 'axios';
 import getEnvVars from '../../environmant';
-import { Dimensions, View, TouchableOpacity } from 'react-native';
+import { Dimensions, View, TouchableOpacity, ScrollView } from 'react-native';
+import { CustomCard } from '../equipment/card';
 
 LocaleConfig.locales['kr'] = {
   monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
@@ -54,8 +55,12 @@ const DataMain = ({navigation}) => {
 
       const onDayPress = (day) => {
         console.log('Selected Day', day.dateString); // YYYY-MM-DD 형식으로 출력됩니다.
+        console.log(markedDates);
+        if(markedDates[day.dateString])
+        {
         setData(day.dateString)
         navigation.navigate('Record', {date : day.dateString});
+        }
       };
       
       useEffect(() => {
@@ -148,6 +153,14 @@ const DataMain = ({navigation}) => {
             shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
             shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
           ]);
+        }
+        else {
+          setShotCount('');
+            setShotDates('');
+            setHitPercent(
+              [0,0,0,0,0,0,0,0,0]);
+            setMissPercent(
+              [0,0,0,0,0,0,0,0]);
         }
         spinner.stop();
 
@@ -250,6 +263,16 @@ const DataMain = ({navigation}) => {
               shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
             ]);
           }
+          else {
+            
+            setShotCount('');
+            setShotDates('');
+            setHitPercent(
+              [0,0,0,0,0,0,0,0,0]);
+            setMissPercent(
+              [0,0,0,0,0,0,0,0]);
+
+          }
             spinner.stop();
               
             }).catch(function (error) {
@@ -260,15 +283,21 @@ const DataMain = ({navigation}) => {
     
 
       return (
-      <><Calendar markedDates={markedDates}
+      <>
+      <ScrollView>
+      <Calendar markedDates={markedDates}
       onDayPress={onDayPress} 
       onVisibleMonthsChange={onVisibleMonthsChange}
       />
 
-
-
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#fff", marginTop : 70 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', }}>
+        
+      
+        <CustomCard
+        title="시수 분포"
+        iscard={0}>
+          <View style={{ alignItems: 'center', backgroundColor: "#fff", marginTop : 10, marginBottom : 30 }}>
+      
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', }}>
         {[...Array(3)].map((_, index) => (
           <TouchableOpacity
             key={index}
@@ -283,7 +312,9 @@ const DataMain = ({navigation}) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-          />
+          >
+            <Text style={{color : 'gray'}}>{parseInt(missPercent[index]*100)}%</Text>
+          </TouchableOpacity>
         ))}
       </View>
       <View style={{ flexDirection: 'row' }}>
@@ -300,10 +331,12 @@ const DataMain = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-        />
-        <View>
+        >
+          <Text style={{color : 'gray'}}>{parseInt(missPercent[3]*100)}%</Text>
+        </TouchableOpacity>
+        <View style={{flexDirection : 'row'}}>
           {[...Array(3)].map((_, index) => (
-            <View key={index} style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', flex: 0.75 }}>
+            <View key={index} style={{ flexDirection: 'column', justifyContent: 'center' }}>
               {[...Array(3)].map((_, subIndex) => (
                 <TouchableOpacity
                   key={subIndex + index * 3 + 4}
@@ -311,9 +344,9 @@ const DataMain = ({navigation}) => {
                     width: windowWidth * 0.05,
                     height: windowWidth * 0.05,
                     margin : 0.33,
-                    backgroundColor : `rgb(255, ${150-1500*hitPercent[subIndex + index * 3]}, ${150-1500*hitPercent[subIndex + index * 3]})`,
+                    backgroundColor : `rgb(255, ${170-1500*hitPercent[subIndex + index * 3]}, ${150-1500*hitPercent[subIndex + index * 3]})`,
                     borderWidth: 0.1,
-                    borderRadius: 0.5,
+                    borderRadius: 0,
                     overflow: 'hidden',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -336,7 +369,9 @@ const DataMain = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-        />
+        >
+          <Text style={{color : 'gray'}}>{parseInt(missPercent[4]*100)}%</Text>
+        </TouchableOpacity>
       </View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
         {[...Array(3)].map((_, index) => (
@@ -353,10 +388,14 @@ const DataMain = ({navigation}) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-          />
+          >
+            <Text style={{color : 'gray'}}>{parseInt(missPercent[index+5]*100)}%</Text>
+          </TouchableOpacity>
         ))}
       </View>
-    </View>
+      </View>
+        </CustomCard>
+    
 
     <View style={{
         flexDirection : 'row', 
@@ -375,7 +414,8 @@ const DataMain = ({navigation}) => {
             계 {shotCounts} / {shotDates}</Text>
         </View>
         </View>
-      
+        </ScrollView>
+        
       </>
       );
 }

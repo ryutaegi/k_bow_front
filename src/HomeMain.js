@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity, Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { Card, Text, ListItem } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -13,6 +13,7 @@ import getEnvVars from '../environmant';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CustomCard, CardRowSimple, CardRowTitleContent } from './equipment/card';
+
 
 const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
@@ -87,62 +88,57 @@ const HomeMain = ( {navigation} ) => {
 
     return (
       <ScrollView showsHorizontalScrollIndicator={false}>
-      <View style={{height : theme.viewHeight*0.23}}>
+      
       <ScrollView style={Style.scrollstyle} horizontal={true} showsHorizontalScrollIndicator={false}>
       
-      <TopBoardButton>
+      <TopBoardButton onPress={() => {navigation.navigate('notice_detail', {board_type : 1, board_id : 1})}}>
       <Feather name="book-open" size={35} color={theme.blue5} />
         <Text style={Style.title}>
-          국궁이 처음이라면
+          활로가 처음이라면
           </Text>
           <Text style={[Style.text, {color : theme.blue5}]}>
-          국궁 배우기
+          활로 안내
           </Text></TopBoardButton>
-      <TopBoardButton>
-      <Feather name="alert-triangle" size={35} color={theme.red} />
+      <TopBoardButton onPress={() => {navigation.navigate('notice_detail', {board_type : 1, board_id : 1})}}>
+      <AntDesign name="Trophy" size={35} color={theme.red} />
         <Text style={Style.title}>
-          긴급 공지
+          대회 일정
           </Text>
           <Text style={[Style.text, {color : theme.red}]}>
-          매우 졸려
+          대회 일정 바로가기
           </Text></TopBoardButton>
-      <TopBoardButton>
-      <AntDesign name="Trophy" size={35} color={theme.blue3} />
+      <TopBoardButton onPress={() => {navigation.navigate('notice_detail', {board_type : 1, board_id : 1})}}>
+      <Feather name="alert-triangle" size={35} color={theme.blue3} />
         <Text style={Style.title}>
-          가까운 대회
+          기능 추가
           </Text>
           <Text style={[Style.text, {color : theme.blue3}]}>
-          가까운 대회
+          건의하기
           </Text></TopBoardButton>
       </ScrollView>
-      </View>
-      {/* <__menuButton>
-      <_menuButton style={{backgroundColor : theme.white}}></_menuButton>
-      <_menuButton style={{backgroundColor : theme.white}}></_menuButton>
-      <_menuButton style={{backgroundColor : theme.white}}></_menuButton>
-      <_menuButton style={{backgroundColor : theme.white}}></_menuButton>
-      </__menuButton> */}
+      
+     
 
 
 
       <__communityButton>
       
-        
-        
-        <_CommunityList>
+      <_CommunityList>
       <CommunityList
         style={{backgroundColor : theme.wiget1, padding : 10}}
         onPress={() => {
           if(user.user_id == null)
           {Alert.alert("안내", "로그인이 필요합니다");}
           else
-          {navigation.navigate('board2', {board_type:1})}
+          {navigation.navigate('board2', {board_type:1});}
         }}
         >
           <AntDesign name="notification" size={28} color={theme.wiget11} />
        </CommunityList>
        <Text style={{marginLeft : 13}}>공 지</Text>
        </_CommunityList>
+        
+        
 
        <_CommunityList>
       <CommunityList
@@ -192,6 +188,8 @@ const HomeMain = ( {navigation} ) => {
       
 
       </__communityButton>
+
+      
       
       
        <CustomCard
@@ -210,6 +208,7 @@ const HomeMain = ( {navigation} ) => {
       (
         inputData.map((group, index) => (
           <CardRowTitleContent
+          key={group.id}
           keys={group.id}
         heading={group.group_name}
         description={group.group_description}
@@ -235,6 +234,7 @@ const HomeMain = ( {navigation} ) => {
         
 
        </CustomCard>
+       
       </ScrollView>
     );
 };
@@ -285,14 +285,20 @@ const Content = styled.Text`
 const TopBoardButton = styled.TouchableOpacity`
   width: 150px; 
   height: 150px;
-  border : 1px solid ${({ theme }) => theme.gray5};
+  border : 1px solid ${({ theme }) => theme.white};
   justify-content: center;
   background-color : ${({ theme }) => theme.white};
   border-radius : 10px;
   align-items: center;
+  margin-top : 3px;
+  margin-bottom : 3px;
   margin-left : 15px;
   margin-right : 5px;
-  elevation : 4;
+  elevation : 3;
+  shadow-color : #000;
+  shadow-offset : 0px 2px;
+  shadow-opacity : 0.1;
+  shadow-radius : 4px;
 `;
 
 const __menuButton = styled.TouchableOpacity`
@@ -321,21 +327,7 @@ const _menuButton = styled.TouchableOpacity`
   background-color : ${({ theme }) => theme.white};
 `;
 
-const __communityButton = styled.View`
-  margin: 0 auto;
-  width: 95%;
-  padding : 5px;
-  height: 100px;
-  background-color : ${({ theme }) => theme.white};
-  //border: 1px solid ${({ theme }) => theme.gray5};
-  border-radius : 7px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  justify-content: flex-start;
-  flex-direction: row;
-    align-items: center;
-    padding : 40px;
-`;
+
 
 const __communityButton1 = styled.View`
   margin: 0 auto;
@@ -366,9 +358,25 @@ color : ${({ theme }) => theme.black};
   font-weight : bold;
   `;
 
+  const __communityButton = styled.View`
+  
+  
+ 
+  background-color : ${({ theme }) => theme.white};
+  //border: 1px solid ${({ theme }) => theme.gray5};
+  
+  margin-top: 20px;
+  margin-bottom: 10px;
+  justify-content: space-evenly;
+  flex-direction: row;
+    align-items: center;
+    padding-left : 40px;
+    padding-right : 40px;
+`;
+
   const _CommunityList = styled.TouchableOpacity`
-  width: 85px;
-  height: 80px;
+ 
+  z-index : 100;
   
  
   
@@ -383,7 +391,7 @@ const CommunityList = styled.TouchableOpacity`
   border-radius : 10px;
  
   padding : 16px;
-  elevation : 1;
+
  
 `;
 

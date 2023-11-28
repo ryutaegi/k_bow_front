@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Alert, KeyboardAvoidingView } from 'react-native';
 import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
 import getEnvVars from '../../environmant';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 
@@ -14,6 +15,8 @@ const CreatePost = ({ route, navigation }) => {
   const { user }  = useContext(UserContext);
   const { apiUrl } = getEnvVars();
   const board_type = route.params.board_type;
+  const MAX_TITLE_LENGTH = 50;
+  const MAX_CONTENT_LENGTH = 1000;
 
 
   const isValidUTF8Char = (char) => {
@@ -55,24 +58,33 @@ const CreatePost = ({ route, navigation }) => {
   };
 
   return (
+    <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} style={{ flex: 1 }}>
+      <ScrollView>
     <View style={{ padding: 20, height: theme.viewHeight * 0.8 }}>
       <Label>제목</Label>
       <StyledInput
-        placeholder="게시글 제목"
+        placeholder="게시글 제목을 입력해주세요"
         value={title}
         onChangeText={(text) => setTitle(text)}
+        maxLength={MAX_TITLE_LENGTH} // 제목 최대 글자수 적용
       />
+      <Text style={{marginBottom : 20, color : 'gray'}}>현재 글자수: {title.length}/{MAX_TITLE_LENGTH}</Text>
       <Label>내용</Label>
       <StyledInput
-        placeholder="게시글 내용"
+        placeholder="게시글 내용을 입력해주세요"
         value={content}
         onChangeText={(text) => setContent(text)}
         multiline
+        maxLength={MAX_CONTENT_LENGTH} // 내용 최대 글자수 적용
       />
+      <Text style={{marginBottom : 20, color : 'gray'}}>현재 글자수: {content.length}/{MAX_CONTENT_LENGTH}</Text>
       <SubmitButton onPress={handleSubmit}>
         <Text style={{ color: 'white' }}>등록</Text>
       </SubmitButton>
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -84,7 +96,7 @@ const Label = styled.Text`
 const StyledInput = styled.TextInput`
   border: 1px solid #ccc;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 `;
 
 const SubmitButton = styled.TouchableOpacity`
