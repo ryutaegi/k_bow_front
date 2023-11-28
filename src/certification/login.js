@@ -60,7 +60,7 @@ const Login = ({ navigation }) => {
       
      </View> */}
 
-     <View style={{marginBottom : 100}}>
+     <View style={{marginBottom : 50}}>
       <View style={{marginTop : 0, flexDirection : 'row', justifyContent : 'space-between', alignItems : 'center'}}>
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       <Text style={{fontSize : 13, color : 'rgb(190,190,190)', lineHeight : 13}}>  로그인 / 회원가입  </Text>

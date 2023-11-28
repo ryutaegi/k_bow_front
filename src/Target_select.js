@@ -33,6 +33,7 @@ const Target_select = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
     <ScrollView contentContainerStyle={{ padding: 20, marginTop: 50 }}>
+      <View style={{justifyContent : 'space-between'}}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
         {[...Array(3)].map((_, index) => (
           <TouchableOpacity
@@ -211,19 +212,19 @@ const Target_select = ({ navigation, route }) => {
           </TouchableOpacity>
         ))}
       </View>
+      </View>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly', flex: 1 }}>
         {[...Array(2)].map((_, index) => (
           <TouchableOpacity
             key={index}
             style={{
-              width: windowWidth * 0.4,
-              height: windowWidth * 0.15 ,
+              width: windowWidth * 0.17,
+              height: windowWidth * 0.17 ,
               margin: 6.5,
               marginTop:50,
               borderWidth: 0,
               borderRadius: 1,
-              //borderColor: '#ccc',
               overflow: 'hidden',
               justifyContent: 'center',
 
@@ -234,7 +235,7 @@ const Target_select = ({ navigation, route }) => {
             <Image
               key={index+17}
               source={targetImages[index+17]}
-              style={{ width: '50%', height: '75%' }}
+              style={{ width: '100%', height: '100%' }}
             />
           </TouchableOpacity>
         ))}

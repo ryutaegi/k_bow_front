@@ -402,13 +402,14 @@ color : ${({ theme }) => theme.black};
   justify-content: space-evenly;
   flex-direction: row;
     align-items: center;
-    padding-left : 40px;
-    padding-right : 40px;
+    padding-left : 15%;
+    padding-right : 15%;
 `;
 
   const _CommunityList = styled.TouchableOpacity`
  
-  z-index : 100;
+  margin-right : 15px;
+  margin-left : 15px;
   
  
   
@@ -456,8 +457,8 @@ width: 100%;
   border-radius : 10px;
   margin-top : 20px;
   flex-direction : row;
- align-item : center;
-  padding-top : 30px;
+  padding : 25px;
+ align-items : center;
   elevation : 3;
 
 `

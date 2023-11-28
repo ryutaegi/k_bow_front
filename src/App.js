@@ -73,10 +73,10 @@ function HomeTab() {
 
   function LogoTitle() {
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', height : 30 }}>
         <Image
           source={require('../images/logo3.png')} // 로고 이미지 경로
-          style={{ resizeMode : 'contain', width : 30, marginRight: 15, }}
+          style={{ resizeMode : 'contain', width : 30,  marginRight: 15, }}
         />
         <Text style={{fontSize : 22, fontWeight : 'bold'}}>활 로</Text>
       </View>
@@ -97,7 +97,7 @@ function HomeTab() {
       <Stack.Screen
         name="홈"
         component={HomeMain}
-        options={{ headerTitle: () => <LogoTitle />, headerShown: true, headerTitleAlign: 'left', }}
+        options={{ headerTitle: () => <LogoTitle />, headerTitleAlign: 'left', }}
       />
       <Stack.Screen
         name="board2"

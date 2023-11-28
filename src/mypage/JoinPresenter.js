@@ -13,6 +13,7 @@ import axios from 'axios';
 import getEnvVars from "../../environmant";
 import styled, {ThemeContext} from 'styled-components/native';
 import { Dimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const JoinPresenter = () => {
@@ -51,6 +52,11 @@ const JoinPresenter = () => {
         agree: 1,
       });
       //user.agree = 1;
+
+      AsyncStorage.setItem('userInfo', JSON.stringify({
+        ...user,
+        agree: 1,
+      }));
 
       axios({
         method: "post",

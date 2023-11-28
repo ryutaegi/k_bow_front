@@ -80,7 +80,7 @@ const MapMain = ({}) => {
         style={{width : '100%', height : 40, backgroundColor : theme.wiget22,
           alignItems : 'center', justifyContent : 'center'}}
          onPress={() => setIsVisible(true)} >
-          <Text style={{color : 'white', fontWeight : 'bold'}}>{city}</Text>
+          <Text style={{color : 'white', fontWeight : 'bold'}}>지역 : {city}</Text>
         </TouchableOpacity>
   
         <BottomSheet isVisible={isVisible}>
@@ -296,8 +296,8 @@ const MapMain = ({}) => {
 
     const moveMap_local = (index) => {
       const region_local = {
-          latitude: locations_public[citynum][index]["lat"], 
-          longitude: locations_public[citynum][index]["lon"], 
+          latitude: locations_public[0][index]["lat"], 
+          longitude: locations_public[0][index]["lon"], 
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
       };
@@ -314,20 +314,20 @@ const MapMain = ({}) => {
         <View style={{backgroundColor : theme.white, flex : 1}}>
         <MapView
           initialRegion={{
-            latitude: locations_public[citynum][0]["lat"] || locations[0][0]["lat"], 
-            longitude: locations_public[citynum][0]["lon"] || locations[0][0]["lon"],
+            latitude: locations_public[0][0]["lat"], 
+            longitude: locations_public[0][0]["lon"],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
           style={Style.map}
           ref={mapRef_local}
         >
-          {locations_public[citynum]?.map((_, index) => (
+          {locations_public[0]?.map((_, index) => (
           <Marker
           key ={index}
             coordinate={{
-              latitude: locations_public[citynum][index]['lat'],
-              longitude: locations_public[citynum][index]["lon"],
+              latitude: locations_public[0][index]['lat'],
+              longitude: locations_public[0][index]["lon"],
             }}
             //pinColor="#2D63E2"
           
@@ -339,7 +339,7 @@ const MapMain = ({}) => {
             
             <Text style={{fontWeight : 'bold'}}>
             <Text style={{fontSize : 13}}> {' '}</Text>
-            {locations_public[citynum][index]["name"]} 
+            {locations_public[0][index]["name"]} 
             <Text style={{fontSize : 13}}> {' '}</Text></Text>
             
             <View style={{
@@ -357,17 +357,17 @@ const MapMain = ({}) => {
 
         
         </MapView>
-        <Sheet/>
+       
 
         <ScrollView>
-        {locations_public[citynum]?.map((_,index) => (
+        {locations_public[0]?.map((_,index) => (
           <CardRowSimple
           key={index}
         label="공공 활터"
-        heading={locations_public[citynum][index]["name"]}
-        description={locations_public[citynum][index]["address"]}
+        heading={locations_public[0][index]["name"]}
+        description={locations_public[0][index]["address"]}
         onActionPress={() => {moveMap_local(index)}}
-        onActionPress2={() => {Linking.openURL(`tel:${locations_public[citynum][index]["phone"]}`)}}
+        onActionPress2={() => {Linking.openURL(`tel:${locations_public[0][index]["phone"]}`)}}
           />
           
         )

@@ -244,8 +244,10 @@ const GroupAdd = ({ navigation }) => {
     })
       .then((response) => {
         console.log(response);
-        console.log(response.data);
-        console.log(response.data[0].is_password);
+        console.log("data",response.data.length);
+        console.log("data[0]",response.data[0].length);
+        if(response.data.length > 0)
+        {
         if(response.data[0].is_password == 1) //비공개 그룹
         {
             setPromptVisible(true);
@@ -254,6 +256,9 @@ const GroupAdd = ({ navigation }) => {
         else if(response.data[0].is_password == 0){ //공개 그룹
           createTwoButtonAlert(select, response.data[0].group_id);
         } 
+      }else {
+        console.log("그룹이 존재하지 않습니다.")
+      }
        
         
       })
@@ -279,7 +284,7 @@ const GroupAdd = ({ navigation }) => {
           Alert.alert("안내", "서버로부터 응답이 없습니다.");
         } else {
           // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          Alert.alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+          Alert.alert("안내", "그룹이 존재하지 않습니다.");
         }
       });
     }

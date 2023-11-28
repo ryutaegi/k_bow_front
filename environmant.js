@@ -14,7 +14,7 @@ const localhost =
 
 const ENV = {
  dev: {
-   apiUrl: url
+   apiUrl: url_loadbalance
  },
  staging: {
    apiUrl: url_loadbalance

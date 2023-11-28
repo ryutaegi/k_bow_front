@@ -7,7 +7,8 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import axios from 'axios';
 import { UserContext } from './contexts';
@@ -300,7 +301,7 @@ useEffect(() => {
 
   return (
     <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} style={{ flex: 1 }}>
+    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 140} style={{ flex: 1 }}>
     <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         
@@ -498,8 +499,7 @@ useEffect(() => {
         </View>
         <View style={{
          marginBottom: -10, width : windowWidth*0.9 }}>
-
-<Input
+{Platform.OS === "ios" ? (<Input
     placeholder='이곳에 습사일지를 입력하세요'
     multiline={true}
     numberOfLines={4}
@@ -511,7 +511,21 @@ useEffect(() => {
         overflow: 'scroll' // 스크롤 설정
     }}
     onContentSizeChange={(e) => setFeedbackHeight(e.nativeEvent.contentSize.height)}
-/>
+/>) : (<Input
+    placeholder='이곳에 습사일지를 입력하세요'
+    multiline={true}
+    numberOfLines={4}
+    value={feedback}
+    onChangeText={setFeedback}
+    inputContainerStyle={{ 
+        height: Math.min(feedbackHeight, 100), // 최대 높이 적용
+        maxHeight : 100,
+        overflow: 'scroll' // 스크롤 설정
+    }}
+    onContentSizeChange={(e) => setFeedbackHeight(e.nativeEvent.contentSize.height)}
+/>)}
+
+
 
          </View>
     </View>
