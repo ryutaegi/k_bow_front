@@ -7,6 +7,7 @@ import UpdatePost from './UpdatePost';
 import { SpeedDial } from '@rneui/themed';
 import getEnvVars from '../../environmant';
 import { BoardCard } from '../equipment/card';
+import { Linking } from 'react-native';
 
 const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => {
   const { apiUrl } = getEnvVars();
@@ -22,6 +23,15 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
   const [open, setOpen] = useState(false);
     
 
+  const sendEmail = () => {
+    const email = 'rtg1021t@google.com'; // 받는 사람의 이메일 주소
+    const subject = encodeURIComponent('[활로 게시글 신고]' + " 게시글 id : " + board_id);
+    const body = encodeURIComponent("게시글 제목 : "+title +"\n 게시글 내용 : " + content + "\n신고 사유 : ");
+
+    const emailUrl = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    Linking.openURL(emailUrl).catch(err => console.error('이메일 보내기 에러:', err));
+};
  
 
   const delete_post = async () => {
@@ -117,7 +127,7 @@ const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => 
       color={theme.wiget22}
         icon={{ name: 'delete', color: '#fff' }}
         title="신고"
-        onPress={() => {setOpen(!open); Alert.alert("신고","신고하기")}}
+        onPress={() => {setOpen(!open); sendEmail();}}
       />
     {user.user_id == maker_id ? 
     (<><SpeedDial.Action

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, Button, FlatList, Touchable, TouchableOpacity, Alert, Platform, Linking } from 'react-native';
 import axios from 'axios';
 import { Card, Text, ListItem } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
@@ -13,6 +13,13 @@ import getEnvVars from '../environmant';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CustomCard, CardRowSimple, CardRowTitleContent } from './equipment/card';
+// import {
+//   setTestDeviceIDAsync,
+//   AdMobBanner,
+//   AdMobInterstitial,
+//   PublisherBanner,
+//   AdMobRewarded,
+// } from "expo-ads-admob";
 
 
 const HomeMain = ( {navigation} ) => {
@@ -20,6 +27,16 @@ const HomeMain = ( {navigation} ) => {
   const { user } = useContext(UserContext);
   const [inputData, SetInput] = useState([]);
   const { apiUrl } = getEnvVars();
+
+  const sendEmail = () => {
+    const email = 'rtg1021t@google.com'; // 받는 사람의 이메일 주소
+    const subject = encodeURIComponent('[활로 기능추가 건의]');
+    const body = encodeURIComponent("건의내용 : ");
+
+    const emailUrl = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    Linking.openURL(emailUrl).catch(err => console.error('이메일 보내기 에러:', err));
+};
 
   const rerend = () => {
     console.log("user",user.user_id)
@@ -99,7 +116,7 @@ const HomeMain = ( {navigation} ) => {
           <Text style={[Style.text, {color : theme.blue5}]}>
           활로 안내
           </Text></TopBoardButton>
-      <TopBoardButton onPress={() => {navigation.navigate('notice_detail', {board_type : 1, board_id : 1})}}>
+      <TopBoardButton onPress={() => {Linking.openURL("http://kungdo.or.kr/bbs/board.php?bo_table=game_news")}}>
       <AntDesign name="Trophy" size={35} color={theme.red} />
         <Text style={Style.title}>
           대회 일정
@@ -107,7 +124,7 @@ const HomeMain = ( {navigation} ) => {
           <Text style={[Style.text, {color : theme.red}]}>
           대회 일정 바로가기
           </Text></TopBoardButton>
-      <TopBoardButton onPress={() => {navigation.navigate('notice_detail', {board_type : 1, board_id : 1})}}>
+      <TopBoardButton onPress={() => {sendEmail()}}>
       <Feather name="alert-triangle" size={35} color={theme.blue3} />
         <Text style={Style.title}>
           기능 추가
@@ -117,7 +134,22 @@ const HomeMain = ( {navigation} ) => {
           </Text></TopBoardButton>
       </ScrollView>
       
-     
+     {/* <View>
+     {Platform.OS === "ios" ? (
+        <AdMobBanner
+          bannerSize="fullBanner"
+          servePersonalizedAds={true}
+          adUnitID="ca-app-pub-7870001402351690/8930846106"
+          
+        />
+      ) : (
+         <AdMobBanner
+          bannerSize="fullBanner"
+          servePersonalizedAds={true}
+          adUnitID="ca-app-pub-7870001402351690/5116612224"
+        />
+      )}
+     </View> */}
 
 
 

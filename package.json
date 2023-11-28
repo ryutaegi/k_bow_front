@@ -30,6 +30,7 @@
     "expo": "~48.0.18",
     "expo-ads-admob": "^13.0.0",
     "expo-camera": "~13.2.1",
+    "expo-constants": "^13.2.4",
     "expo-google-app-auth": "~8.3.0",
     "expo-google-sign-in": "^11.0.0",
     "expo-image-picker": "~14.1.1",

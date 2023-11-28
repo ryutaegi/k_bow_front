@@ -17,6 +17,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { CardRowTitleContent2 } from "../../equipment/card";
+import { Input } from "react-native-elements";
 
 const GroupAdd = ({ navigation }) => {
   const theme = useContext(ThemeContext);
@@ -26,6 +27,7 @@ const GroupAdd = ({ navigation }) => {
   const [promptVisible, setPromptVisible] = useState(false);
   const [press_group_id, setPress_group_id] = useState(-1);
   const [page, setPage] = useState(1); // 현재 페이지 번호
+  const [select, setSelect] = useState("");
 
   const handlePasswordSubmit = (password) => {
     // 비밀번호를 처리합니다.
@@ -92,13 +94,14 @@ const GroupAdd = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TextInput
+            {/* <TextInput
               secureTextEntry
               style={styles.textInput}
               placeholder="비밀번호를 입력하세요."
               value={password}
               onChangeText={setPassword}
-            />
+            /> */}
+            <Input label="비밀번호를 입력하세요" value={setPassword} />
             <TouchableOpacity
               style={[styles.button, { backgroundColor: theme.wiget22 }]}
               onPress={() => onSubmit(password)}
@@ -106,16 +109,17 @@ const GroupAdd = ({ navigation }) => {
               <Text style={styles.buttonText}>완료</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: "red" }]}
+              style={[styles.button, { backgroundColor: "gray" }]}
               onPress={onClose}
             >
-              <Text style={styles.buttonText}>취소</Text>
+              <Text style={[styles.buttonText, {color : 'white'}]}>취소</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
     );
   };
+  
 
   const joinPublicGroup = (index) => {
     axios({
@@ -227,9 +231,85 @@ const GroupAdd = ({ navigation }) => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  const selectGroup = () => {
+    if(select.length > 0){
+      console.log(select)
+    axios({
+      method: "post",
+      url: `${apiUrl}/api/group/select`,
+      headers: {
+        Authorization: `${user.jwtToken}`,
+      },
+      data: { title: select},
+    })
+      .then((response) => {
+        console.log(response);
+        console.log(response.data);
+        console.log(response.data[0].is_password);
+        if(response.data[0].is_password == 1) //비공개 그룹
+        {
+            setPromptVisible(true);
+            setPress_group_id(response.data[0].group_id);
+        }
+        else if(response.data[0].is_password == 0){ //공개 그룹
+          createTwoButtonAlert(select, response.data[0].group_id);
+        } 
+       
+        
+      })
+      .catch(function (e) {
+        // console.log(e);
+        if (e.response) {
+          // 서버가 2xx 외의 상태 코드로 응답한 경우
+          switch (e.response.status) {
+            case 403:
+              Alert.alert("안내", "권한이 없습니다.");
+              break;
+            case 500:
+              Alert.alert("안내", "서버 에러가 발생했습니다.");
+              break;
+            case 409:
+              Alert.alert("안내", "이미 가입한 그룹입니다.");
+              break;
+            default:
+              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+          }
+        } else if (e.request) {
+          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
+          Alert.alert("안내", "서버로부터 응답이 없습니다.");
+        } else {
+          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
+          Alert.alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+        }
+      });
+    }
+  };
+
   return (
     <View style={{ backgroundColor: theme.white, padding: 0 }}>
+      <View style={{marginTop : 10, padding : 10, paddingBottom : 0, flexDirection : 'row', alignItems : 'center'}}>
+        <View style={{flex : 0.8}}>
+      <Input label="그룹 검색"  placeholder="그룹 이름을 입력하세요" onChangeText={setSelect} />
+      </View>
+      <TouchableOpacity
+      onPress={() => {selectGroup()}}
+       style={[styles.cardContainer, {
+       flex : 0.2,
+        height : 37,
+        backgroundColor : theme.wiget22,
+        alignItems : 'center',
+        justifyContent : 'center'
+        
+        
+
+      }]}>
+        <Text style={{color : 'white', fontWeight : 'bold'}}>
+          가입하기
+        </Text>
+      </TouchableOpacity>
+      </View>
   <FlatList
+  contentContainerStyle={{ paddingBottom: 100 }}
     data={inputData}
     renderItem={({ item, index }) => (
       <CardRowTitleContent2
@@ -289,6 +369,17 @@ const GroupAdd = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    cardContainer: {
+      backgroundColor: "#ffffff",
+      borderRadius: 8,
+      
+      elevation: 3,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      marginBottom: 10,
+    },
   // ... other styles remain the same
   centeredView: {
     flex: 1,

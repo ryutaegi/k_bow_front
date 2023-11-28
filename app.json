@@ -30,6 +30,8 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.taeyou.reactexam",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-7870001402351690~3123151500"
       }
@@ -44,6 +46,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.taeyou.reactexam",
+      "versionCode" : 1,
       "config" :  {
         "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" },
         "googleMobileAdsAppId": "ca-app-pub-7870001402351690~6675399614"

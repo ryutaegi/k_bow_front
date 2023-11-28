@@ -332,8 +332,8 @@ const GroupDetail = ({ route, navigation }) => {
           />
         ) : (
           <SpeedDial.Action
-            color="#254EDB"
-            icon={{ name: "add", color: "#fff" }}
+            color={theme.wiget22}
+            icon={{ name: "delete", color: "#fff" }}
             title="그룹 탈퇴하기"
             onPress={() =>
               Alert.alert(
