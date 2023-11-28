@@ -77,7 +77,15 @@ const Notice_list = ({ route, navigation }) => {
     if (isFocused) {
       fetchPosts();
     }
-  }, [isFocused, page]); // 페이지가 변경될 때마다 fetchPosts를 호출
+  }, [page]); // 페이지가 변경될 때마다 fetchPosts를 호출
+
+  useEffect(() => {
+    if (isFocused) {
+      setPage(1); // 페이지 번호를 초기화합니다.
+      SetInput([]); // 게시물 데이터를 초기화합니다.
+      fetchPosts(); // 게시물을 다시 불러옵니다.
+    }
+  }, [isFocused]);
 
   // useEffect(() => {
   //   if (isFocused) {
