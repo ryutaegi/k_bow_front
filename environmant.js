@@ -8,16 +8,17 @@ import { Platform } from "react-native";
 
 const url = "http://3.37.213.77:3000";
 const url_loadbalance = "http://kbowLoadBalancer-1489709171.ap-northeast-2.elb.amazonaws.com";
+const url_ec = "http://117.17.198.45:5032"
 
 const localhost =
  Platform.OS === "ios" ? "localhost:8080" : "10.0.2.2:8080";
 
 const ENV = {
  dev: {
-   apiUrl: url_loadbalance
+   apiUrl: url_ec
  },
  staging: {
-   apiUrl: url_loadbalance
+   apiUrl: url_ec
    // Add other keys you want here
  },
  prod: {

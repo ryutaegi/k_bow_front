@@ -58,10 +58,9 @@ const CreatePost = ({ route, navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} style={{ flex: 1 }}>
-      <ScrollView>
-    <View style={{ padding: 20, height: theme.viewHeight * 0.8 }}>
+    <ScrollView>
+      
+    <View style={{ padding: 20, }}>
       <Label>제목</Label>
       <StyledInput
         placeholder="게시글 제목을 입력해주세요"
@@ -77,14 +76,15 @@ const CreatePost = ({ route, navigation }) => {
         onChangeText={(text) => setContent(text)}
         multiline
         maxLength={MAX_CONTENT_LENGTH} // 내용 최대 글자수 적용
+        
       />
       <Text style={{marginBottom : 20, color : 'gray'}}>현재 글자수: {content.length}/{MAX_CONTENT_LENGTH}</Text>
       <SubmitButton onPress={handleSubmit}>
         <Text style={{ color: 'white' }}>등록</Text>
       </SubmitButton>
     </View>
+    
     </ScrollView>
-    </KeyboardAvoidingView>
   );
 };
 

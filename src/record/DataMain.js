@@ -35,6 +35,12 @@ const DataMain = ({navigation}) => {
     const [missPercent, setMissPercent] = useState([]);
     let shotDate = [];
     let shotCount = 0;
+    const today = new Date();
+    //today.setHours(today.getHours() + 9);
+    const year = today.getFullYear(); // 년도
+    const month = today.getMonth() + 1;  // 월
+    const day = today.getDate();  // 날짜
+    const dateString = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`; // 날짜를 문자열로 변환합니다. 월과 일이 한 자리 수인 경우 앞에 0을 붙입니다.
 
     function getDecodingLevel(dataString) {
       try {
@@ -54,13 +60,31 @@ const DataMain = ({navigation}) => {
   }
 
       const onDayPress = (day) => {
+        // console.log('Selected Day', day.dateString); // YYYY-MM-DD 형식으로 출력됩니다.
+        // console.log(markedDates);
+        // console.log("금일", dateString);
+        //  if(day.dateString !== dateString)
+        //  {
+        // setData(day.dateString)
+        // navigation.navigate('Record', {date : day.dateString});
+        // }
+
+
         console.log('Selected Day', day.dateString); // YYYY-MM-DD 형식으로 출력됩니다.
         console.log(markedDates);
-        if(markedDates[day.dateString])
-        {
-        setData(day.dateString)
-        navigation.navigate('Record', {date : day.dateString});
+        console.log("금일", dateString);
+    
+        const selectedDate = new Date(day.dateString);
+        const currentDate = new Date(dateString); // 현재 날짜와 시간
+        //currentDate.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
+        console.log("selectedDate",selectedDate);
+        console.log("currentDate", currentDate);
+        if (selectedDate < currentDate) {
+            // 선택된 날짜가 오늘 날짜보다 이전일 경우
+            setData(day.dateString);
+            navigation.navigate('Record', { date: day.dateString });
         }
+        
       };
       
       useEffect(() => {
@@ -87,8 +111,8 @@ const DataMain = ({navigation}) => {
           const newData = response.data.reduce((acc, item) => {
             console.log("acc",acc);
             console.log("item",item);
-            const date = item.shot_date.slice(0,10); //korean시간변경가능
-            console.log("date는",item.shot_date); //korean시간변경가능
+            const date = item.shot_date_korean.slice(0,10); //korean시간변경가능
+            console.log("date는",item.shot_date_korean); //korean시간변경가능
 
             let shotArray = [];
 
@@ -196,7 +220,7 @@ const DataMain = ({navigation}) => {
               const newData = response.data.reduce((acc, item) => {
                 console.log("acc",acc);
                 console.log("item",item);
-                const date = item.shot_date.slice(0,10); //korean시간변경가능
+                const date = item.shot_date_korean.slice(0,10); //korean시간변경가능
 
                 let shotArray = [];
 

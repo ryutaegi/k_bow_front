@@ -30,6 +30,7 @@ const Record = ({ navigation, route }) => {
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars();
+  let isnew = 0;
   // 현재의 상태를 알려주는것 
   const appState = useRef(AppState.currentState);
 
@@ -79,8 +80,15 @@ const Record = ({ navigation, route }) => {
             data: { user_id : user.user_id, date : route.params.date},
             }).then((response) => {
               console.log("데이터 받아오기 완료", response.data[0]);
+              if(response.data[0] === undefined)
+              {
+                console.log(isnew, "업데이트")
+                isnew = 1;
+                
+              }
               const decoding = getDecodingLevel(response.data[0].shot_array);
                //실수로 9월말 2번 인코딩해서 데이터 넣는 걸로 만듦. 고치긴 했는데 이전 데이터 받기위해이렇게함
+               
               
               let arr = [];
               let arr1 = [];
@@ -141,26 +149,50 @@ const Record = ({ navigation, route }) => {
     if (finalShots.current !== initialShots.current || finalFeedback.current !== initialFeedback.current) {
       console.log(finalShots.current);
       console.log(initialShots.current);
-    axios({
-        method: 'post',
-        url: `${apiUrl}/api/shot/modify`,
-        headers: {
+      if(isnew == 1){ //insert하기
+        axios({
+          method : 'post',
+          url: apiUrl+'/api/shot/save',
+          headers: {
             'Authorization': `${user.jwtToken}`
         },
         data: {
-            date : route.params.date,
-            shots: JSON.stringify(finalShots.current),
-            feedback: JSON.stringify(finalFeedback.current),
-            shot_count : finalShots.current.length,
-            target_count : finalShots.current.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length,
-        }
-    }).then(response => {
-        console.log("Data sent successfully:", response.data);
-        initialShots.current = finalShots.current;
-        initialFeedback.current = finalFeedback.current;
-    }).catch(error => {
-        console.error("Error sending data:", error);
-    });
+           user_id : user.user_id, 
+           date : route.params.date, 
+           shot : JSON.stringify(finalShots.current),
+          feedback : JSON.stringify(finalFeedback.current),
+          shot_count : finalShots.current.length,
+          target_count : finalShots.current.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length},
+        }).then((response) => {
+          console.log("DB 신규 업로드 완료", response.data);
+        }).catch(function (error) {
+          console.log('error', error);
+        })
+      }
+      else if(isnew == 0) // update하기
+      {
+        axios({
+          method: 'post',
+          url: `${apiUrl}/api/shot/modify`,
+          headers: {
+              'Authorization': `${user.jwtToken}`
+          },
+          data: {
+              date : route.params.date,
+              shots: JSON.stringify(finalShots.current),
+              feedback: JSON.stringify(finalFeedback.current),
+              shot_count : finalShots.current.length,
+              target_count : finalShots.current.filter((shot) => (shot >= 4 && shot <= 12) || shot == 17).length,
+          }
+      }).then(response => {
+          console.log("DB 업데이트 완료", response.data);
+          initialShots.current = finalShots.current;
+          initialFeedback.current = finalFeedback.current;
+      }).catch(error => {
+          console.error("Error sending data:", error);
+      });
+      }
+    
   }
 };
 

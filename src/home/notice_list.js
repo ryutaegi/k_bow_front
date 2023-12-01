@@ -52,7 +52,7 @@ const Notice_list = ({ route, navigation }) => {
             board_id: rowData.board_id,
             title: rowData.title,
             content: rowData.content,
-            date: rowData.created_at,
+            date: rowData.created_at_korean, //rowData.created_at
           }));
           SetInput((prevPost) => [...prevPost, ..._inputData]);
           console.log(inputData);
@@ -77,13 +77,13 @@ const Notice_list = ({ route, navigation }) => {
     if (isFocused) {
       fetchPosts();
     }
-  }, [page]); // 페이지가 변경될 때마다 fetchPosts를 호출
+  }, [isFocused, page]); // 페이지가 변경될 때마다 fetchPosts를 호출
 
   useEffect(() => {
     if (isFocused) {
       setPage(1); // 페이지 번호를 초기화합니다.
       SetInput([]); // 게시물 데이터를 초기화합니다.
-      fetchPosts(); // 게시물을 다시 불러옵니다.
+      //fetchPosts(); // 게시물을 다시 불러옵니다.
     }
   }, [isFocused]);
 
@@ -167,6 +167,28 @@ const Notice_list = ({ route, navigation }) => {
 
       
       {board_type !== 1 && (
+        <SpeedDial
+          color={theme.wiget22}
+          isOpen={open}
+          icon={{ name: "edit", color: "#fff" }}
+          openIcon={{ name: "close", color: "#fff" }}
+          onOpen={() =>
+            navigation.navigate("create_post", { board_type: board_type })
+          }
+          onClose={() => setOpen(false)}
+        >
+          <SpeedDial.Action
+            color={theme.wiget22}
+            icon={{ name: "add", color: "#fff" }}
+            title="글쓰기"
+            onPress={() =>
+              navigation.navigate("create_post", { board_type: board_type })
+            }
+          />
+        </SpeedDial>
+      )}
+
+{((board_type == 1)&&(user.user_id == 1)) && (
         <SpeedDial
           color={theme.wiget22}
           isOpen={open}
