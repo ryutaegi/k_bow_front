@@ -1,0 +1,1 @@
+{"ast":null,"code":"import App from \"./src/App\";\nexport default App;","map":{"version":3,"names":["App"],"sources":["C:/Users/king/Desktop/react/react-exam/App.js"],"sourcesContent":["import App from './src/App';\nexport default App;"],"mappings":"AAAA,OAAOA,GAAG;AACV,eAAeA,GAAG"},"metadata":{},"sourceType":"module","externalDependencies":[]}

@@ -2,7 +2,7 @@
   "expo": {
     "name": "활로",
     "slug": "react-exam",
-    "owner": "k-bow",
+    "owner": "taeyou",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo4_square.png",
@@ -12,6 +12,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#059bf4"
     },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7870001402351690~6675399614",
+    "ios_app_id": "ca-app-pub-7870001402351690~3123151500"
+  },
     "assetBundlePatterns": [
       "**/*"
     ],
