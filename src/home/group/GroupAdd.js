@@ -29,6 +29,7 @@ const GroupAdd = ({ navigation }) => {
   const [page, setPage] = useState(1); // 현재 페이지 번호
   const [select, setSelect] = useState("");
 
+
   const handlePasswordSubmit = (password) => {
     // 비밀번호를 처리합니다.
     console.log("Entered password:", password);
@@ -101,7 +102,7 @@ const GroupAdd = ({ navigation }) => {
               value={password}
               onChangeText={setPassword}
             /> */}
-            <Input label="비밀번호를 입력하세요" value={setPassword} />
+            <Input label="비밀번호를 입력하세요" value={password} onChangeText={setPassword} />
             <TouchableOpacity
               style={[styles.button, { backgroundColor: theme.wiget22 }]}
               onPress={() => onSubmit(password)}

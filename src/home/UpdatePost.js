@@ -4,6 +4,7 @@ import styled, { ThemeContext } from 'styled-components/native';
 import { UserContext } from '../contexts';
 import axios from 'axios';
 import getEnvVars from '../../environmant';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const UpdatePost = ({ route, navigation }) => {
   const theme = useContext(ThemeContext);
@@ -13,6 +14,8 @@ const UpdatePost = ({ route, navigation }) => {
   const { apiUrl } = getEnvVars();
   const board_type = route.params.board_type;
   const board_id = route.params.board_id;
+  const MAX_TITLE_LENGTH = 50;
+  const MAX_CONTENT_LENGTH = 1000;
 
 
   const isValidUTF8Char = (char) => {
@@ -84,25 +87,30 @@ const UpdatePost = ({ route, navigation }) => {
   };
 
   return (
+    <ScrollView>
     <View style={{ padding: 20, height: theme.viewHeight * 0.8 }}>
       <Label>제목</Label>
       <StyledInput
         placeholder="게시글 제목"
         value={title}
         onChangeText={(text) => setTitle(text)}
+        maxLength={MAX_TITLE_LENGTH} // 제목 최대 글자수 적용
       />
+      <Text style={{marginBottom : 20, color : 'gray'}}>현재 글자수: {title.length}/{MAX_TITLE_LENGTH}</Text>
       <Label>내용</Label>
       <StyledInput
         placeholder="게시글 내용"
         value={content}
         onChangeText={(text) => setContent(text)}
         multiline
+        maxLength={MAX_CONTENT_LENGTH} // 제목 최대 글자수 적용
       />
-      
+      <Text style={{marginBottom : 20, color : 'gray'}}>현재 글자수: {content.length}/{MAX_CONTENT_LENGTH}</Text>
       <SubmitButton onPress={handleSubmit}>
         <Text style={{ color: 'white' }}>수정</Text>
       </SubmitButton>
     </View>
+    </ScrollView>
   );
 };
 
@@ -114,7 +122,7 @@ const Label = styled.Text`
 const StyledInput = styled.TextInput`
   border: 1px solid #ccc;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 `;
 
 const SubmitButton = styled.TouchableOpacity`
