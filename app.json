@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.taeyou.reactexam"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,6 +32,12 @@
       "eas": {
         "projectId": "91df4db1-caa7-42fd-b47a-5fc4c9979550"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/91df4db1-caa7-42fd-b47a-5fc4c9979550"
     }
   }
 }

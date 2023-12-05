@@ -224,7 +224,17 @@ const GroupDetail = ({ route, navigation }) => {
             }}
           >
             <Title>
-              <Content>{index + 1} |</Content> {group.nickname}
+            
+              <View style={{flexDirection : 'row', alignItems : 'center'}}>
+                {index == 0 ?
+                <AntDesign name="Trophy" size={18} color="gold" /> 
+              : index == 1 ? <AntDesign name="Trophy" size={18} color="silver" />
+              : <AntDesign name="Trophy" size={18} color="#CD7F32" />
+               }
+              <Text style={{fontWeight : 'bold', fontSize : 13}}>  {group.nickname}
+              </Text>
+              </View> 
+              
             </Title>
             <Content>평 {group.average}중 </Content>
             {/* <AntDesign name="hearto" size={24} color="black" />
@@ -251,7 +261,15 @@ const GroupDetail = ({ route, navigation }) => {
             }}
           >
             <Title>
-              <Content>{index + 1} |</Content> {group.nickname}
+            <View style={{flexDirection : 'row', alignItems : 'center'}}>
+                {index == 0 ?
+                <AntDesign name="Trophy" size={18} color="gold" /> 
+              : index == 1 ? <AntDesign name="Trophy" size={18} color="silver" />
+              : <AntDesign name="Trophy" size={18} color="#CD7F32" />
+               }
+              <Text style={{fontWeight : 'bold', fontSize : 13}}>  {group.nickname}
+              </Text>
+              </View> 
             </Title>
             <Content> {group.shot_day}일 습사 </Content>
             {/* <View>
@@ -512,6 +530,8 @@ const Container = styled.TouchableOpacity`
 const Title = styled.Text`
   font-size: 13px;
   font-weight: bold;
+  flex-direction : row;
+  align-items : center;
 `;
 const Content = styled.Text`
   font-size: 13px;

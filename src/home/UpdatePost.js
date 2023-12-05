@@ -88,7 +88,7 @@ const UpdatePost = ({ route, navigation }) => {
 
   return (
     <ScrollView>
-    <View style={{ padding: 20, height: theme.viewHeight * 0.8 }}>
+    <View style={{ padding: 20 }}>
       <Label>제목</Label>
       <StyledInput
         placeholder="게시글 제목"

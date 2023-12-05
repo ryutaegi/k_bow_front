@@ -23,7 +23,7 @@ const ENV = {
    // Add other keys you want here
  },
  prod: {
-   apiUrl:url_loadbalance
+   apiUrl:url_ec
  }
 };
 
@@ -35,7 +35,7 @@ const getEnvVars = (env = Constants.manifest2.releaseChannel) => {
    return ENV.dev;
  } else if (env === 'staging') {
    return ENV.staging;
- } else if (env === 'prod') {
+ } else {
    return ENV.prod;
  }
 };
