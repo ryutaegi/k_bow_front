@@ -260,6 +260,7 @@ function RecordTab() {
 const Auth = () => {
   const { user } = useContext(UserContext);
   const { dispatch } = useContext(UserContext);
+  
 
   const checkTokenAndDispatch = async () => {
     try {

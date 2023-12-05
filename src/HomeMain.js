@@ -13,6 +13,7 @@ import getEnvVars from '../environmant';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CustomCard, CardRowSimple, CardRowTitleContent } from './equipment/card';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 // import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 // import {
 //   setTestDeviceIDAsync,
@@ -223,6 +224,7 @@ const HomeMain = ( {navigation} ) => {
       </__communityButton>
 
       
+     
       
       
        <CustomCard
