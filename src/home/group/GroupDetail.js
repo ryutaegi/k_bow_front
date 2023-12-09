@@ -236,7 +236,7 @@ const GroupDetail = ({ route, navigation }) => {
               </View> 
               
             </Title>
-            <Content>평 {group.average}중 </Content>
+            <Content>평 {group.average.toFixed(1)}중 </Content>
             {/* <AntDesign name="hearto" size={24} color="black" />
             <Text>
               {group.pushed_like_count}

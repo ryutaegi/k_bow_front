@@ -241,8 +241,7 @@ const HomeMain = ( {navigation} ) => {
       (
         inputData.map((group, index) => (
           <CardRowTitleContent
-          key={group.id}
-          keys={group.id}
+          key={index}
         heading={group.group_name}
         description={group.group_description}
         ispublic={group.is_password}
