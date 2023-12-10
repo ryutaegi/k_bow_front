@@ -2,7 +2,7 @@
   "expo": {
     "name": "활로",
     "slug": "react-exam",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/logo4_square.png",
     "userInterfaceStyle": "light",
@@ -16,14 +16,20 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.taeyou.reactexam"
+      "bundleIdentifier": "com.taeyou.reactexam",
+      "config" :  {
+        "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo4_square.png",
         "backgroundColor": "#059bf4"
       },
-      "package": "com.taeyou.reactexam"
+      "package": "com.taeyou.reactexam",
+      "config" :  {
+        "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
