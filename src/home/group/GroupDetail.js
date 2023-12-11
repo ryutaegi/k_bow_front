@@ -23,7 +23,7 @@ const GroupDetail = ({ route, navigation }) => {
   const group_maker_id = route.params.group_maker_id;
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const [inputData, SetInput] = useState([]);
   const [memberlist, SetMemberlist] = useState([]);
   const [userList, setUserList] = useState([]);

@@ -27,7 +27,7 @@ const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const [inputData, SetInput] = useState([]);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
 
   const sendEmail = () => {
     const email = 'rtg1021t@google.com'; // 받는 사람의 이메일 주소

@@ -19,7 +19,7 @@ padding: 0 20px;
 `;
 
 const MyPage = () => {
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
  const { dispatch } = useContext(UserContext);
  const { spinner } = useContext(ProgressContext);
  const theme = useContext(ThemeContext);

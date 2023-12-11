@@ -23,7 +23,7 @@ const JoinPresenter = () => {
   const [marketingCheck, setMarketingCheck] = useState(false);
   const { user } = useContext(UserContext);
   const { dispatch } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const theme = useContext(ThemeContext);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;

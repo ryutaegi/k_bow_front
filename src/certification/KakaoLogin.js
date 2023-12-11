@@ -16,7 +16,7 @@ const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from
 
 const KaKaoLogin = ({navigation}) => {
   const { dispatch } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const { spinner } = useContext(ProgressContext);
 
 

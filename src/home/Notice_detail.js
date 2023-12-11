@@ -10,7 +10,7 @@ import { BoardCard } from '../equipment/card';
 import { Linking } from 'react-native';
 
 const Notice_detail = ({ route, navigation, modalVisible, setModalVisible }) => {
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const theme = useContext(ThemeContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');

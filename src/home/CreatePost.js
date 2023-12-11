@@ -13,7 +13,7 @@ const CreatePost = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const { user }  = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const board_type = route.params.board_type;
   const MAX_TITLE_LENGTH = 50;
   const MAX_CONTENT_LENGTH = 1000;

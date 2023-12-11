@@ -32,7 +32,7 @@ const RecordMain = ({ navigation, route }) => {
   const [feedback, setFeedback] = useState("");
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
 
   const today = new Date();
   //today.setHours(today.getHours() + 9);

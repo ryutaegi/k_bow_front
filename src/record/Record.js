@@ -29,7 +29,7 @@ const Record = ({ navigation, route }) => {
   const [feedback, setFeedback] = useState("");
   const [feedbackHeight, setFeedbackHeight] = useState(40); // 초기 높이 설정
   const { user } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   let isnew = 0;
   // 현재의 상태를 알려주는것 
   const appState = useRef(AppState.currentState);

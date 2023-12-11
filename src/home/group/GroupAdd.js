@@ -22,7 +22,7 @@ import { Input } from "react-native-elements";
 const GroupAdd = ({ navigation }) => {
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const [inputData, SetInput] = useState([]);
   const [promptVisible, setPromptVisible] = useState(false);
   const [press_group_id, setPress_group_id] = useState(-1);

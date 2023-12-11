@@ -13,7 +13,7 @@ const REDIRECT_URL = 'https://spinnerweb.netlify.app';
 
 const NaverLogin = () => {
 const { dispatch } = useContext(UserContext);
-const {apiUrl} = getEnvVars();
+const {apiUrl} = getEnvVars;
 var tokenProcessed = 0;
 
 

@@ -23,7 +23,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const DataMain = ({navigation}) => {
   const { spinner } = useContext(ProgressContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
     const [data, setData] = useState("");
     const { user } = useContext(UserContext);
     const [markedDates, setMarkedDates] = useState({});
