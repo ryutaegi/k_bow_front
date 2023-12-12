@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { UserContext, ProgressContext } from './contexts';
 import  {Image}  from './components';
-import { Button, Alert } from 'react-native';
+import { Button, Alert, Linking } from 'react-native';
 import { Input } from 'react-native-elements';
 import styled, {ThemeContext} from 'styled-components/native';
 import axios from 'axios';
 import getEnvVars from '../environmant';
 import JoinPresenter from './mypage/JoinPresenter';
 import { SpeedDial } from "@rneui/themed";
+
 
 
 const Container = styled.View`
@@ -65,91 +66,45 @@ if(user.social_type == 2)
   console.log('로그아웃 완료');
 }
 
-//   if(user.LoginType=="kakao")
-//   {
-//     try {
-//       const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
-//           headers: {
-//               Authorization: `Bearer ${user.uid}`
-//           }
-//       });
-      
-//       if (response.status === 200) {
-//           console.log("Successfully logged out from Kakao");
-//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-//           return true;
-//       } else {
-//           console.error("Failed to log out from Kakao");
-//           return false;
-//       }
-//   } catch (error) {
-//       console.error("Error logging out from Kakao:", error);
-//       return false;
-//   }
-//   }else if(user.LoginType=="naver"){
-//     dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-//           console.log("Successfully logged out from Naver");
-//   }
-//   else{
-//   try{
-//     spinner.start();
-//     await logout();
-//   }catch (e) {
-//     console.log('[Profile] logout : ', e.message);
-//   } finally {
-//     dispatch({});
-//     spinner.stop();
-//   }
-// }
+
  };
 
  const _handwithdrawButtonPress = () => {
-  Alert.alert(
-    "회원 탈퇴하기",
-    "활로 회원을 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.",
-    [
-      {
-        text: "아니오",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "예", onPress: () => console.log("ok Pressed") },
-    ],
-    { cancelable: false }
-  );
+  console.log("회원탈퇴 클릭함");
+
+  axios({
+    method : 'post',
+    url: apiUrl+'/api/withdraw',
+    data: {
+      social_id : user.social_id,
+    },
+  }).then((response1) => {
+    dispatch({name : null, 
+      imageURL : null, 
+      social_id : null,
+      user_id : null,
+      agree : null,
+      social_type : null,
+      jwtToken : null});
+    console.log('회원 탈퇴 완료',response1.data);
+  }).catch(function (error) {
+    console.log('error', error);
+  })
+
  }
 
 
-
-//  const logoutFromKakao = async () => {
-//   try {
-//       const response = await axios.post('https://kapi.kakao.com/v1/user/logout', {}, {
-//           headers: {
-//               Authorization: `Bearer ${user.uid}`
-//           }
-//       });
-      
-//       if (response.status === 200) {
-//           console.log("Successfully logged out from Kakao");
-//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-//           return true;
-//       } else {
-//           console.error("Failed to log out from Kakao");
-//           return false;
-//       }
-//   } catch (error) {
-//       console.error("Error logging out from Kakao:", error);
-//       return false;
-//   }
-// };
-
-// const logoutFromNaver = async () => {
-//           dispatch({name : null, email : null, uid : null, jeong : null, start_year : null});
-//           console.log("Successfully logged out from Naver");
-// };
-
-
-
+ const openURL = (url) => {
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    })
+    .catch((err) => console.error('An error occurred', err));
+};
  
 
   return (
@@ -210,10 +165,19 @@ if(user.social_type == 2)
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel",
                   },
-                  { text: "예", onPress: () => console.log("ok press") },
+                  { text: "예", onPress: () => _handwithdrawButtonPress() },
                 ],
                 { cancelable: false }
               )
+            }
+          />
+
+<SpeedDial.Action
+            color={theme.wiget22}
+            icon={{ name: "folder", color: "#fff" }}
+            title="개인정보 처리방침"
+            onPress={() =>
+              openURL('https://sites.google.com/view/bowapp/%ED%99%88')
             }
           />
      
