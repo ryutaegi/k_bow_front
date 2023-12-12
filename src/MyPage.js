@@ -8,6 +8,7 @@ import styled, {ThemeContext} from 'styled-components/native';
 import axios from 'axios';
 import getEnvVars from '../environmant';
 import JoinPresenter from './mypage/JoinPresenter';
+import { SpeedDial } from "@rneui/themed";
 
 
 const Container = styled.View`
@@ -26,6 +27,7 @@ const MyPage = () => {
 
  const {user} = useContext(UserContext);
  const [photoUrl, setPhotoUrl] = useState(user.imageURL);
+ const [open, setOpen] = useState(false);
 
  const _handleLogoutButtonPress = async () => {
   if(user.social_type == 1)
@@ -101,6 +103,22 @@ if(user.social_type == 2)
 // }
  };
 
+ const _handwithdrawButtonPress = () => {
+  Alert.alert(
+    "회원 탈퇴하기",
+    "활로 회원을 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.",
+    [
+      {
+        text: "아니오",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "예", onPress: () => console.log("ok Pressed") },
+    ],
+    { cancelable: false }
+  );
+ }
+
 
 
 //  const logoutFromKakao = async () => {
@@ -135,6 +153,7 @@ if(user.social_type == 2)
  
 
   return (
+    <>
     <Container>
       <Image
       url={photoUrl}
@@ -152,6 +171,7 @@ if(user.social_type == 2)
 
 
 
+
     
 
     {/* <Button
@@ -166,7 +186,39 @@ if(user.social_type == 2)
       containerStyle={{marginTop : 30, backgroundCOlor : theme.buttonLogout}}
     /> */}
     </Container>
+
+    <SpeedDial
+        color={theme.wiget22}
+        isOpen={open}
+        icon={{ name: "menu", color: "#fff" }}
+        openIcon={{ name: "close", color: "#fff" }}
+        onOpen={() => setOpen(!open)}
+        onClose={() => setOpen(!open)}
+      >
    
+          <SpeedDial.Action
+            color={theme.wiget22}
+            icon={{ name: "delete", color: "#fff" }}
+            title="회원 탈퇴하기"
+            onPress={() =>
+              Alert.alert(
+                "회원 탈퇴하기",
+                "활로에서 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.",
+                [
+                  {
+                    text: "아니오",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  { text: "예", onPress: () => console.log("ok press") },
+                ],
+                { cancelable: false }
+              )
+            }
+          />
+     
+      </SpeedDial> 
+   </>
   );
 };
 const LoginButton = styled.TouchableOpacity`
