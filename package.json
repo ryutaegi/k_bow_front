@@ -1,6 +1,6 @@
 {
   "name": "react-exam",
-  "version": "1.0.21",
+  "version": "1.0.25",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",

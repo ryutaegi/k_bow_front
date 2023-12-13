@@ -9,6 +9,7 @@ import axios from 'axios';
 import getEnvVars from '../environmant';
 import JoinPresenter from './mypage/JoinPresenter';
 import { SpeedDial } from "@rneui/themed";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -89,6 +90,11 @@ if(user.social_type == 2)
       agree : null,
       social_type : null,
       jwtToken : null});
+      AsyncStorage.removeItem('userToken').then(() => {
+        console.log('Local data related to someKey has been deleted');
+      }).catch((error) => {
+        console.log('Error deleting local data:', error);
+      });
     console.log('회원 탈퇴 완료',response1.data);
   }).catch(function (error) {
     console.log('error', error);
