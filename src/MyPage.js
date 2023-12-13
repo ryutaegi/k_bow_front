@@ -53,8 +53,7 @@ const MyPage = () => {
     console.log('error', error);
   })
 }
-
-if(user.social_type == 2)
+else if(user.social_type == 2)
 {
   dispatch({name : null, 
     imageURL : null, 
@@ -64,6 +63,17 @@ if(user.social_type == 2)
     social_type : null,
     jwtToken : null});
   console.log('로그아웃 완료');
+}
+else if(user.social_type == 3)
+  {
+    dispatch({name : null, 
+      imageURL : null, 
+      social_id : null,
+      user_id : null,
+      agree : null,
+      social_type : null,
+      jwtToken : null});
+    console.log('로그아웃 완료');
 }
 
 
@@ -121,8 +131,7 @@ if(user.social_type == 2)
 
       <Input label="닉네임" value={user.name} disabled/>
 
-      <Input label="로그인 유형" value={user.social_type==1 ? "카카오톡" : "네이버"} disabled/>
-      
+     
     <LoginButton onPress={_handleLogoutButtonPress}>
     <LoginButtonText>로그아웃</LoginButtonText>
     </LoginButton>

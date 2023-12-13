@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, Platform } from 'react-native';
 import { images } from '../utils/images';
 import { Dimensions, Animated } from 'react-native';
+import getEnvVars from '../../environmant';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode';
 
 import styled, {ThemeContext} from 'styled-components/native';
-
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,7 +21,7 @@ const Login = ({ navigation }) => {
   const initialWidth = new Animated.Value(windowWidth);
   const initialHeight = new Animated.Value(windowHeight+100);
   const logomargin = Animated.subtract(initialHeight, new Animated.Value(320));
- 
+  const { apiUrl } = getEnvVars;
 
   useEffect(() => {
     // 1초 후에 애니메이션 시작
@@ -60,7 +63,7 @@ const Login = ({ navigation }) => {
       
      </View> */}
 
-     <View style={{marginBottom : 50}}>
+     <View style={{marginBottom : 10}}>
       <View style={{marginTop : 0, flexDirection : 'row', justifyContent : 'space-between', alignItems : 'center'}}>
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       <Text style={{fontSize : 13, color : 'rgb(190,190,190)', lineHeight : 13}}>  로그인 / 회원가입  </Text>
@@ -76,7 +79,11 @@ const Login = ({ navigation }) => {
       <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
       <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
       </SocialLoginButton>
+
+      
+    
       </View>
+     
       
     </Container>
   );

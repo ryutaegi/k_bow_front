@@ -2,7 +2,7 @@
   "expo": {
     "name": "활로",
     "slug": "react-exam",
-    "version": "1.0.21",
+    "version": "1.0.24",
     "orientation": "portrait",
     "icon": "./assets/logo4_square.png",
     "userInterfaceStyle": "light",
@@ -11,12 +11,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#059bf4"
     },
+    "plugins": ["expo-apple-authentication"],
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.taeyou.reactexam"
+      "bundleIdentifier": "com.taeyou.reactexam",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
