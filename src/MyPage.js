@@ -74,7 +74,10 @@ if(user.social_type == 2)
 
   axios({
     method : 'post',
-    url: apiUrl+'/api/withdraw',
+    url: apiUrl+'/api/withdraw/withdraw',
+    headers: {
+      Authorization: `${user.jwtToken}`,
+    },
     data: {
       social_id : user.social_id,
     },
