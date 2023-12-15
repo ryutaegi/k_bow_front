@@ -23,7 +23,7 @@ const GroupDetail = ({ route, navigation }) => {
   const group_maker_id = route.params.group_maker_id;
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const [inputData, SetInput] = useState([]);
   const [memberlist, SetMemberlist] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -236,7 +236,7 @@ const GroupDetail = ({ route, navigation }) => {
               </View> 
               
             </Title>
-            <Content>평 {group.average}중 </Content>
+            <Content>평 {group.average.toFixed(1)}중 </Content>
             {/* <AntDesign name="hearto" size={24} color="black" />
             <Text>
               {group.pushed_like_count}

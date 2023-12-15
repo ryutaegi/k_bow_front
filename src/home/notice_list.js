@@ -29,7 +29,7 @@ const Notice_list = ({ route, navigation }) => {
   const { user } = useContext(UserContext);
   const isFocused = useIsFocused(); // 현재 화면의 포커스 상태를 확인
   const [open, setOpen] = useState(false);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const [page, setPage] = useState(1); // 현재 페이지 번호
 
   const fetchPosts = async () => {

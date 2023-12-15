@@ -11,7 +11,7 @@ const UpdatePost = ({ route, navigation }) => {
   const [title, setTitle] = useState(route.params.title);
   const [content, setContent] = useState(route.params.content);
   const { user }  = useContext(UserContext);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
   const board_type = route.params.board_type;
   const board_id = route.params.board_id;
   const MAX_TITLE_LENGTH = 50;

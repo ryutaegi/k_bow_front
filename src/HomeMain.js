@@ -28,7 +28,7 @@ const HomeMain = ( {navigation} ) => {
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const [inputData, SetInput] = useState([]);
-  const { apiUrl } = getEnvVars();
+  const { apiUrl } = getEnvVars;
 
   const sendEmail = () => {
     const email = 'rtg1021t@google.com'; // 받는 사람의 이메일 주소
@@ -243,8 +243,7 @@ const HomeMain = ( {navigation} ) => {
       (
         inputData.map((group, index) => (
           <CardRowTitleContent
-          key={group.id}
-          keys={group.id}
+          key={index}
         heading={group.group_name}
         description={group.group_description}
         ispublic={group.is_password}
