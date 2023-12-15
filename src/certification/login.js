@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, Platform } from 'react-native';
 import { images } from '../utils/images';
 import { Dimensions, Animated } from 'react-native';
-
 import styled, {ThemeContext} from 'styled-components/native';
-
+import * as AppleAuthentication from 'expo-apple-authentication';
+import getEnvVars from '../../environmant';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,7 +21,7 @@ const Login = ({ navigation }) => {
   const initialWidth = new Animated.Value(windowWidth);
   const initialHeight = new Animated.Value(windowHeight+100);
   const logomargin = Animated.subtract(initialHeight, new Animated.Value(320));
- 
+ const { apiUrl } = getEnvVars;
 
   useEffect(() => {
     // 1초 후에 애니메이션 시작
@@ -60,7 +63,7 @@ const Login = ({ navigation }) => {
       
      </View> */}
 
-     <View style={{marginBottom : 50}}>
+     <View style={{marginBottom : 10}}>
       <View style={{marginTop : 0, flexDirection : 'row', justifyContent : 'space-between', alignItems : 'center'}}>
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       <Text style={{fontSize : 13, color : 'rgb(190,190,190)', lineHeight : 13}}>  로그인 / 회원가입  </Text>
@@ -76,6 +79,67 @@ const Login = ({ navigation }) => {
       <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
       <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
       </SocialLoginButton>
+
+      {Platform.OS === "ios" ? 
+     <View style={{alignItems : 'center', marginTop : 10}}>
+     <Text style={{color : 'black', fontSize : 16, fontWeight : 'bold'}}>또는</Text>
+      <SocialLoginButton style={{backgroundColor : '#000000', width : 55, height : 55}} onPress={async () => {
+          try {
+            const credential = await AppleAuthentication.signInAsync({
+              requestedScopes: [
+                AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                AppleAuthentication.AppleAuthenticationScope.EMAIL,
+              ],
+            });
+            // signed in
+            console.log(credential);
+            const loginResponse = await axios({
+              method: 'post',
+              url: apiUrl + '/api/apple/login',
+              data: {
+                token: credential.identityToken,
+                nickname : credential.fullName.nickname
+              },
+            });
+            console.log(loginResponse);
+
+            console.log('response1', loginResponse.data);
+      const decodedToken = jwtDecode(loginResponse.data.token);
+      console.log('Decoded Token', decodedToken);
+  
+      await AsyncStorage.setItem('userToken', loginResponse.data.token);
+      await AsyncStorage.setItem('userInfo', JSON.stringify({
+        name: decodedToken.nickname,
+        imageURL: decodedToken.image_url,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        agree: decodedToken.agree,
+      }));
+  
+      dispatch({
+        name: decodedToken.nickname,
+        imageURL: decodedToken.image_url,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        jwtToken: loginResponse.data.token,
+        agree: decodedToken.agree,
+      });
+
+          } catch (e) {
+            if (e.code === 'ERR_REQUEST_CANCELED') {
+              // handle that the user canceled the sign-in flow
+            } else {
+              // handle other errors
+            }
+          }
+        }}>
+      <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/apple_logo.png')} />
+      
+      </SocialLoginButton>
+      </View>
+ : null}
       </View>
       
     </Container>

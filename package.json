@@ -1,6 +1,6 @@
 {
   "name": "react-exam",
-  "version": "1.0.25",
+  "version": "1.0.35",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -50,7 +50,8 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "rn-fetch-blob": "^0.12.0",
-    "styled-components": "^6.0.4"
+    "styled-components": "^6.0.4",
+    "expo-apple-authentication": "~6.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

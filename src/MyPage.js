@@ -66,6 +66,17 @@ if(user.social_type == 2)
     jwtToken : null});
   console.log('로그아웃 완료');
 }
+if(user.social_type == 3)
+{
+  dispatch({name : null, 
+    imageURL : null, 
+    social_id : null,
+    user_id : null,
+    agree : null,
+    social_type : null,
+    jwtToken : null});
+  console.log('로그아웃 완료');
+}
 
 
  };
@@ -91,7 +102,12 @@ if(user.social_type == 2)
       social_type : null,
       jwtToken : null});
       AsyncStorage.removeItem('userToken').then(() => {
-        console.log('Local data related to someKey has been deleted');
+        console.log('Local token data related to someKey has been deleted');
+        AsyncStorage.removeItem('userInfo').then(() => {
+          console.log('Local info data related to someKey has been deleted');
+        }).catch((error) => {
+          console.log('Error deleting local data:', error);
+        });
       }).catch((error) => {
         console.log('Error deleting local data:', error);
       });
@@ -127,7 +143,7 @@ if(user.social_type == 2)
 
       <Input label="닉네임" value={user.name} disabled/>
 
-      <Input label="로그인 유형" value={user.social_type==1 ? "카카오톡" : "네이버"} disabled/>
+      <Input label="로그인 유형" value={user.social_type==1 ? "카카오톡" : user.social_type==2 ? "네이버" : "애플"} disabled/>
       
     <LoginButton onPress={_handleLogoutButtonPress}>
     <LoginButtonText>로그아웃</LoginButtonText>

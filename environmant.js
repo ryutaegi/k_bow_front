@@ -40,6 +40,6 @@ const ENV = {
 //  }
 // };
 
-const getEnvVars = ENV.dev;
+const getEnvVars = ENV.prod;
 
 export default getEnvVars;
