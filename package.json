@@ -1,6 +1,6 @@
 {
   "name": "react-exam",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -22,6 +22,8 @@
     "axios": "^1.4.0",
     "d3": "^7.8.5",
     "expo": "^49.0.0",
+    "expo-apple-authentication": "~6.1.2",
+    "expo-build-properties": "^0.8.3",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.12",
@@ -51,8 +53,7 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "rn-fetch-blob": "^0.12.0",
-    "styled-components": "^6.0.4",
-    "expo-apple-authentication": "~6.1.2"
+    "styled-components": "^6.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

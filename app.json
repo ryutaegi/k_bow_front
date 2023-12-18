@@ -2,7 +2,7 @@
   "expo": {
     "name": "활로",
     "slug": "react-exam",
-    "version": "1.0.36",
+    "version": "1.0.37",
     "orientation": "portrait",
     "icon": "./assets/logo4_square.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.taeyou.reactexam"
     },
     "android": {
-      "versionCode" : 3,
+      "versionCode" : 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo4_square.png",
         "backgroundColor": "#059bf4"
@@ -46,6 +46,13 @@
     "react-native-google-mobile-ads" : {
       "android_app_id" : "ca-app-pub-7870001402351690~6675399614",
       "ios_app_id" : "ca-app-pub-7870001402351690~3123151500"
-    }
+    },
+    "plugins": [
+      ["expo-build-properties", {
+        "android": {
+          "usesCleartextTraffic": true
+        }
+      }]
+    ]
   }
 }
