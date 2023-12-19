@@ -2,7 +2,7 @@
   "expo": {
     "name": "활로",
     "slug": "react-exam",
-    "version": "1.0.37",
+    "version": "1.0.38",
     "orientation": "portrait",
     "icon": "./assets/logo4_square.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.taeyou.reactexam"
     },
     "android": {
-      "versionCode" : 4,
+      "versionCode" : 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo4_square.png",
         "backgroundColor": "#059bf4"
