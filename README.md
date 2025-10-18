@@ -88,6 +88,11 @@ k_bow_front/
 │    ├─── stack/       # 네비게이션 스택 정의
 │    └─── utils/       # 유틸리티 함수 (이미지 관리 등)
 ├─── App.js           # 앱 최상위 진입점
+
 └─── package.json     # 프로젝트 정보 및 의존성 관리
 ```
-<img width="321" height="526" alt="스크린샷 2025-10-18 오후 6 42 58" src="https://github.com/user-attachments/assets/027eeac8-5274-4d82-b2c3-1958f86e6aa3" />
+<img width="563" height="330" alt="활로-메인" src="https://github.com/user-attachments/assets/f0faa008-2c21-4d98-a77c-17675f67c465" />
+<img width="261" height="418" alt="활로-그룹" src="https://github.com/user-attachments/assets/69dfc1b3-68fe-49ae-8bc9-2f5c17fa9cfc" />
+<img width="261" height="417" alt="활로-기록" src="https://github.com/user-attachments/assets/1d3039f3-3133-47c1-a948-b369fb3dd6c2" />
+<img width="261" height="374" alt="활로-커뮤니티" src="https://github.com/user-attachments/assets/04d01f41-39a5-41c8-8220-36a1ff229e99" />
+<img width="261" height="374" alt="활로-지도" src="https://github.com/user-attachments/assets/91698504-0a5c-44a9-a4c9-6251cbd49e62" />
