@@ -91,7 +91,7 @@ k_bow_front/
 
 └─── package.json     # 프로젝트 정보 및 의존성 관리
 ```
-<img width="700" height="330" alt="활로-메인" src="https://github.com/user-attachments/assets/f0faa008-2c21-4d98-a77c-17675f67c465" />
+<img width="523" height="330" alt="활로-메인" src="https://github.com/user-attachments/assets/f0faa008-2c21-4d98-a77c-17675f67c465" />
 <img width="261" height="418" alt="활로-그룹" src="https://github.com/user-attachments/assets/69dfc1b3-68fe-49ae-8bc9-2f5c17fa9cfc" />
 <img width="261" height="417" alt="활로-기록" src="https://github.com/user-attachments/assets/1d3039f3-3133-47c1-a948-b369fb3dd6c2" />
 <img width="261" height="374" alt="활로-커뮤니티" src="https://github.com/user-attachments/assets/04d01f41-39a5-41c8-8220-36a1ff229e99" />
