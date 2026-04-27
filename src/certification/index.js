@@ -1,5 +1,5 @@
 import Login from './login.js';
-import KakaoLogin from './KakaoLogin.js';
-import NaverLogin from './NaverLogin.js';
+import GoogleLogin from './GoogleLogin.js';
+import AppleLogin from './AppleLogin.js';
 
-export { Login, KakaoLogin, NaverLogin};
+export { Login, GoogleLogin, AppleLogin };

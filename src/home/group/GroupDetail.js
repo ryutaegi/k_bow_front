@@ -1,14 +1,13 @@
 import {
   View,
-  Modal,
-  TextInput,
-  TouchableOpacity,
   Text,
   StyleSheet,
+  Dimensions,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
-//import Container from "../../components/Container";
-import styled, { ThemeContext } from "styled-components/native";
+import { ThemeContext } from "styled-components/native";
 import getEnvVars from "../../../environmant";
 import { UserContext } from "../../contexts";
 import axios from "axios";
@@ -16,7 +15,12 @@ import { AntDesign } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import { SpeedDial } from "@rneui/themed";
 import { ScrollView } from "react-native-gesture-handler";
-import { CustomCard } from "../../equipment/card";
+
+const { width } = Dimensions.get('window');
+
+const MEDAL_COLORS = ['#F5C518', '#A8A9AD', '#CD7F32'];
+const MEDAL_LABELS = ['1위', '2위', '3위'];
+const MEMBER_COLORS = ['#5B8DEF', '#F4845F', '#4CAF82', '#9B72CF', '#E8A838', '#3BBFBF'];
 
 const GroupDetail = ({ route, navigation }) => {
   const groupDetail_id = route.params.group_id;
@@ -24,94 +28,45 @@ const GroupDetail = ({ route, navigation }) => {
   const theme = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars;
-  const [inputData, SetInput] = useState([]);
   const [memberlist, SetMemberlist] = useState([]);
   const [userList, setUserList] = useState([]);
   const [countList, setCountList] = useState([]);
   const [open, setOpen] = useState(false);
 
   const withdraw = () => {
-    axios({
-      method: "post",
-      url: `${apiUrl}/api/group/withdraw`,
-      headers: {
-        Authorization: `${user.jwtToken}`,
-      },
+    axios({ method: "post", url: `${apiUrl}/api/group/withdraw`,
+      headers: { Authorization: `${user.jwtToken}` },
       data: { group_id: groupDetail_id },
-    })
-      .then((response) => {
-        console.log(response);
-        navigation.navigate("홈");
-      })
-      .catch(function (e) {
-        // console.log(e);
+    }).then(() => navigation.navigate("홈"))
+      .catch((e) => {
         if (e.response) {
-          // 서버가 2xx 외의 상태 코드로 응답한 경우
           switch (e.response.status) {
-            case 401:
-              Alert.alert("안내", "비밀번호가 틀립니다.");
-              break;
-            case 403:
-              Alert.alert("안내", "권한이 없습니다.");
-              break;
-            case 500:
-              Alert.alert("안내", "서버 에러가 발생했습니다.");
-              break;
-            case 409:
-              Alert.alert("안내", "이미 가입한 그룹입니다.");
-              break;
-            default:
-              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+            case 401: Alert.alert("안내", "비밀번호가 틀립니다."); break;
+            case 403: Alert.alert("안내", "권한이 없습니다."); break;
+            case 500: Alert.alert("안내", "서버 에러가 발생했습니다."); break;
+            default: Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
           }
-        } else if (e.request) {
-          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
-          alert("안내", "서버로부터 응답이 없습니다.");
         } else {
-          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+          Alert.alert("안내", "서버로부터 응답이 없습니다.");
         }
       });
   };
 
   const groupdelete = () => {
-    axios({
-      method: "post",
-      url: `${apiUrl}/api/group/delete`,
-      headers: {
-        Authorization: `${user.jwtToken}`,
-      },
+    axios({ method: "post", url: `${apiUrl}/api/group/delete`,
+      headers: { Authorization: `${user.jwtToken}` },
       data: { group_id: groupDetail_id },
-    })
-      .then((response) => {
-        console.log(response);
-        navigation.navigate("홈");
-      })
-      .catch(function (e) {
-        // console.log(e);
+    }).then(() => navigation.navigate("홈"))
+      .catch((e) => {
         if (e.response) {
-          // 서버가 2xx 외의 상태 코드로 응답한 경우
           switch (e.response.status) {
-            case 401:
-              Alert.alert("안내", "비밀번호가 틀립니다.");
-              break;
-            case 403:
-              Alert.alert("안내", "권한이 없습니다.");
-              break;
-            case 500:
-              Alert.alert("안내", "서버 에러가 발생했습니다.");
-              break;
-            case 409:
-              Alert.alert("안내", "이미 가입한 그룹입니다.");
-              break;
-            default:
-              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
+            case 401: Alert.alert("안내", "비밀번호가 틀립니다."); break;
+            case 403: Alert.alert("안내", "권한이 없습니다."); break;
+            case 500: Alert.alert("안내", "서버 에러가 발생했습니다."); break;
+            default: Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
           }
-        } else if (e.request) {
-          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
-          alert("안내", "서버로부터 응답이 없습니다.");
         } else {
-          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
+          Alert.alert("안내", "서버로부터 응답이 없습니다.");
         }
       });
   };
@@ -119,204 +74,113 @@ const GroupDetail = ({ route, navigation }) => {
   useEffect(() => {
     const gets = async () => {
       try {
-        const response = await axios.get(
-          apiUrl + "/api/group/rank/" + groupDetail_id,
-          {
-            headers: {
-              Authorization: `${user.jwtToken}`,
-            },
-          }
-        );
-        console.log(response.data);
-        const _inputData = response.data.sortedRatioResults.map((rowData) => ({
-          user_id: rowData.user_id,
-          nickname: rowData.nickname,
-          // is_push : JSON.parse(response.is_push),
-          // pushed_like_count : JSON.parse(response.pushed_like_count),
-          average: rowData.ratio * 5,
-          //shot_day : rowData.elementCount,
-        }));
-        const __inputData = response.data.sortedElementCountResults.map(
-          (rowData) => ({
-            user_id: rowData.user_id,
-            nickname: rowData.nickname,
-            // is_push : JSON.parse(response.is_push),
-            // pushed_like_count : JSON.parse(response.pushed_like_count),
-
-            shot_day: parseInt(rowData.elementCount),
-          })
-        );
-
-        setUserList(_inputData);
-        setCountList(__inputData);
-        console.log(_inputData);
-        console.log(__inputData);
-      } catch (e) {
-        console.log("에러가 발생했습니다.", e);
-      }
+        const response = await axios.get(apiUrl + "/api/group/rank/" + groupDetail_id, {
+          headers: { Authorization: `${user.jwtToken}` },
+        });
+        setUserList(response.data.sortedRatioResults.map((r) => ({
+          user_id: r.user_id,
+          nickname: r.nickname,
+          average: r.ratio * 5,
+        })));
+        setCountList(response.data.sortedElementCountResults.map((r) => ({
+          user_id: r.user_id,
+          nickname: r.nickname,
+          shot_day: parseInt(r.elementCount),
+        })));
+      } catch (e) { console.log("에러가 발생했습니다.", e); }
     };
     gets();
   }, []);
 
   useEffect(() => {
-    axios({
-      method: "post",
-      url: `${apiUrl}/api/group/list/memberdetail`,
-      headers: {
-        Authorization: `${user.jwtToken}`,
-      },
+    axios({ method: "post", url: `${apiUrl}/api/group/list/memberdetail`,
+      headers: { Authorization: `${user.jwtToken}` },
       data: { group_id: groupDetail_id },
-    })
-      .then((response) => {
-        const _inputData = response.data.map((rowData) => ({
-          user_id: rowData.user_id,
-          image_URL: rowData.image_url,
-          user_name: rowData.nickname,
-        }));
-        SetMemberlist(_inputData);
-      })
-      .catch(function (e) {
-        // console.log(e);
-        if (e.response) {
-          // 서버가 2xx 외의 상태 코드로 응답한 경우
-          switch (e.response.status) {
-            case 401:
-              Alert.alert("안내", "비밀번호가 틀립니다.");
-              break;
-            case 403:
-              Alert.alert("안내", "권한이 없습니다.");
-              break;
-            case 500:
-              Alert.alert("안내", "서버 에러가 발생했습니다.");
-              break;
-            case 409:
-              Alert.alert("안내", "이미 가입한 그룹입니다.");
-              break;
-            default:
-              Alert.alert("안내", "알 수 없는 에러가 발생했습니다.");
-          }
-        } else if (e.request) {
-          // 요청은 만들어졌지만, 서버가 응답하지 않은 경우
-          alert("안내", "서버로부터 응답이 없습니다.");
-        } else {
-          // 그 외에 어떤 것이든 요청을 설정하는 중에 오류가 발생한 경우
-          alert("안내", "요청 생성 중에 오류가 발생했습니다.");
-        }
-      });
+    }).then((response) => {
+      SetMemberlist(response.data.map((r) => ({
+        user_id: r.user_id,
+        image_URL: r.image_url,
+        user_name: r.nickname,
+      })));
+    }).catch((e) => {
+      if (e.response) Alert.alert("안내", "멤버 정보를 불러오지 못했습니다.");
+    });
   }, []);
+
+  const RankSection = ({ title, data, renderScore }) => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {data.slice(0, 3).map((item, index) => (
+        <View key={item.user_id} style={styles.rankRow}>
+          <View style={[styles.medalBadge, { backgroundColor: MEDAL_COLORS[index] + '22' }]}>
+            <Text style={[styles.medalText, { color: MEDAL_COLORS[index] }]}>
+              {MEDAL_LABELS[index]}
+            </Text>
+          </View>
+          <AntDesign
+            name="Trophy"
+            size={16}
+            color={MEDAL_COLORS[index]}
+            style={{ marginRight: 8 }}
+          />
+          <Text style={styles.rankName}>{item.nickname}</Text>
+          <Text style={styles.rankScore}>{renderScore(item)}</Text>
+        </View>
+      ))}
+      {data.length === 0 && (
+        <Text style={styles.emptyText}>아직 기록이 없어요</Text>
+      )}
+    </View>
+  );
 
   return (
     <>
-    <ScrollView>
-      <CustomCard title="시수 순위" iscard={0}>
-        <HorizontalLine />
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 80 }}>
 
-        {userList.slice(0, 3).map((group, index) => (
-          <View 
-          key={group.nickname}
-          style={styles.cardContainer}>
-          <View
-            key={group.nickname}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Title>
-            
-              <View style={{flexDirection : 'row', alignItems : 'center'}}>
-                {index == 0 ?
-                <AntDesign name="Trophy" size={18} color="gold" /> 
-              : index == 1 ? <AntDesign name="Trophy" size={18} color="silver" />
-              : <AntDesign name="Trophy" size={18} color="#CD7F32" />
-               }
-              <Text style={{fontWeight : 'bold', fontSize : 13}}>  {group.nickname}
-              </Text>
-              </View> 
-              
-            </Title>
-            <Content>평 {group.average.toFixed(1)}중 </Content>
-            {/* <AntDesign name="hearto" size={24} color="black" />
-            <Text>
-              {group.pushed_like_count}
-            </Text> */}
-          </View>
-          </View>
-        ))}
-      </CustomCard>
+        <TouchableOpacity
+          style={styles.boardBtn}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('GroupBoard', { group_id: groupDetail_id, group_name: route.params.group_name })}
+        >
+          <Text style={styles.boardBtnText}>📋 그룹 게시판</Text>
+          <Text style={styles.boardBtnArrow}>→</Text>
+        </TouchableOpacity>
 
-      <CustomCard title="습사 순위" iscard={0}>
-        <HorizontalLine />
-        {countList.slice(0, 3).map((group, index) => (
-          <View 
-          key={group.nickname}
-          style={styles.cardContainer}>
-          <View
-            key={group.nickname}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Title>
-            <View style={{flexDirection : 'row', alignItems : 'center'}}>
-                {index == 0 ?
-                <AntDesign name="Trophy" size={18} color="gold" /> 
-              : index == 1 ? <AntDesign name="Trophy" size={18} color="silver" />
-              : <AntDesign name="Trophy" size={18} color="#CD7F32" />
-               }
-              <Text style={{fontWeight : 'bold', fontSize : 13}}>  {group.nickname}
-              </Text>
-              </View> 
-            </Title>
-            <Content> {group.shot_day}일 습사 </Content>
-            {/* <View>
-            <AntDesign name="hearto" size={24} color="black" />
-            <Text>
-              {group.pushed_like_count}
-            </Text>
-            </View> */}
-          </View>
-          </View>
-        ))}
-      </CustomCard>
+        <RankSection
+          title="시수 순위"
+          data={userList}
+          renderScore={(item) => `평 ${item.average.toFixed(1)}중`}
+        />
 
-      <CustomCard title="그룹원" iscard={0}>
-        <HorizontalLine />
-        
-          <View
-            style={{
-              backgroundColor: theme.white,
-              padding: 10,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              flexWrap: "wrap",
-            }}
-          >
+        <RankSection
+          title="습사 순위"
+          data={countList}
+          renderScore={(item) => `${item.shot_day}일`}
+        />
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>그룹원 {memberlist.length > 0 ? `· ${memberlist.length}명` : ''}</Text>
+          <View style={styles.memberGrid}>
             {memberlist.map((member, index) => (
-              <View
-                key={member.user_id}
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  marginLeft: 10,
-                  marginRight: 10,
-                  marginBottom : 20,
-                }}
-              >
-                <MemberProfile
-                  source={{ uri: member.image_URL }}
-                ></MemberProfile>
-                <Text style={{ marginTop: 5, fontWeight: "bold" }}>
-                  {member.user_name}
-                </Text>
+              <View key={member.user_id} style={styles.memberItem}>
+                {member.image_URL ? (
+                  <Image source={{ uri: member.image_URL }} style={styles.memberAvatar} />
+                ) : (
+                  <View style={[styles.memberAvatar, styles.memberAvatarFallback, { backgroundColor: MEMBER_COLORS[index % MEMBER_COLORS.length] }]}>
+                    <Text style={styles.memberInitial}>{member.user_name.charAt(0)}</Text>
+                  </View>
+                )}
+                <Text style={styles.memberName} numberOfLines={1}>{member.user_name}</Text>
+                {member.user_id === group_maker_id && (
+                  <View style={styles.leaderBadge}>
+                    <Text style={styles.leaderBadgeText}>방장</Text>
+                  </View>
+                )}
               </View>
             ))}
           </View>
-       
-      </CustomCard>
+        </View>
+
       </ScrollView>
 
       <SpeedDial
@@ -327,221 +191,149 @@ const GroupDetail = ({ route, navigation }) => {
         onOpen={() => setOpen(!open)}
         onClose={() => setOpen(!open)}
       >
-        {group_maker_id == user.user_id ? (
+        {group_maker_id === user.user_id ? (
           <SpeedDial.Action
-            color={theme.wiget22}
+            color="#e53935"
             icon={{ name: "delete", color: "#fff" }}
             title="그룹 삭제하기"
-            onPress={() =>
-              Alert.alert(
-                "그룹 삭제하기",
-                "그룹을 삭제하시겠습니까?",
-                [
-                  {
-                    text: "아니오",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  { text: "예", onPress: () => groupdelete() },
-                ],
-                { cancelable: false }
-              )
-            }
+            onPress={() => Alert.alert("그룹 삭제", "그룹을 삭제하시겠습니까?", [
+              { text: "취소", style: "cancel" },
+              { text: "삭제", style: "destructive", onPress: groupdelete },
+            ])}
           />
         ) : (
           <SpeedDial.Action
             color={theme.wiget22}
-            icon={{ name: "delete", color: "#fff" }}
+            icon={{ name: "exit-to-app", color: "#fff" }}
             title="그룹 탈퇴하기"
-            onPress={() =>
-              Alert.alert(
-                "그룹 탈퇴하기",
-                "그룹에서 탈퇴하시겠습니까?",
-                [
-                  {
-                    text: "아니오",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  { text: "예", onPress: () => withdraw() },
-                ],
-                { cancelable: false }
-              )
-            }
+            onPress={() => Alert.alert("그룹 탈퇴", "그룹에서 탈퇴하시겠습니까?", [
+              { text: "취소", style: "cancel" },
+              { text: "탈퇴", style: "destructive", onPress: withdraw },
+            ])}
           />
         )}
       </SpeedDial>
-      
     </>
   );
 };
 
 const styles = StyleSheet.create({
-    cardContainer: {
-      backgroundColor: "#ffffff",
-      borderRadius: 8,
-      padding: 16,
-      paddingTop : 10,
-      paddingBottom : 10,
-      elevation: 3,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      marginBottom: 10,
-    },
-    contentContainer: {
-      flexDirection: "row",
-      marginBottom: 0, // Add some space above the button
-    },
-    cardImage: {
-      width: 150, // Adjust the size accordingly
-      height: 150, // Adjust the size accordingly
-      //borderRadius: 25, // Make it round
-      marginRight: 16, // Add space between the image and the text
-      resizeMode: "contain",
-    },
-    labelContainer: {
-      alignSelf: "flex-start", // This will align the label to the left
-      marginBottom: 8, // Add some margin below the label if needed
-      backgroundColor: "rgb(210,210,210)",
-      borderRadius: 7,
-      padding: 3,
-      paddingLeft: 10,
-      paddingRight: 10,
-    },
-    textContainer: {
-      flex: 1, // Take up all available space
-      justifyContent: "center", // Center the text vertically
-    },
-    labelText: {
-      fontSize: 12,
-      color: "#000",
-    },
-    cardHeading: {
-      fontSize: 18,
-      fontWeight: "bold",
-      color: "#000",
-    },
-    cardDescription: {
-      fontSize: 14,
-      color: "#000",
-    },
-  centeredView: {
+  container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#f5f6fa',
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
+  section: {
+    backgroundColor: '#fff',
+    marginHorizontal: 14,
+    marginTop: 14,
+    borderRadius: 14,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 2,
   },
-  textInput: {
-    height: 40,
-    width: 180,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 14,
   },
-  button: {
-    backgroundColor: "#2196F3",
-    padding: 10,
-    margin: 10,
-    marginBottom: 0,
-    width: 160,
-    borderRadius: 5,
+  rankRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
   },
-  buttonText: {
-    color: "white",
-    textAlign: "center",
+  medalBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    marginRight: 10,
   },
-  // ... other styles remain the same
+  medalText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  rankName: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#222',
+  },
+  rankScore: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
+  },
+  emptyText: {
+    fontSize: 13,
+    color: '#bbb',
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+  memberGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  memberItem: {
+    width: (width - 28 - 32 - 32) / 4,
+    alignItems: 'center',
+  },
+  memberAvatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    marginBottom: 6,
+  },
+  memberAvatarFallback: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memberInitial: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  memberName: {
+    fontSize: 12,
+    color: '#444',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  leaderBadge: {
+    marginTop: 3,
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  leaderBadgeText: {
+    fontSize: 10,
+    color: '#E65100',
+    fontWeight: '600',
+  },
+  boardBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    marginHorizontal: 14,
+    marginTop: 14,
+    borderRadius: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  boardBtnText: { fontSize: 15, fontWeight: '700', color: '#1a1a1a' },
+  boardBtnArrow: { fontSize: 16, color: '#aaa' },
 });
-
-const MemberProfile = styled.Image`
-  width: 70px;
-  height: 70px;
-  border-radius: 50px;
-  background-color: ${({ theme }) => theme.wiget22};
-`;
-
-const HorizontalLine = styled.View`
-  width: 100%;
-  border-bottom-width: 0.85px;
-  border-bottom-color: ${({ theme }) => theme.gray2};
-  margin-vertical: 3px;
-  margin-bottom: 10px;
-`;
-
-const RankingText = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  top: 0px;
-  margin-bottom: 3px;
-`;
-
-const RankingText1 = styled.Text`
-  color: ${({ theme }) => theme.black};
-  font-size: 16px;
-`;
-
-const CommunityText = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  top: 0px;
-  margin-bottom: 3px;
-`;
-
-const CommunityText1 = styled.Text`
-  color: ${({ theme }) => theme.black};
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const Container = styled.TouchableOpacity`
-  align-content: center;
-  border-radius: 10px;
-  width: 100%;
-  background-color: ${({ theme }) => theme.white};
-  //border : 1px solid red;
-  height: 30px;
-  margin-bottom: 10px;
-  flex-direction: column;
-  padding-left: 10px;
-  padding-right: 10px;
-  elevation: 5;
-`;
-
-const Title = styled.Text`
-  font-size: 13px;
-  font-weight: bold;
-  flex-direction : row;
-  align-items : center;
-`;
-const Content = styled.Text`
-  font-size: 13px;
-  font-weight: normal;
-`;
-
-const Footer = styled.Text`
-  font-size: 12px;
-  margin-top: 10px;
-  color: ${({ theme }) => theme.gray1};
-`;
 
 export default GroupDetail;

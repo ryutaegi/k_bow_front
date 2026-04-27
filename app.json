@@ -11,7 +11,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#059bf4"
     },
-    "plugins": ["expo-apple-authentication"],
+    "plugins": [
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.848442562466-7qbh3d1clv3dpgr32dbg0vc2md9hgu8v"
+        }
+      ]
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -26,10 +34,12 @@
         "backgroundColor": "#059bf4"
       },
       "package": "com.taeyou.reactexam",
-      "config" :  {
-        "googleMaps" : { "apiKey" : "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c" }
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c"
+        }
       },
-      "versionCode" : 2
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

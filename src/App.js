@@ -6,8 +6,12 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import axios from 'axios';
+import PopupModal from './components/PopupModal';
+import getEnvVars from '../environmant';
+import jwtDecode from 'jwt-decode';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Dimensions } from "react-native";
@@ -29,6 +33,9 @@ import GroupMain from "./home/group/GroupMain.js";
 import GroupAdd from "./home/group/GroupAdd.js";
 import GroupDetail from "./home/group/GroupDetail.js";
 import GroupMake from "./home/group/GroupMake.js";
+import GroupBoard from "./home/group/GroupBoard.js";
+import GroupBoardDetail from "./home/group/GroupBoardDetail.js";
+import GroupBoardCreate from "./home/group/GroupBoardCreate.js";
 import JoinPresenter from "./mypage/JoinPresenter.js";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { SafeAreaView } from "react-native";
@@ -56,6 +63,10 @@ import { useNavigation } from "@react-navigation/native";
 import { BottomTabs, Icon } from "react-native-elements";
 import { FontAwesome } from "@expo/vector-icons";
 import { Spinner } from "./components";
+
+// 전역 텍스트 줄바꿈: 띄어쓰기 기준으로 (한국어 포함)
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.lineBreakStrategyIOS = 'hangul-word';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -173,6 +184,21 @@ function HomeTab() {
         component={GroupMake}
         options={{ title: "그룹 생성", headerShown: true }}
       />
+      <Stack.Screen
+        name="GroupBoard"
+        component={GroupBoard}
+        options={({ route }) => ({ title: route.params.group_name + ' 게시판', headerShown: true })}
+      />
+      <Stack.Screen
+        name="GroupBoardDetail"
+        component={GroupBoardDetail}
+        options={{ title: "게시글 상세", headerShown: true }}
+      />
+      <Stack.Screen
+        name="GroupBoardCreate"
+        component={GroupBoardCreate}
+        options={{ title: "게시글 쓰기", headerShown: true }}
+      />
     </Stack.Navigator>
   );
 }
@@ -182,11 +208,6 @@ function RecordTab() {
   const { user } = useContext(UserContext);
   const navigation = useNavigation(); // useNavigation hook to get the navigation prop
 
-  const data = [
-    { date: "2023-01-01", count: 5 },
-    { date: "2023-01-02", count: 2 },
-    // ... more data ...
-  ];
   return (
     <>
       
@@ -209,8 +230,8 @@ function RecordTab() {
                 <TouchableOpacity
                   style={{ marginRight: 15 }}
                   onPress={() =>
-                    navigation.navigate("DataMain", { data: data })
-                  } // Navigate to DataMain when pressed
+                    navigation.navigate("DataMain")
+                  }
                 >
                   <Entypo name="documents" size={30} color="black" />
                 </TouchableOpacity>
@@ -284,8 +305,9 @@ const Auth = () => {
             console.log(parsedUserInfo);
           }
         } else {
-          console.log("토큰 만료됨");
-          // 토큰이 만료되었을 때의 처리를 여기에 작성하세요.
+          // 토큰 만료 시 저장된 데이터 삭제
+          await AsyncStorage.removeItem('userToken');
+          await AsyncStorage.removeItem('userInfo');
         }
       }
     } catch (error) {
@@ -394,24 +416,88 @@ const Auth = () => {
   
 }
 
-const App = () => {
-  const { inProgress } = useContext(ProgressContext);
-  
-  
+// x.y.z 버전 문자열 비교: a < b 이면 true
+const isVersionLower = (a, b) => {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const na = pa[i] ?? 0;
+    const nb = pb[i] ?? 0;
+    if (na < nb) return true;
+    if (na > nb) return false;
+  }
+  return false;
+};
 
-  
+const AppInner = () => {
+  const { inProgress } = useContext(ProgressContext);
+  const [popup, setPopup] = useState(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchPopup = async () => {
+      try {
+        const res = await axios.get(`${getEnvVars.apiUrl}/api/popup`);
+        const data = res.data?.popup;
+        if (!data) return;
+
+        if (data.type === 'force_update') {
+          const appVersion = Constants.expoConfig?.version ?? '0.0.0';
+          if (data.min_version && isVersionLower(appVersion, data.min_version)) {
+            setPopup(data);
+            setPopupVisible(true);
+          }
+        } else {
+          // 오늘 이미 닫은 팝업인지 확인
+          const key = `popup_dismissed_${data.popup_id}`;
+          const dismissed = await AsyncStorage.getItem(key);
+          const today = new Date().toDateString();
+          if (dismissed !== today) {
+            setPopup(data);
+            setPopupVisible(true);
+          }
+        }
+      } catch (e) {
+        // 팝업 실패는 조용히 무시
+      }
+    };
+    fetchPopup();
+  }, []);
+
+  const handleClose = () => setPopupVisible(false);
+
+  const handleDismissToday = async () => {
+    if (popup) {
+      const key = `popup_dismissed_${popup.popup_id}`;
+      await AsyncStorage.setItem(key, new Date().toDateString());
+    }
+    setPopupVisible(false);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <NavigationContainer style={{ paddingTop: StatusBar }}>
+        <Auth />
+      </NavigationContainer>
+      {inProgress && <Spinner />}
+      <PopupModal
+        visible={popupVisible}
+        popup={popup}
+        onClose={handleClose}
+        onDismissToday={handleDismissToday}
+      />
+    </ThemeProvider>
+  );
+};
+
+const App = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <UserProvider>
         <ProgressProvider>
-          <ThemeProvider theme={theme}>
-            <NavigationContainer style={{ paddingTop: StatusBar }}>
-            <Auth/>
-            </NavigationContainer>
-          </ThemeProvider>
+          <AppInner />
         </ProgressProvider>
       </UserProvider>
-      {inProgress && <Spinner />}
     </SafeAreaView>
   );
 };

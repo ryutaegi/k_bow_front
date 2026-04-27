@@ -199,7 +199,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    marginLeft: 8,
+    marginLeft: 24,
+    flexShrink: 1,
+    fontSize: 15,
   },
   submitButton: {
     backgroundColor: 'blue',

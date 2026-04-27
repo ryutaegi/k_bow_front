@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import { LocaleConfig } from 'react-native-calendars';
 import { UserContext, ProgressContext } from '../contexts';
@@ -35,6 +36,8 @@ const DataMain = ({navigation}) => {
     const [missPercent, setMissPercent] = useState([]);
     let shotDate = [];
     let shotCount = 0;
+    const currentMonthRef = useRef('');
+    const isFirstFocus = useRef(true);
     const today = new Date();
     //today.setHours(today.getHours() + 9);
     const year = today.getFullYear(); // 년도
@@ -87,223 +90,95 @@ const DataMain = ({navigation}) => {
         
       };
       
-      useEffect(() => {
+      const fetchMonthData = (monthString) => {
         spinner.start();
-        const date = new Date();
-        //date.setHours(date.getHours() + 9);
-        //console.log("오늘날짜", date)
-        const currentMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         axios({
-          method : 'post',
-          url: apiUrl+'/api/shot/month',
-          headers: {
-            'Authorization': `${user.jwtToken}`
-        },
-        data: { month : currentMonth },
+          method: 'post',
+          url: apiUrl + '/api/shot/month',
+          headers: { 'Authorization': `${user.jwtToken}` },
+          data: { month: monthString },
         }).then((response) => {
           shotDate = [];
-              shotCount = 0;
-          console.log("response.data", response.data)
-          if(response.data.length !== 0)
-           {
-              
-          //console.log("DB업로드 완료", response.data);
-          const newData = response.data.reduce((acc, item) => {
-            console.log("acc",acc);
-            console.log("item",item);
-            const date = item.shot_date_korean.slice(0,10); //korean시간변경가능
-            console.log("date는",item.shot_date_korean); //korean시간변경가능
-
-            let shotArray = [];
-
-            // Check if shot_array is not null before trying to parse
-            if (item.shot_array !== null) {
-              shotArray = getDecodingLevel(item.shot_array).data;
-                
-            }
-            shotDate = [...shotDate, ...shotArray];
-            const filteredShotsCount = shotArray.filter(value => ((value >= 4 && value <= 12)||(value == 17))).length;
-            shotCount += filteredShotsCount;
-            const percent = 200 - (filteredShotsCount/shotArray.length)*5*40
-            console.log(shotArray);
-            console.log(filteredShotsCount);
-            console.log(percent);
-            console.log('shotdate', shotDate);
-
-
-            // Calculate the percentage of shot values between 9 and 14
-             //const filteredShots = shotArray.filter(value => value >= 4 && value <= 14).length;
-            // const percentage = (filteredShots.length / shotArray.length) * 100;
-        
-             
-             //console.log(filteredShots);
-             
-        
-
-            if (!acc[date]) acc[date] = {selected: true, selectedColor: `rgb(${percent},${percent*1.1},255)`};
-
-            // const existingDetails = dataDetails[date] || { shots: [], feedback: [] };
-            // existingDetails.shots.push(shotArray);
-            // existingDetails.feedback.push(item.feedback);
-            // setDataDetails(prevDetails => ({ ...prevDetails, [date]: existingDetails }));
-        
-            // 필요하다면 다른 로직을 추가하여 acc[date]를 업데이트 할 수 있습니다.
-            return acc;
-
-
-          }, {});
-          setMarkedDates(newData);
-          setMonthDate(Object.keys(newData)[0].slice(0,7));
-          setShotCount(shotCount);
-          setShotDates(shotDate.length);
-          setHitPercent(
-            [shotDate.filter(value => (value == 4)).length / shotCount,
-            shotDate.filter(value => (value == 5)).length / shotCount,
-            shotDate.filter(value => (value == 6)).length / shotCount,
-            shotDate.filter(value => (value == 7)).length / shotCount,
-            shotDate.filter(value => (value == 8)).length / shotCount,
-            shotDate.filter(value => (value == 9)).length / shotCount,
-            shotDate.filter(value => (value == 10)).length / shotCount,
-            shotDate.filter(value => (value == 11)).length / shotCount,
-            shotDate.filter(value => (value == 12)).length / shotCount, 
-          ]);
-          setMissPercent(
-            [shotDate.filter(value => (value == 0)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 1)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 2)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 3)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 13)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 14)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
-            shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
-          ]);
-        }
-        else {
-          setShotCount('');
-            setShotDates('');
-            setHitPercent(
-              [0,0,0,0,0,0,0,0,0]);
-            setMissPercent(
-              [0,0,0,0,0,0,0,0]);
-        }
-        spinner.stop();
-
-        }).catch(function (error) {
-          console.log('error', error);
-        })
-    }, []);
-
-      const onVisibleMonthsChange = (months) => {
-        if(months && months.length > 0) {
-          spinner.start();
-            const firstVisibleMonth = months[0];
-            // YYYY-MM-DD 형식의 문자열로 월을 표시합니다.
-            const monthString = `${firstVisibleMonth.year}-${firstVisibleMonth.month.toString().padStart(2, '0')}`;
-            // 여기서 서버에 현재 보이는 월을 전송할 수 있습니다.
-            console.log(monthString);
-            axios({
-              method : 'post',
-              url: apiUrl+'/api/shot/month',
-              headers: {
-                'Authorization': `${user.jwtToken}`
-            },
-            data: { month : monthString },
-            }).then((response) => {
-              //console.log("DB업로드 완료", response.data);
-              console.log("response.data", response.data)
-              if(response.data.length !== 0)
-              {
-              shotDate = [];
-              shotCount = 0;
-              
-             
-              const newData = response.data.reduce((acc, item) => {
-                console.log("acc",acc);
-                console.log("item",item);
-                const date = item.shot_date_korean.slice(0,10); //korean시간변경가능
-
-                let shotArray = [];
-
-                // Check if shot_array is not null before trying to parse
-                if (item.shot_array !== null) {
-                  if (item.shot_array !== null) {
-                    shotArray = getDecodingLevel(item.shot_array).data;
-                      
-                  }
-                }
-                shotDate = [...shotDate, ...shotArray];
-                const filteredShotsCount = shotArray.filter(value => ((value >= 4 && value <= 12)||(value == 17))).length;
-                shotCount += filteredShotsCount;
-                const percent = 200 - (filteredShotsCount/shotArray.length)*5*40
-                console.log("shotarray", shotArray);
-                console.log(filteredShotsCount);
-                console.log(percent);
-                console.log('shotdate', shotDate);
-               
-
-
-                // Calculate the percentage of shot values between 9 and 14
-                 //const filteredShots = shotArray.filter(value => value >= 4 && value <= 14).length;
-                // const percentage = (filteredShots.length / shotArray.length) * 100;
-            
-                 
-                 //console.log(filteredShots);
-                 
-            
-
-                if (!acc[date]) acc[date] = {selected: true, selectedColor: `rgb(${percent},${percent*1.1},255)`};
-
-                // const existingDetails = dataDetails[date] || { shots: [], feedback: [] };
-                // existingDetails.shots.push(shotArray);
-                // existingDetails.feedback.push(item.feedback);
-                // setDataDetails(prevDetails => ({ ...prevDetails, [date]: existingDetails }));
-            
-                // 필요하다면 다른 로직을 추가하여 acc[date]를 업데이트 할 수 있습니다.
-                return acc;
-              }, {});
-              setMarkedDates(newData);
-            setMonthDate(Object.keys(newData)[0].slice(0,7));
+          shotCount = 0;
+          console.log("response.data", response.data);
+          if (response.data.length !== 0) {
+            const newData = response.data.reduce((acc, item) => {
+              const date = item.shot_date_korean.slice(0, 10);
+              let shotArray = [];
+              if (item.shot_array !== null) {
+                shotArray = getDecodingLevel(item.shot_array).data;
+              }
+              shotDate = [...shotDate, ...shotArray];
+              const filteredShotsCount = shotArray.filter(value => ((value >= 4 && value <= 12) || (value == 17))).length;
+              shotCount += filteredShotsCount;
+              const percent = 200 - (filteredShotsCount / shotArray.length) * 5 * 40;
+              if (!acc[date]) acc[date] = { selected: true, selectedColor: `rgb(${percent},${percent * 1.1},255)` };
+              return acc;
+            }, {});
+            setMarkedDates(newData);
+            setMonthDate(Object.keys(newData)[0].slice(0, 7));
             setShotCount(shotCount);
             setShotDates(shotDate.length);
-            setHitPercent(
-              [shotDate.filter(value => (value == 4)).length / shotCount,
-              shotDate.filter(value => (value == 5)).length / shotCount,
-              shotDate.filter(value => (value == 6)).length / shotCount,
-              shotDate.filter(value => (value == 7)).length / shotCount,
-              shotDate.filter(value => (value == 8)).length / shotCount,
-              shotDate.filter(value => (value == 9)).length / shotCount,
-              shotDate.filter(value => (value == 10)).length / shotCount,
-              shotDate.filter(value => (value == 11)).length / shotCount,
-              shotDate.filter(value => (value == 12)).length / shotCount, 
+            setHitPercent([
+              shotDate.filter(value => value == 4).length / shotCount,
+              shotDate.filter(value => value == 5).length / shotCount,
+              shotDate.filter(value => value == 6).length / shotCount,
+              shotDate.filter(value => value == 7).length / shotCount,
+              shotDate.filter(value => value == 8).length / shotCount,
+              shotDate.filter(value => value == 9).length / shotCount,
+              shotDate.filter(value => value == 10).length / shotCount,
+              shotDate.filter(value => value == 11).length / shotCount,
+              shotDate.filter(value => value == 12).length / shotCount,
             ]);
-            setMissPercent(
-              [shotDate.filter(value => (value == 0)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 1)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 2)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 3)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 13)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 14)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 15)).length / (shotDate.length - shotCount),
-              shotDate.filter(value => (value == 16)).length / (shotDate.length - shotCount),
+            setMissPercent([
+              shotDate.filter(value => value == 0).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 1).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 2).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 3).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 13).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 14).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 15).length / (shotDate.length - shotCount),
+              shotDate.filter(value => value == 16).length / (shotDate.length - shotCount),
             ]);
-          }
-          else {
-            
+          } else {
             setShotCount('');
             setShotDates('');
-            setHitPercent(
-              [0,0,0,0,0,0,0,0,0]);
-            setMissPercent(
-              [0,0,0,0,0,0,0,0]);
-
+            setHitPercent([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            setMissPercent([0, 0, 0, 0, 0, 0, 0, 0]);
           }
-            spinner.stop();
-              
-            }).catch(function (error) {
-              console.log('error', error);
-            })
+          spinner.stop();
+        }).catch(function (error) {
+          console.log('error', error);
+          spinner.stop();
+        });
+      };
+
+      useEffect(() => {
+        const date = new Date();
+        const currentMonth = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        currentMonthRef.current = currentMonth;
+        fetchMonthData(currentMonth);
+      }, []);
+
+      useFocusEffect(
+        useCallback(() => {
+          if (isFirstFocus.current) {
+            isFirstFocus.current = false;
+            return;
+          }
+          const month = currentMonthRef.current || `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`;
+          fetchMonthData(month);
+        }, [])
+      );
+
+      const onVisibleMonthsChange = (months) => {
+        if (months && months.length > 0) {
+          const firstVisibleMonth = months[0];
+          const monthString = `${firstVisibleMonth.year}-${firstVisibleMonth.month.toString().padStart(2, '0')}`;
+          currentMonthRef.current = monthString;
+          fetchMonthData(monthString);
         }
-    };
+      };
     
 
       return (
@@ -432,11 +307,13 @@ const DataMain = ({navigation}) => {
           </Text>
         </View>
         
-        <View>
-          <Text style={{ fontSize: 16, fontWeight : '400', textAlign : 'left', borderWidth : 0 }}>
-            평  {((shotCounts/shotDates) * 5).toFixed(1)} 중{'\n'}
-            계 {shotCounts} / {shotDates}</Text>
-        </View>
+        {shotDates > 0 ? (
+          <View>
+            <Text style={{ fontSize: 16, fontWeight : '400', textAlign : 'left', borderWidth : 0 }}>
+              평  {((shotCounts/shotDates) * 5).toFixed(1)} 중{'\n'}
+              계 {shotCounts} / {shotDates}</Text>
+          </View>
+        ) : null}
         </View>
         </ScrollView>
         

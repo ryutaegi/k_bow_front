@@ -1,14 +1,10 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Image, ScrollView, Text } from 'react-native';
 import { Dimensions } from 'react-native';
 
 const TargetSelect = ({ navigation, route }) => {
   const { boxidx } = route.params;
   const targetImages = [
-    require('../../images/hit/leftup.png'),
-    require('../../images/hit/up.png'),
-    require('../../images/hit/rightup.png'),
-    require('../../images/hit/left.png'),
     require('../../images/target/img1.png'),
     require('../../images/target/img2.png'),
     require('../../images/target/img3.png'),
@@ -18,233 +14,107 @@ const TargetSelect = ({ navigation, route }) => {
     require('../../images/target/img7.png'),
     require('../../images/target/img8.png'),
     require('../../images/target/img9.png'),
-    require('../../images/hit/right.png'),
-    require('../../images/hit/leftdown.png'),
-    require('../../images/hit/down.png'),
-    require('../../images/hit/rightdown.png'),
-    require('../../images/hit/redhit.png'),
-    require('../../images/hit/miss.png'),
-    // ... 7개 부분 이미지 파일 경로 추가
   ];
 
   const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
+  const CELL_W = Math.floor(windowWidth * 0.15);
+  const CELL_H = Math.floor(windowWidth * 0.2);
+  const TARGET = CELL_H * 3;
+  const GRID_W = CELL_W * 3;
+
+  const arrowBtn = (label, imageIdx, style) => (
+    <TouchableOpacity
+      style={[{
+        backgroundColor: '#f2f2f2',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 2,
+      }, style]}
+      onPress={() => navigation.navigate('Record', { image: `${imageIdx}`, boxindex: boxidx })}
+      activeOpacity={0.6}
+    >
+      <Text style={{ fontSize: 26, fontWeight: '900', color: '#555' }}>{label}</Text>
+    </TouchableOpacity>
+  );
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', backgroundColor:"#fff",}}>
-    <ScrollView contentContainerStyle={{ padding: 20, marginTop: 50 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
-        {[...Array(3)].map((_, index) => (
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#fff' }}>
+      <ScrollView contentContainerStyle={{ padding: 20, marginTop: 50 }}>
+
+        {/* 상단 행: ↖ / ↑ / ↗ */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          {arrowBtn('↖', 0, { width: CELL_W, height: CELL_W })}
+          {arrowBtn('↑', 1, { width: GRID_W, height: CELL_W })}
+          {arrowBtn('↗', 2, { width: CELL_W, height: CELL_W })}
+        </View>
+
+        {/* 중간 행: ← / 과녁 3x3 / → */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          {arrowBtn('←', 3, { width: CELL_W, height: TARGET })}
+
+          {/* 과녁 3x3 */}
+          <View style={{ flexDirection: 'row', margin: 2 }}>
+            {[0, 1, 2].map((col) => (
+              <View key={col} style={{ flexDirection: 'column', width: CELL_W }}>
+                {[0, 1, 2].map((row) => (
+                  <TouchableOpacity
+                    key={col * 3 + row}
+                    style={{ width: CELL_W, height: CELL_H, overflow: 'hidden' }}
+                    onPress={() => navigation.navigate('Record', { image: `${col * 3 + row + 4}`, boxindex: boxidx })}
+                  >
+                    <Image
+                      source={targetImages[col * 3 + row]}
+                      style={{ width: '100%', height: '100%' }}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
+          </View>
+
+          {arrowBtn('→', 13, { width: CELL_W, height: TARGET })}
+        </View>
+
+        {/* 하단 행: ↙ / ↓ / ↘ */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          {arrowBtn('↙', 14, { width: CELL_W, height: CELL_W })}
+          {arrowBtn('↓', 15, { width: GRID_W, height: CELL_W })}
+          {arrowBtn('↘', 16, { width: CELL_W, height: CELL_W })}
+        </View>
+
+        {/* 중 / 不 버튼 */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 40 }}>
           <TouchableOpacity
-            key={index}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.45,
-              height: windowWidth * 0.15 ,
-              margin: 6.5,
-              marginBottom:13,
-              borderWidth: 0.5,
-              borderRadius: 1,
-              //borderColor: '#ccc',
-              overflow: 'hidden',
+              width: windowWidth * 0.38,
+              height: 56,
+              backgroundColor: '#4a4a4a',
+              borderRadius: 12,
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onPress={() => navigation.navigate('Record', { image: `${index}`, boxindex: boxidx })}
+            onPress={() => navigation.navigate('Record', { image: '18', boxindex: boxidx })}
           >
-            <Image
-              key={index}
-              source={targetImages[index]}
-              style={{ width:  index==1 ? '40%' : '110%', height: index==1 ? '50%' : '110%' }}
-            />
+            <Text style={{ color: '#fff', fontSize: 32, fontWeight: 'bold' }}>不</Text>
           </TouchableOpacity>
-        ))}
-      </View>
-
-
-      <View style={{ flexDirection: 'row' }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
-  <TouchableOpacity
-    key={3}
-    style={{
-      width: windowWidth * 0.15,
-      height: windowWidth * 0.61,
-      margin: 1,
-      borderWidth: 0.5,
-      borderRadius: 1,
-      //borderColor: '#ccc',
-      overflow: 'hidden',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-    onPress={() => navigation.navigate('Record', { image: '3', boxindex: boxidx })}
-  >
-    <Image
-      key={3}
-      source={targetImages[3]}
-      style={{ width:'60%', height: '35%' }}
-    />
-  </TouchableOpacity>
-</View>
-<View style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', flex: 0.75 }}>
-    {[...Array(3)].map((_, index) => (
-      <TouchableOpacity 
-        key={index+4}
-        style={{
-          width: windowWidth * 0.15,
-          height: windowWidth * 0.2,
-          margin: 1,
-          //borderWidth: 1,
-          borderRadius: 1,
-          //borderColor: '#ccc',
-          overflow: 'hidden',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => navigation.navigate('Record', { image: `${index+4}`, boxindex: boxidx })}
-      >
-        <Image
-          key={index+4}
-          source={targetImages[index+4]}
-          style={{ width: '100%', height: '100%' }}
-        />
-      </TouchableOpacity>
-    ))}
-  </View>
-  <View style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', flex: 0.75 }}>
-    {[...Array(3)].map((_, index) => (
-      <TouchableOpacity 
-        key={index+7}
-        style={{
-          width: windowWidth * 0.15,
-          height: windowWidth * 0.2,
-          margin: 1,
-          //borderWidth: 1,
-          borderRadius: 1,
-          //borderColor: '#ccc',
-          overflow: 'hidden',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => navigation.navigate('Record', { image: `${index+7}`, boxindex: boxidx })}
-      >
-        <Image
-          key={index+7}
-          source={targetImages[index+7]}
-          style={{ width: '100%', height: '100%' }}
-        />
-      </TouchableOpacity>
-    ))}
-  </View>
-  <View style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center', flex: 0.75 }}>
-    {[...Array(3)].map((_, index) => (
-      <TouchableOpacity 
-        key={index+10}
-        style={{
-          width: windowWidth * 0.15,
-          height: windowWidth * 0.2,
-          margin: 1,
-          //borderWidth: 1,
-          borderRadius: 1,
-          //borderColor: '#ccc',
-          overflow: 'hidden',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => navigation.navigate('Record', { image: `${index+10}`, boxindex: boxidx })}
-      >
-        <Image
-          key={index+10}
-          source={targetImages[index+10]}
-          style={{ width: '100%', height: '100%' }}
-        />
-      </TouchableOpacity>
-    ))}
-  </View>
-  <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
-  <TouchableOpacity
-    key={13}
-    style={{
-      width: windowWidth * 0.15,
-      height: windowWidth * 0.61,
-      margin: 1,
-      borderWidth: 0.5,
-      borderRadius: 1,
-      //borderColor: '#ccc',
-      overflow: 'hidden',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-    onPress={() => navigation.navigate('Record', { image: '13', boxindex: boxidx })}
-  >
-    <Image
-      key={13}
-      source={targetImages[13]}
-      style={{ width: '60%', height: '35%' }}
-    />
-  </TouchableOpacity>
-</View>
-  </View>
-  
-  <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
-        {[...Array(3)].map((_, index) => (
           <TouchableOpacity
-            key={index}
             style={{
-              width: index === 0 || index === 2 ? windowWidth * 0.15 : windowWidth * 0.45,
-              height: windowWidth * 0.15 ,
-              margin: 6.5,
-              marginTop:13,
-              borderWidth: 0.5,
-              borderRadius: 1,
-              //borderColor: '#ccc',
-              overflow: 'hidden',
+              width: windowWidth * 0.38,
+              height: 56,
+              backgroundColor: '#e8342a',
+              borderRadius: 12,
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onPress={() => navigation.navigate('Record', { image: `${index+14}`, boxindex: boxidx })}
+            onPress={() => navigation.navigate('Record', { image: '17', boxindex: boxidx })}
           >
-            <Image
-              key={index+14}
-              source={targetImages[index+14]}
-              style={{ width:  index==1 ? '40%' : '110%', height: index==1 ? '50%' : '110%'}}
-            />
+            <Text style={{ color: '#fff', fontSize: 32, fontWeight: 'bold' }}>中</Text>
           </TouchableOpacity>
-        ))}
-      </View>
+        </View>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
-        {[...Array(2)].map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={{
-              width: windowWidth * 0.4,
-              height: windowWidth * 0.15 ,
-              margin: 6.5,
-              marginTop:50,
-              borderWidth: 0,
-              borderRadius: 1,
-              //borderColor: '#ccc',
-              overflow: 'hidden',
-              justifyContent: 'center',
-
-               alignItems: 'center',
-            }}
-            onPress={() => navigation.navigate('Record', { image: `${index+17}`, boxindex: boxidx })}
-          >
-            <Image
-              key={index+17}
-              source={targetImages[index+17]}
-              style={{ width: '50%', height: '75%' }}
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
-
-  
-    </ScrollView>
+      </ScrollView>
     </View>
-    
-    
   );
 };
 

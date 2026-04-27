@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { TouchableOpacity, Text, View, Alert, Linking } from 'react-native';
 import { UserContext, ProgressContext } from './contexts';
 import  {Image}  from './components';
-import { Button, Alert, Linking } from 'react-native';
 import { Input } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styled, {ThemeContext} from 'styled-components/native';
-import axios from 'axios';
 import getEnvVars from '../environmant';
 import JoinPresenter from './mypage/JoinPresenter';
 import { SpeedDial } from "@rneui/themed";
@@ -30,80 +29,27 @@ const MyPage = () => {
  const [photoUrl, setPhotoUrl] = useState(user.imageURL);
  const [open, setOpen] = useState(false);
 
- const _handleLogoutButtonPress = async () => {
-  if(user.social_type == 1)
-  {
-  console.log(user.social_id);
-  axios({
-    method : 'post',
-    url: apiUrl+'/api/kakao/logout',
-    data: {
-      social_id : user.social_id,
-    },
-  }).then((response1) => {
-    dispatch({name : null, 
-      imageURL : null, 
-      social_id : null,
-      user_id : null,
-      agree : null,
-      social_type : null,
-      jwtToken : null});
-    console.log('로그아웃 완료',response1.data);
-  }).catch(function (error) {
-    console.log('error', error);
-  })
-}
-else if(user.social_type == 2)
-{
-  dispatch({name : null, 
-    imageURL : null, 
-    social_id : null,
-    user_id : null,
-    agree : null,
-    social_type : null,
-    jwtToken : null});
-  console.log('로그아웃 완료');
-}
-else if(user.social_type == 3)
-  {
-    dispatch({name : null, 
-      imageURL : null, 
-      social_id : null,
-      user_id : null,
-      agree : null,
-      social_type : null,
-      jwtToken : null});
-    console.log('로그아웃 완료');
-}
-
-
+ const clearUserSession = async () => {
+   await AsyncStorage.removeItem('userToken');
+   await AsyncStorage.removeItem('userInfo');
+   dispatch({ name: null, imageURL: null, social_id: null, user_id: null, agree: null, social_type: null, jwtToken: null });
  };
 
- const _handwithdrawButtonPress = () => {
-  console.log("회원탈퇴 클릭함");
+ const _handleLogoutButtonPress = async () => {
+   await clearUserSession();
+ };
 
-  axios({
-    method : 'post',
-    url: apiUrl+'/api/withdraw/withdraw',
-    headers: {
-      Authorization: `${user.jwtToken}`,
-    },
-    data: {
-      social_id : user.social_id,
-    },
-  }).then((response1) => {
-    dispatch({name : null, 
-      imageURL : null, 
-      social_id : null,
-      user_id : null,
-      agree : null,
-      social_type : null,
-      jwtToken : null});
-    console.log('회원 탈퇴 완료',response1.data);
-  }).catch(function (error) {
-    console.log('error', error);
-  })
-
+ const _handwithdrawButtonPress = async () => {
+   try {
+     await axios({
+       method: 'post',
+       url: apiUrl + '/api/withdraw/withdraw',
+       headers: { Authorization: `${user.jwtToken}` },
+     });
+     await clearUserSession();
+   } catch (error) {
+     Alert.alert('오류', '회원 탈퇴 중 문제가 발생했습니다.');
+   }
  }
 
 

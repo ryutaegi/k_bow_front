@@ -17,6 +17,8 @@ import { Input, Icon } from '@rneui/themed';
 import getEnvVars from '../../environmant';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+const CONTAINER_WIDTH = Math.floor(windowWidth * 0.60);
+const CELL_WIDTH = Math.floor(CONTAINER_WIDTH / 5);
 
 
 const Record = ({ navigation, route }) => {
@@ -84,7 +86,7 @@ const Record = ({ navigation, route }) => {
               {
                 console.log(isnew, "업데이트")
                 isnew = 1;
-                
+                return;
               }
               const decoding = getDecodingLevel(response.data[0].shot_array);
                //실수로 9월말 2번 인코딩해서 데이터 넣는 걸로 만듦. 고치긴 했는데 이전 데이터 받기위해이렇게함
@@ -470,17 +472,17 @@ useEffect(() => {
           flexWrap: 'wrap',
           margin : 0,
           borderWidth : 0,
-          width : windowWidth*0.60,}}>
-          
+          width : CONTAINER_WIDTH}}>
+
           {/* 이전 사각형들 출력 */}
-        
+
     {Array.isArray(shots) && shots.map((shot, index) => (
-  
+
   <TouchableOpacity
     key={index}
     style={{
-      width: windowWidth*0.12,
-      height : windowWidth*0.12,
+      width: CELL_WIDTH,
+      height : CELL_WIDTH,
       aspectRatio: 1,
       margin: 0,
       marginLeft :  0,
@@ -507,8 +509,8 @@ useEffect(() => {
 ))}
 <TouchableOpacity
   style={{
-    width: windowWidth*0.12,
-    height : windowWidth*0.12,
+    width: CELL_WIDTH,
+    height : CELL_WIDTH,
     aspectRatio: 1,
     margin: 0,
     marginLeft :  0,
@@ -612,8 +614,8 @@ const style = StyleSheet.create({
   top: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: windowWidth * 0.12,
-    height : windowWidth*0.12,
+    width: CELL_WIDTH,
+    height : CELL_WIDTH,
     //backgroundColor: "#fff",
     justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
     alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬

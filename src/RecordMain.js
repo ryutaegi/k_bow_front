@@ -20,6 +20,8 @@ import getEnvVars from '../environmant';
 
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
+const CONTAINER_WIDTH = Math.floor(windowWidth * 0.60);
+const CELL_WIDTH = Math.floor(CONTAINER_WIDTH / 5);
 
 
 const RecordMain = ({ navigation, route }) => {
@@ -343,33 +345,31 @@ useEffect(() => {
           borderColor:'#000',
           }}>
 
-            <View style={{ 
-          flexDirection: 'column', 
+            <View style={{
+          flexDirection: 'column',
           flexWrap: 'wrap',
           margin : 0,
           borderWidth : 0,
-          width: windowWidth*0.12,
-      //height : windowWidth*1
+          width: CELL_WIDTH,
     }}>
 
     { soon.map((index) => (
-  
+
   <View
     key={index}
     style={{
-      width: windowWidth*0.12,
-      height : windowWidth*0.12,
+      width: CELL_WIDTH,
+      height : CELL_WIDTH,
       aspectRatio: 1,
       margin: 0,
       borderWidth: 0,
       borderRadius: 0,
-      justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
-    alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-      //borderColor: '#ccc',
+      justifyContent: 'center',
+    alignItems: 'center',
       overflow: 'hidden',
       alignContent : 'center',
     }}
-  
+
   >
     <Text>{(index+1)/5 +1}순</Text>
   </View>
@@ -377,22 +377,22 @@ useEffect(() => {
       </View>
       
 
-        <View style={{ 
-          flexDirection: 'row', 
+        <View style={{
+          flexDirection: 'row',
           flexWrap: 'wrap',
           margin : 0,
           borderWidth : 0,
-          width : windowWidth*0.60,}}>
-          
+          width : CONTAINER_WIDTH,}}>
+
           {/* 이전 사각형들 출력 */}
-        
-    {shots.map((shot, index) => (
-  
+
+    {Array.isArray(shots) && shots.map((shot, index) => (
+
   <TouchableOpacity
     key={index}
     style={{
-      width: windowWidth*0.12,
-      height : windowWidth*0.12,
+      width: CELL_WIDTH,
+      height : CELL_WIDTH,
       aspectRatio: 1,
       margin: 0,
       marginLeft :  0,
@@ -420,54 +420,52 @@ useEffect(() => {
 
 <TouchableOpacity
   style={{
-    width: windowWidth*0.12,
-    height : windowWidth*0.12,
+    width: CELL_WIDTH,
+    height : CELL_WIDTH,
     aspectRatio: 1,
     margin: 0,
     marginLeft :  0,
-      marginTop :  0,
+    marginTop :  0,
     borderWidth: 0.5,
     borderRadius: 0,
     borderColor: '#000',
     backgroundColor: '#fff',
     overflow: 'hidden',
   }}
-  onPress={() => navigation.navigate('Target_select', {boxidx : shots.length})} //shots.length
+  onPress={() => navigation.navigate('Target_select', {boxidx : shots.length})}
 >
  
 </TouchableOpacity>
 
 
         </View>
-        <View style={{ 
-          flexDirection: 'column', 
+        <View style={{
+          flexDirection: 'column',
           flexWrap: 'wrap',
           margin : 0,
           borderWidth : 0,
-          width: windowWidth*0.12,
-      //height : windowWidth*0.8,
+          width: CELL_WIDTH,
     }}>
 
           { jeong.map((jeong1, index) => (
-  
+
   <View
     key={index}
     style={{
-      width: windowWidth*0.12,
-      height : windowWidth*0.12,
+      width: CELL_WIDTH,
+      height : CELL_WIDTH,
       aspectRatio: 1,
       margin: 0,
       marginLeft :  0,
       marginTop :  0,
       borderWidth: 0,
       borderRadius: 0,
-      justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
-    alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬
-      //borderColor: '#ccc',
+      justifyContent: 'center',
+    alignItems: 'center',
       overflow: 'hidden',
       alignContent : 'center',
     }}
-  
+
   >
     <Text>{jeong1}중</Text>
   </View>
@@ -537,8 +535,8 @@ const style = StyleSheet.create({
   top: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: windowWidth * 0.12,
-    height : windowWidth*0.12,
+    width: CELL_WIDTH,
+    height : CELL_WIDTH,
     //backgroundColor: "#fff",
     justifyContent: 'center', // 주 축 (여기서는 row 방향)을 기준으로 가운데 정렬
     alignItems: 'center', // 교차 축 (여기서는 column 방향)을 기준으로 가운데 정렬

@@ -1,39 +1,32 @@
 import { useState, useContext } from 'react';
-import { Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
-import { UserContext } from '../contexts';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
-import getEnvVars from '../../environmant';
+import { UserContext } from '../../contexts';
+import getEnvVars from '../../../environmant';
 
-const BOARD_COLORS = { 1: '#32B5C6', 2: '#059BF4', 3: '#058549', 4: '#F56412' };
+const ACCENT = '#5B8DEF';
 const MAX_TITLE = 50;
 const MAX_CONTENT = 1000;
 
-const isValidUTF8Char = (char) => char.codePointAt(0) <= 0x10FFFF;
-
-const CreatePost = ({ route, navigation }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const GroupBoardCreate = ({ route, navigation }) => {
+  const { group_id } = route.params;
   const { user } = useContext(UserContext);
   const { apiUrl } = getEnvVars;
-  const board_type = route.params.board_type;
-  const accentColor = BOARD_COLORS[board_type] || '#059BF4';
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
       Alert.alert('안내', '제목과 내용을 모두 입력해주세요.');
       return;
     }
-    if ([...title].some(c => !isValidUTF8Char(c)) || [...content].some(c => !isValidUTF8Char(c))) {
-      Alert.alert('안내', '유효하지 않은 문자가 포함되어 있습니다.');
-      return;
-    }
     try {
       await axios.post(
-        `${apiUrl}/api/board/create`,
-        { board_type, title, content },
+        `${apiUrl}/api/group/board/create`,
+        { group_id, title, content },
         { headers: { Authorization: `${user.jwtToken}` } }
       );
-      navigation.navigate('board2', { board_type });
+      navigation.goBack();
     } catch (e) {
       const msg = e.response?.data?.error || '서버 에러가 발생했습니다.';
       Alert.alert('안내', msg);
@@ -45,7 +38,7 @@ const CreatePost = ({ route, navigation }) => {
       <Text style={styles.label}>제목</Text>
       <TextInput
         style={styles.input}
-        placeholder="게시글 제목을 입력해주세요"
+        placeholder="제목을 입력해주세요"
         value={title}
         onChangeText={setTitle}
         maxLength={MAX_TITLE}
@@ -55,7 +48,7 @@ const CreatePost = ({ route, navigation }) => {
       <Text style={styles.label}>내용</Text>
       <TextInput
         style={[styles.input, styles.contentInput]}
-        placeholder="게시글 내용을 입력해주세요"
+        placeholder="내용을 입력해주세요"
         value={content}
         onChangeText={setContent}
         maxLength={MAX_CONTENT}
@@ -63,7 +56,7 @@ const CreatePost = ({ route, navigation }) => {
       />
       <Text style={styles.counter}>{content.length}/{MAX_CONTENT}</Text>
 
-      <TouchableOpacity style={[styles.submitBtn, { backgroundColor: accentColor }]} onPress={handleSubmit}>
+      <TouchableOpacity style={[styles.submitBtn, { backgroundColor: ACCENT }]} onPress={handleSubmit}>
         <Text style={styles.submitText}>등록</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -80,8 +73,10 @@ const styles = StyleSheet.create({
   },
   contentInput: { height: 200, textAlignVertical: 'top' },
   counter: { fontSize: 12, color: '#bbb', textAlign: 'right', marginTop: 4, marginBottom: 8 },
-  submitBtn: { marginTop: 20, paddingVertical: 14, borderRadius: 10, alignItems: 'center' },
+  submitBtn: {
+    marginTop: 20, paddingVertical: 14, borderRadius: 10, alignItems: 'center',
+  },
   submitText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
 
-export default CreatePost;
+export default GroupBoardCreate;

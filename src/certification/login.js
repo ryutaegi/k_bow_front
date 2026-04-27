@@ -7,6 +7,8 @@ import getEnvVars from '../../environmant';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 import styled, {ThemeContext} from 'styled-components/native';
 
@@ -24,17 +26,113 @@ const Login = ({ navigation }) => {
   const { apiUrl } = getEnvVars;
 
   useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: getEnvVars.GOOGLE_WEB_CLIENT_ID,
+      iosClientId: getEnvVars.GOOGLE_IOS_CLIENT_ID,
+    });
+
     // 1초 후에 애니메이션 시작
     setTimeout(() => {
-     
-
       Animated.timing(initialHeight, {
-        toValue: windowHeight*0.6, // 최종 높이
+        toValue: windowHeight*0.6,
         duration: 1000,
         useNativeDriver: false,
       }).start();
     }, 1000);
   }, []);
+
+  const handleGoogleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const idToken = userInfo.idToken;
+
+      const loginResponse = await axios({
+        method: 'post',
+        url: apiUrl + '/api/google/login',
+        data: { token: idToken },
+      });
+
+      const jwtToken = loginResponse.data.token;
+      const decodedToken = jwtDecode(jwtToken);
+
+      await AsyncStorage.setItem('userToken', jwtToken);
+      await AsyncStorage.setItem('userInfo', JSON.stringify({
+        name: decodedToken.nickname,
+        imageURL: userInfo.user?.photo || null,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        agree: decodedToken.agree,
+      }));
+
+      dispatch({
+        name: decodedToken.nickname,
+        imageURL: userInfo.user?.photo || null,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        jwtToken,
+        agree: decodedToken.agree,
+      });
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        return;
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        return;
+      } else {
+        Alert.alert('로그인 실패', '구글 로그인 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      const nickname = credential.fullName?.givenName
+        ? `${credential.fullName.familyName || ''}${credential.fullName.givenName}`
+        : undefined;
+
+      const loginResponse = await axios({
+        method: 'post',
+        url: apiUrl + '/api/apple/login',
+        data: { token: credential.identityToken, nickname },
+      });
+
+      const jwtToken = loginResponse.data.token;
+      const decodedToken = jwtDecode(jwtToken);
+
+      await AsyncStorage.setItem('userToken', jwtToken);
+      await AsyncStorage.setItem('userInfo', JSON.stringify({
+        name: decodedToken.nickname,
+        imageURL: null,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        agree: decodedToken.agree,
+      }));
+
+      dispatch({
+        name: decodedToken.nickname,
+        imageURL: null,
+        social_id: decodedToken.social_id,
+        user_id: decodedToken.user_id,
+        social_type: decodedToken.social_type,
+        jwtToken,
+        agree: decodedToken.agree,
+      });
+    } catch (error) {
+      if (error.code !== 'ERR_REQUEST_CANCELED') {
+        Alert.alert('로그인 실패', '애플 로그인 중 오류가 발생했습니다.');
+      }
+    }
+  };
  
  
   
@@ -70,14 +168,14 @@ const Login = ({ navigation }) => {
       <View style={{width : '30%', height : 1.5, backgroundColor : 'rgb(210,210,210)'}}></View>
       </View>
       
-      <SocialLoginButton style={{backgroundColor : 'rgb(254, 229, 0)'}} onPress={() => navigation.navigate('KakaoLogin')}>
-      <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/kakao_logo.png')} />
-      <Text style={{color : 'black', fontSize : 16}}> 카카오로 시작하기</Text>
+      <SocialLoginButton style={{backgroundColor : '#fff', borderWidth: 1, borderColor: '#ddd'}} onPress={handleGoogleLogin}>
+        <Image source={require('../../images/login/google_logo.png')} style={{width: 18, height: 18, marginRight: 8}} resizeMode="contain" />
+        <Text style={{color : '#333', fontSize : 16}}>Google로 시작하기</Text>
       </SocialLoginButton>
 
-      <SocialLoginButton style={{backgroundColor : '#03C75A'}} onPress={() => navigation.navigate('NaverLogin')}>
-      <Image resizeMode="contain" style={{height : 30}} source={require('../../images/login/naver_logo.png')} />
-      <Text style={{color : 'white', fontSize : 16}}> 네이버로 시작하기</Text>
+      <SocialLoginButton style={{backgroundColor : '#000'}} onPress={handleAppleLogin}>
+      <Image source={require('../../images/login/apple_logo.png')} style={{width: 24, height: 24, marginRight: 8}} resizeMode="contain" />
+      <Text style={{color : '#fff', fontSize : 16}}>Apple로 시작하기</Text>
       </SocialLoginButton>
 
       
