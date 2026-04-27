@@ -15,7 +15,15 @@ export const CardRow = ({
   return (
     <View style={styles.cardContainer}>
       <View style={styles.contentContainer}>
-        <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+        {imageUrl ? (
+          <Image source={{ uri: imageUrl }} style={styles.cardImage} />
+        ) : (
+          <View style={[styles.cardImage, styles.cardImagePlaceholder, { backgroundColor: theme.wiget22 + '22' }]}>
+            <Text style={[styles.cardImagePlaceholderText, { color: theme.wiget22 }]}>
+              {heading ? heading.charAt(0) : '?'}
+            </Text>
+          </View>
+        )}
         <View style={styles.textContainer}>
           {label && (
             <View style={styles.labelContainer}>
@@ -276,11 +284,19 @@ const styles = StyleSheet.create({
     marginBottom: 0, // Add some space above the button
   },
   cardImage: {
-    width: 150, // Adjust the size accordingly
-    height: 150, // Adjust the size accordingly
-    //borderRadius: 25, // Make it round
-    marginRight: 16, // Add space between the image and the text
+    width: 150,
+    height: 150,
+    marginRight: 16,
     resizeMode: "contain",
+  },
+  cardImagePlaceholder: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  cardImagePlaceholderText: {
+    fontSize: 48,
+    fontWeight: '700',
   },
   labelContainer: {
     alignSelf: "flex-start", // This will align the label to the left
