@@ -26,7 +26,10 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.taeyou.reactexam",
-      usesAppleSignIn: true
+      usesAppleSignIn: true,
+      entitlements: {
+        "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.reactexam"]
+      }
     },
     android: {
       adaptiveIcon: {
