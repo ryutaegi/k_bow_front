@@ -46,14 +46,14 @@ export default {
     },
     extra: {
       eas: {
-        projectId: "91df4db1-caa7-42fd-b47a-5fc4c9979550"
+        projectId: "2f55eaf0-1035-443b-bb5f-52cebfb4482d"
       }
     },
     runtimeVersion: {
       policy: "appVersion"
     },
     updates: {
-      url: "https://u.expo.dev/91df4db1-caa7-42fd-b47a-5fc4c9979550"
+      url: "https://u.expo.dev/2f55eaf0-1035-443b-bb5f-52cebfb4482d"
     }
   }
 };
