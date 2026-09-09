@@ -25,7 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.taeyou.reactexam",
+      "bundleIdentifier": "com.taeyou.hwalro",
       "usesAppleSignIn": true
     },
     "android": {
@@ -33,7 +33,7 @@
         "foregroundImage": "./assets/logo4_square.png",
         "backgroundColor": "#059bf4"
       },
-      "package": "com.taeyou.reactexam",
+      "package": "com.taeyou.hwalro",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBo8JkDLgjzxYaIXl0-foviqM5uFA-Pm8c"
