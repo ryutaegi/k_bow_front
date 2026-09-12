@@ -29,6 +29,9 @@ export default {
       usesAppleSignIn: true,
       entitlements: {
         "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.reactexam"]
+      },
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false
       }
     },
     android: {
