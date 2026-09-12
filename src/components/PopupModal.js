@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 const APP_STORE_URL = 'https://apps.apple.com/app/id6467799734';
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.taeyou.reactexam';
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.taeyou.hwalro';
 
 const PopupModal = ({ visible, popup, onClose, onDismissToday }) => {
   const isForceUpdate = popup?.type === 'force_update';
