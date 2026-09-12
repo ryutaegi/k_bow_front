@@ -21,8 +21,11 @@ const GoogleLogin = ({ navigation }) => {
   const handleGoogleLogin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const idToken = userInfo.idToken;
+      const signInResult = await GoogleSignin.signIn();
+      // google-signin v13+ 는 { type, data } 형태로 반환한다
+      if (signInResult?.type === 'cancelled') return;
+      const userInfo = signInResult?.data ?? signInResult;
+      const idToken = userInfo?.idToken;
 
       const loginResponse = await axios({
         method: 'post',
