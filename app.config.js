@@ -25,10 +25,10 @@ export default {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.taeyou.reactexam",
+      bundleIdentifier: "com.taeyou.hwalro",
       usesAppleSignIn: true,
       entitlements: {
-        "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.reactexam"]
+        "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.hwalro"]
       },
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false
