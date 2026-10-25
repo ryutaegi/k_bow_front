@@ -151,10 +151,10 @@ const JoinPresenter = () => {
         <Text style={styles.label}>이용약관 동의 (필수)</Text>
         </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+        <TouchableOpacity onPress={() => (openURL('https://kbow-server-production.up.railway.app/terms.html'))}>
         <Text style={{color : 'rgb(150,150,150)', fontWeight : 'bold'}}>{'>'}</Text>
         </TouchableOpacity>
-      
+
       </View>
 
       <View style={styles.switchContainer}>
@@ -166,7 +166,7 @@ const JoinPresenter = () => {
         <Text style={styles.label}>개인정보 처리방침 동의 (필수)</Text>
         </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => (openURL('https://sites.google.com/view/bowapp/%ED%99%88'))}>
+        <TouchableOpacity onPress={() => (openURL('https://kbow-server-production.up.railway.app/privacy.html'))}>
         <Text style={{color : 'rgb(150,150,150)', fontWeight : 'bold'}}>{'>'}</Text>
         </TouchableOpacity>
       </View>

@@ -97,6 +97,88 @@ const GroupBoardDetail = ({ route, navigation }) => {
     }
   };
 
+  const reportPost = () => {
+    Alert.alert(
+      '게시글 신고',
+      '이 게시글을 신고할까요? 신고된 게시글은 즉시 삭제되며, 운영자가 24시간 이내에 추가 조치합니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '신고', style: 'destructive', onPress: async () => {
+            try {
+              await axios.post(
+                `${apiUrl}/api/moderation/report`,
+                { target_type: 'group_board', target_id: post.post_id },
+                { headers: { Authorization: `${user.jwtToken}` } }
+              );
+              Alert.alert('신고 접수', '신고가 접수되어 게시글이 삭제되었습니다.');
+              navigation.goBack();
+            } catch (e) { console.log(e); }
+          }
+        }
+      ]
+    );
+  };
+
+  const blockUser = () => {
+    Alert.alert(
+      '사용자 차단',
+      `${post.nickname}님을 차단할까요? 차단하면 이 사용자의 글/댓글이 더 이상 보이지 않으며, 운영자에게도 전달되어 24시간 이내에 검토됩니다.`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '차단', style: 'destructive', onPress: async () => {
+            try {
+              await axios.post(
+                `${apiUrl}/api/moderation/block`,
+                { blocked_id: post.user_id },
+                { headers: { Authorization: `${user.jwtToken}` } }
+              );
+              Alert.alert('차단 완료', `${post.nickname}님을 차단했습니다.`);
+              navigation.goBack();
+            } catch (e) { console.log(e); }
+          }
+        }
+      ]
+    );
+  };
+
+  const reportComment = (comment_id) => {
+    Alert.alert('댓글 신고', '이 댓글을 신고할까요? 신고된 댓글은 즉시 삭제됩니다.', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '신고', style: 'destructive', onPress: async () => {
+          try {
+            await axios.post(
+              `${apiUrl}/api/moderation/report`,
+              { target_type: 'group_board_comment', target_id: comment_id },
+              { headers: { Authorization: `${user.jwtToken}` } }
+            );
+            fetchComments();
+          } catch (e) { console.log(e); }
+        }
+      }
+    ]);
+  };
+
+  const blockCommentUser = (blockedId, nickname) => {
+    Alert.alert('사용자 차단', `${nickname}님을 차단할까요?`, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '차단', style: 'destructive', onPress: async () => {
+          try {
+            await axios.post(
+              `${apiUrl}/api/moderation/block`,
+              { blocked_id: blockedId },
+              { headers: { Authorization: `${user.jwtToken}` } }
+            );
+            fetchComments();
+          } catch (e) { console.log(e); }
+        }
+      }
+    ]);
+  };
+
   return (
     <>
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 80 }}>
@@ -110,11 +192,9 @@ const GroupBoardDetail = ({ route, navigation }) => {
               {post.created_at_korean ? post.created_at_korean.slice(0, 16) : ''}
             </Text>
           </View>
-          {post.user_id === user.user_id && (
-            <TouchableOpacity onPress={() => setMenuOpen(true)} style={styles.menuButton}>
-              <Text style={styles.menuDots}>⋮</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity onPress={() => setMenuOpen(true)} style={styles.menuButton}>
+            <Text style={styles.menuDots}>⋮</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={[styles.accentBar, { backgroundColor: ACCENT }]} />
@@ -144,9 +224,21 @@ const GroupBoardDetail = ({ route, navigation }) => {
                     </Text>
                   </View>
                 </View>
-                {c.user_id === user.user_id && (
+                {c.user_id === user.user_id ? (
                   <TouchableOpacity onPress={() => deleteComment(c.comment_id)}>
                     <Text style={styles.commentDelete}>삭제</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      Alert.alert('댓글 옵션', c.nickname + '님의 댓글', [
+                        { text: '취소', style: 'cancel' },
+                        { text: '신고', onPress: () => reportComment(c.comment_id) },
+                        { text: '작성자 차단', style: 'destructive', onPress: () => blockCommentUser(c.user_id, c.nickname) },
+                      ])
+                    }
+                  >
+                    <Text style={styles.commentDelete}>⋮</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -186,18 +278,29 @@ const GroupBoardDetail = ({ route, navigation }) => {
       <Modal transparent visible={menuOpen} animationType="fade" onRequestClose={() => setMenuOpen(false)}>
         <Pressable style={styles.overlay} onPress={() => setMenuOpen(false)}>
           <View style={styles.menuBox}>
-            <TouchableOpacity
-              style={[styles.menuItem, styles.menuItemLast]}
-              onPress={() => {
-                setMenuOpen(false);
-                Alert.alert('삭제', '게시글을 삭제할까요?', [
-                  { text: '취소', style: 'cancel' },
-                  { text: '삭제', style: 'destructive', onPress: deletePost },
-                ]);
-              }}
-            >
-              <Text style={[styles.menuItemText, { color: '#e53935' }]}>삭제</Text>
-            </TouchableOpacity>
+            {post.user_id === user.user_id ? (
+              <TouchableOpacity
+                style={[styles.menuItem, styles.menuItemLast]}
+                onPress={() => {
+                  setMenuOpen(false);
+                  Alert.alert('삭제', '게시글을 삭제할까요?', [
+                    { text: '취소', style: 'cancel' },
+                    { text: '삭제', style: 'destructive', onPress: deletePost },
+                  ]);
+                }}
+              >
+                <Text style={[styles.menuItemText, { color: '#e53935' }]}>삭제</Text>
+              </TouchableOpacity>
+            ) : (
+              <>
+                <TouchableOpacity style={styles.menuItem} onPress={() => { setMenuOpen(false); reportPost(); }}>
+                  <Text style={styles.menuItemText}>신고</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.menuItem, styles.menuItemLast]} onPress={() => { setMenuOpen(false); blockUser(); }}>
+                  <Text style={[styles.menuItemText, { color: '#e53935' }]}>작성자 차단</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </Pressable>
       </Modal>

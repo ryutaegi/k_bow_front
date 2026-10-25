@@ -8,7 +8,9 @@ import {
   Dimensions,
   StyleSheet,
   AppState,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert,
+  Platform
 } from 'react-native';
 import axios from 'axios';
 import { UserContext } from '../contexts';
@@ -234,6 +236,29 @@ useEffect(() => {
 
 
 
+
+const isHit = (shot) => (shot >= 4 && shot <= 12) || shot == 17;
+
+const deleteRow = (rowIndex) => {
+  const newShots = shots.filter((_, i) => Math.floor(i / 5) !== rowIndex);
+  const newSoon = [];
+  for (let i = -1; i <= newShots.length - 1; i += 5) newSoon.push(i);
+  const newJeong = [];
+  newShots.forEach((shot, i) => {
+    const r = Math.floor(i / 5);
+    newJeong[r] = (newJeong[r] || 0) + (isHit(shot) ? 1 : 0);
+  });
+  setShots(newShots);
+  setSoon(newSoon);
+  setJeong(newJeong);
+};
+
+const confirmDeleteRow = (rowIndex) => {
+  Alert.alert('순 삭제', `${rowIndex + 1}순 기록을 삭제할까요?`, [
+    { text: '취소', style: 'cancel' },
+    { text: '삭제', style: 'destructive', onPress: () => deleteRow(rowIndex) },
+  ]);
+};
 
 const updateShots = (image, boxindex) => {
   setSelectedImage(image);
@@ -558,7 +583,16 @@ useEffect(() => {
     }}
   
   >
-    <Text>{jeong1}중</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Text>{jeong1}중</Text>
+      <TouchableOpacity
+        onPress={() => confirmDeleteRow(index)}
+        hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+        style={{ marginLeft: 4 }}
+      >
+        <Text style={{ fontSize: 22, lineHeight: 22, color: '#888' }}>×</Text>
+      </TouchableOpacity>
+    </View>
   </View>
 ))}
       </View>

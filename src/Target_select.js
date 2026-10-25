@@ -60,7 +60,7 @@ const Target_select = ({ navigation, route }) => {
                 {[0, 1, 2].map((row) => (
                   <TouchableOpacity
                     key={col * 3 + row}
-                    style={{ width: CELL_W, height: CELL_H, overflow: 'hidden' }}
+                    style={{ width: CELL_W - 4, height: CELL_H - 4, margin: 2, overflow: 'hidden', borderRadius: 4, borderWidth: 0.5, borderColor: '#888' }}
                     onPress={() => navigation.navigate('RecordMain', { image: `${col * 3 + row + 4}`, boxindex: boxidx })}
                   >
                     <Image

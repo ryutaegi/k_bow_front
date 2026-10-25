@@ -492,7 +492,7 @@ const AppInner = () => {
 
 const App = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <UserProvider>
         <ProgressProvider>
           <AppInner />

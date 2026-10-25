@@ -8,6 +8,7 @@ export default {
     orientation: "portrait",
     icon: "./assets/logo4_square.png",
     userInterfaceStyle: "light",
+    backgroundColor: "#ffffff",
     splash: {
       image: "./assets/splash_logo4.png",
       resizeMode: "contain",
@@ -26,6 +27,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.taeyou.hwalro",
+      buildNumber: "4",
       usesAppleSignIn: true,
       entitlements: {
         "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.hwalro"]
