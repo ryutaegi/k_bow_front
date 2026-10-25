@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "활로",
     slug: "react-exam",
-    version: "1.0.24",
+    version: "1.0.25",
     orientation: "portrait",
     icon: "./assets/logo4_square.png",
     userInterfaceStyle: "light",
@@ -27,7 +27,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.taeyou.hwalro",
-      buildNumber: "4",
+      buildNumber: "5",
       usesAppleSignIn: true,
       entitlements: {
         "keychain-access-groups": ["$(AppIdentifierPrefix)com.taeyou.hwalro"]
